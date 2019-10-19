@@ -1,9 +1,22 @@
+<!--
+ * @Description: 布局主页
+ * @Author: 戴训伟
+ * @Date: 2019-10-18 13:58:44
+ * @LastEditTime: 2019-10-18 18:20:06
+ * @LastEditors: Please set LastEditors
+ -->
 <template>
+  <!-- 布局container -->
   <div :class="classObj" class="app-wrapper">
+    <!-- 移动端的遮罩层，用于隐藏侧边栏 -->
     <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside" />
+    <!-- 侧边栏组件 -->
     <sidebar class="sidebar-container" />
+    <!-- 主体区 -->
     <div class="main-container">
+      <!-- 导航条 -->
       <div :class="{'fixed-header':fixedHeader}">
+         <!-- 面包屑 -->
         <navbar />
       </div>
       <app-main />
@@ -13,7 +26,7 @@
 
 <script>
 import { Navbar, Sidebar, AppMain } from './components'
-import ResizeMixin from './mixin/ResizeHandler'
+import ResizeMixin from './mixin/ResizeHandler' // 窗口调整切换移动端或PC端
 
 export default {
   name: 'Layout',
@@ -25,13 +38,13 @@ export default {
   mixins: [ResizeMixin],
   computed: {
     sidebar() {
-      return this.$store.state.app.sidebar
+      return this.$store.state.app.sidebar // 侧边栏
     },
     device() {
-      return this.$store.state.app.device
+      return this.$store.state.app.device // 手机端
     },
     fixedHeader() {
-      return this.$store.state.settings.fixedHeader
+      return this.$store.state.settings.fixedHeader // 右侧布局配置板是否显示
     },
     classObj() {
       return {
@@ -43,8 +56,12 @@ export default {
     }
   },
   methods: {
+     /**
+     * @name: handleClickOutside
+     * @des : 手机端展示侧边栏时的遮罩层，点击时添加过渡动画
+     */
     handleClickOutside() {
-      this.$store.dispatch('app/closeSideBar', { withoutAnimation: false })
+      this.$store.dispatch('app/closeSideBar', { withoutAnimation: false }) // 展开或关闭侧边栏时（是否没有动画）
     }
   }
 }

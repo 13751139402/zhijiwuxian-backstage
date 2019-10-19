@@ -1,3 +1,10 @@
+<!--
+ * @Description: layout的main，用于切换不同route
+ * @Author: your name
+ * @Date: 2019-10-18 13:58:44
+ * @LastEditTime: 2019-10-18 18:24:54
+ * @LastEditors: Please set LastEditors
+ -->
 <template>
   <section class="app-main">
     <transition name="fade-transform" mode="out-in">

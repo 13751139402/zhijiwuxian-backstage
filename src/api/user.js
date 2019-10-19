@@ -1,4 +1,11 @@
-import request from '@/utils/request'
+/*
+ * @Description: user API
+ * @Author: your name
+ * @Date: 2019-10-18 13:58:44
+ * @LastEditTime: 2019-10-19 09:56:43
+ * @LastEditors: Please set LastEditors
+ */
+import request from '@/utils/request' // request是封装过的axios
 
 export function login(data) {
   return request({

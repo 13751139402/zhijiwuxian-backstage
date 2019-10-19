@@ -1,4 +1,11 @@
-import { login, logout, getInfo } from '@/api/user'
+/*
+ * @Description: user 数据模块 因为调用是通过async的方式，所以所有actions都需要返回promise
+ * @Author: your name
+ * @Date: 2019-10-18 13:58:44
+ * @LastEditTime: 2019-10-19 10:03:56
+ * @LastEditors: Please set LastEditors
+ */
+import { login, logout, getInfo } from '@/api/user' //请求user的getInfo
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
 
@@ -36,14 +43,14 @@ const actions = {
     })
   },
 
-  // get user info
+  // 获取用户信息
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
       getInfo(state.token).then(response => {
         const { data } = response
 
         if (!data) {
-          reject('Verification failed, please Login again.')
+          reject('验证失败，请重新登录。')
         }
 
         const { name, avatar } = data
@@ -57,7 +64,7 @@ const actions = {
     })
   },
 
-  // user logout
+  // 用户登出
   logout({ commit, state }) {
     return new Promise((resolve, reject) => {
       logout(state.token).then(() => {
@@ -71,12 +78,12 @@ const actions = {
     })
   },
 
-  // remove token
+  // 删除 token
   resetToken({ commit }) {
     return new Promise(resolve => {
-      commit('SET_TOKEN', '')
-      removeToken()
-      resolve()
+      commit('SET_TOKEN', '') // 清零 vuex中的token
+      removeToken() // 清零 cookie中的token
+      resolve() 
     })
   }
 }
