@@ -1,3 +1,10 @@
+/*
+ * @Description: In User Settings Edit
+ * @Author: your name
+ * @Date: 2019-10-18 13:58:44
+ * @LastEditTime: 2019-10-19 16:33:33
+ * @LastEditors: Please set LastEditors
+ */
 import Vue from 'vue'
 
 import 'normalize.css/normalize.css' // A modern alternative to CSS resets
@@ -16,13 +23,12 @@ import '@/icons' // icon
 import '@/permission' // permission control
 
 /**
- * If you don't want to use mock-server
- * you want to use MockJs for mock api
- * you can execute: mockXHR()
- *
- * Currently MockJs will be used in the production environment,
- * please remove it before going online! ! !
- */
+*  如果您不想使用模拟服务器
+*  你想使用MockJs的模拟api
+*  您可以执行:mockXHR()
+*  目前MockJs将在生产环境中使用，
+*  请在上线前删除!!!
+*/
 import { mockXHR } from '../mock'
 if (process.env.NODE_ENV === 'production') {
   mockXHR()

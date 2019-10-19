@@ -1,8 +1,16 @@
+/*
+ * @Description: 验证器
+ * @Author: your name
+ * @Date: 2019-10-18 13:58:44
+ * @LastEditTime: 2019-10-19 14:53:26
+ * @LastEditors: Please set LastEditors
+ */
 /**
  * Created by PanJiaChen on 16/11/18.
  */
 
 /**
+ * @description: 判断是否为绝对路径
  * @param {string} path
  * @returns {Boolean}
  */

@@ -1,3 +1,10 @@
+<!--
+ * @Description: 侧边栏的子节点的render函数
+ * @Author: your name
+ * @Date: 2019-10-18 13:58:44
+ * @LastEditTime: 2019-10-19 15:24:50
+ * @LastEditors: Please set LastEditors
+ -->
 <script>
 export default {
   name: 'MenuItem',

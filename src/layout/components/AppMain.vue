@@ -2,11 +2,12 @@
  * @Description: layout的main，用于切换不同route
  * @Author: your name
  * @Date: 2019-10-18 13:58:44
- * @LastEditTime: 2019-10-18 18:24:54
+ * @LastEditTime: 2019-10-19 11:35:41
  * @LastEditors: Please set LastEditors
  -->
 <template>
   <section class="app-main">
+    <!-- out-in 先出再进  -->
     <transition name="fade-transform" mode="out-in">
       <router-view :key="key" />
     </transition>

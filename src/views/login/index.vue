@@ -2,13 +2,18 @@
  * @Description: 登录页面
  * @Author: your name
  * @Date: 2019-10-18 13:58:44
- * @LastEditTime: 2019-10-19 10:35:17
+ * @LastEditTime: 2019-10-19 11:28:48
  * @LastEditors: Please set LastEditors
  -->
 <template>
   <div class="login-container">
+
+    <!-- model 表单数据
+         rules 校验器
+    -->
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
 
+      <!-- autocomplete 是否启动浏览器自动完成功能 -->
       <div class="title-container">
         <h3 class="title">登录</h3>
       </div>
@@ -32,6 +37,9 @@
         <span class="svg-container">
           <svg-icon icon-class="password" />
         </span>
+        <!-- @blur  失去焦点时，"大写锁定"隐藏
+               @keyup 按下enter键 登录
+          -->
         <el-input
           :key="passwordType"
           ref="password"
@@ -60,11 +68,12 @@
 </template>
 
 <script>
-import { validUsername } from '@/utils/validate'
+import { validUsername } from '@/utils/validate' // 把所有验证函数都放在同一个目录下
 
 export default {
   name: 'Login',
   data() {
+    // 私有方法，非响应式方法
     const validateUsername = (rule, value, callback) => {
       if (!validUsername(value)) {
         callback(new Error('请输入正确的用户名'))
@@ -96,9 +105,9 @@ export default {
   watch: {
     $route: {
       handler: function(route) {
-        this.redirect = route.query && route.query.redirect
+        this.redirect = route.query && route.query.redirect // 取出除了redirect之外的其他参数
       },
-      immediate: true
+      immediate: true // 该回调将会在侦听开始之后被立即调用
     }
   },
   methods: {
@@ -112,17 +121,17 @@ export default {
         this.$refs.password.focus()
       })
     },
-    handleLogin() {
-      this.$refs.loginForm.validate(valid => {
-        if (valid) {
-          this.loading = true
-          this.$store.dispatch('user/login', this.loginForm).then(() => {
-            this.$router.push({ path: this.redirect || '/' })
-            this.loading = false
+    handleLogin() { // 提交登录
+      this.$refs.loginForm.validate(valid => { // 获取form表单中的validate
+        if (valid) { // 如果验证通过则登录
+          this.loading = true // 开启加载
+          this.$store.dispatch('user/login', this.loginForm).then(() => { // 调用axios login
+            this.$router.push({ path: this.redirect || '/' }) // 成功后如果有redirect则回跳，没有则调至默认页面
+            this.loading = false // 加载完毕
           }).catch(() => {
             this.loading = false
           })
-        } else {
+        } else { // 验证不通过
           console.log('登录错误!!')
           return false
         }

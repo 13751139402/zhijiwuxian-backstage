@@ -39,21 +39,21 @@ export default {
     /**
      * @name: $_isMobile
      * @des : 判断是否为移动端
-     * @param {type} 
+     * @param {type}
      * @return: true为移动端
      */
     $_isMobile() {
-      const rect = body.getBoundingClientRect() //获取页面的大小
+      const rect = body.getBoundingClientRect() // 获取页面的大小
       return rect.width - 1 < WIDTH // 如果页面宽度小于 992 返回true
     },
     /**
      * @name: $_resizeHandler
      * @des : 判断窗口大小是否小于992，小于则为移动端
-     * @param {type} 
+     * @param {type}
      * @return: 关闭侧边栏
      */
     $_resizeHandler() {
-      if (!document.hidden) { //如果元素没有隐藏
+      if (!document.hidden) { // 如果元素没有隐藏
         const isMobile = this.$_isMobile()
         store.dispatch('app/toggleDevice', isMobile ? 'mobile' : 'desktop') // 设置为移动端或者pc端
 

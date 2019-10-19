@@ -1,4 +1,12 @@
+<!--
+ * @Description: SvgIcon
+ * @Author: your name
+ * @Date: 2019-10-18 13:58:44
+ * @LastEditTime: 2019-10-19 15:43:35
+ * @LastEditors: Please set LastEditors
+ -->
 <template>
+  <!-- $listener绑定父级传递下来的路径 -->
   <div v-if="isExternal" :style="styleExternalIcon" class="svg-external-icon svg-icon" v-on="$listeners" />
   <svg v-else :class="svgClass" aria-hidden="true" v-on="$listeners">
     <use :xlink:href="iconName" />
@@ -22,13 +30,13 @@ export default {
     }
   },
   computed: {
-    isExternal() {
+    isExternal() { // 判断是否为绝对路径
       return isExternal(this.iconClass)
     },
-    iconName() {
+    iconName() { // svg的路径
       return `#icon-${this.iconClass}`
     },
-    svgClass() {
+    svgClass() { // class
       if (this.className) {
         return 'svg-icon ' + this.className
       } else {

@@ -5,7 +5,7 @@
  * @LastEditTime: 2019-10-19 10:03:56
  * @LastEditors: Please set LastEditors
  */
-import { login, logout, getInfo } from '@/api/user' //请求user的getInfo
+import { login, logout, getInfo } from '@/api/user' // 请求user的getInfo
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
 
@@ -83,7 +83,7 @@ const actions = {
     return new Promise(resolve => {
       commit('SET_TOKEN', '') // 清零 vuex中的token
       removeToken() // 清零 cookie中的token
-      resolve() 
+      resolve()
     })
   }
 }

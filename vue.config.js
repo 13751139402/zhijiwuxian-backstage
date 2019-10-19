@@ -1,3 +1,10 @@
+/*
+ * @Description: In User Settings Edit
+ * @Author: your name
+ * @Date: 2019-10-18 13:58:44
+ * @LastEditTime: 2019-10-19 16:13:42
+ * @LastEditors: Please set LastEditors
+ */
 'use strict'
 const path = require('path')
 const defaultSettings = require('./src/settings.js')
@@ -24,9 +31,9 @@ module.exports = {
    * 在大多数情况下请使用'/' !!
    * 细节:https://cli.vuejs.org/config/ publicpath
    */
-  publicPath: './',
-  outputDir: 'dist',
-  assetsDir: 'static',
+  publicPath: './',       // 打包路径
+  outputDir: 'dist',      // 打包文件名称
+  assetsDir: 'static',  // 打包静态资源文件名
   lintOnSave: process.env.NODE_ENV === 'development',
   productionSourceMap: false,
   devServer: {

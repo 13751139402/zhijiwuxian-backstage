@@ -10,14 +10,14 @@ import store from './store' // 导入vuex
 import { Message } from 'element-ui' // 导入 element 的 message模块
 import NProgress from 'nprogress' // 进度条
 import 'nprogress/nprogress.css' // 进度条样式
-import { getToken } from '@/utils/auth' //从cookie获取令牌
+import { getToken } from '@/utils/auth' // 从cookie获取令牌
 import getPageTitle from '@/utils/get-page-title' // 返回《title》元素的text
 
 NProgress.configure({ showSpinner: false }) // NProgress配置
 
 const whiteList = ['/login'] // 设置不需要重定向的白名单
 
-router.beforeEach(async (to, from, next) => { // 路由-跳转前 钩子
+router.beforeEach(async(to, from, next) => { // 路由-跳转前 钩子
   // 开始进度条
   NProgress.start()
 
@@ -51,10 +51,10 @@ router.beforeEach(async (to, from, next) => { // 路由-跳转前 钩子
         }
       }
     }
-  } else { 
+  } else {
     /* has no token*/
 
-    if (whiteList.indexOf(to.path) !== -1) { 
+    if (whiteList.indexOf(to.path) !== -1) {
       // 白名单中是不需要token的，直接跳转
       next()
     } else {
