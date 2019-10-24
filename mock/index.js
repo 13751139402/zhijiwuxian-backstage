@@ -2,29 +2,31 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-10-18 13:58:44
- * @LastEditTime: 2019-10-18 13:58:44
- * @LastEditors: your name
+ * @LastEditTime: 2019-10-23 16:42:08
+ * @LastEditors: Please set LastEditors
  */
 import Mock from 'mockjs'
 import { param2Obj } from '../src/utils'
 
 import user from './user'
 import table from './table'
+import article from './article'
 
-const mocks = [
+const mocks = [  // Mock需要返回的数据 数组
   ...user,
-  ...table
+  ...table,
+  ...article
 ]
 
-// 为了前面的mock
-// 请谨慎使用，它会重新定义XMLHttpRequest，
+// 
 // 这将导致您的许多第三方库失效(如进度事件)。
 export function mockXHR() {
   // mock patch
   // https://github.com/nuysoft/Mock/issues/300
+
   Mock.XHR.prototype.proxy_send = Mock.XHR.prototype.send
-  Mock.XHR.prototype.send = function() {
-    if (this.custom.xhr) {
+  Mock.XHR.prototype.send = function () {
+    if (this.custom.xhr) { // 如果自定义的xhr为真
       this.custom.xhr.withCredentials = this.withCredentials || false
 
       if (this.responseType) {
@@ -35,7 +37,7 @@ export function mockXHR() {
   }
 
   function XHR2ExpressReqWrap(respond) {
-    return function(options) {
+    return function (options) {
       let result = null
       if (respond instanceof Function) {
         const { body, type, url } = options
@@ -57,7 +59,7 @@ export function mockXHR() {
   }
 }
 
-// for mock server
+// 模拟服务器
 const responseFake = (url, type, respond) => {
   return {
     url: new RegExp(`/mock${url}`),

@@ -2,16 +2,19 @@
  * @Description: user API
  * @Author: your name
  * @Date: 2019-10-18 13:58:44
- * @LastEditTime: 2019-10-19 09:56:43
+ * @LastEditTime: 2019-10-23 19:19:07
  * @LastEditors: Please set LastEditors
  */
 import request from '@/utils/request' // request是封装过的axios
 
-export function login(data) {
+export function login({ username, password }) {
   return request({
-    url: '/user/login',
+    url: '/adminLogin',
     method: 'post',
-    data
+    data: {
+      account: username,
+      pwd: password
+    }
   })
 }
 

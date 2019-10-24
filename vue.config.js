@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-10-18 13:58:44
- * @LastEditTime: 2019-10-19 16:13:42
+ * @LastEditTime: 2019-10-24 10:15:07
  * @LastEditors: Please set LastEditors
  */
 'use strict'
@@ -14,15 +14,17 @@ function resolve(dir) {
 }
 
 const name = defaultSettings.title || 'vue Admin Template' // page title
+const production = process.env.NODE_ENV === 'production'
 
-// If your port is set to 80,
-// use administrator privileges to execute the command line.
-// For example, Mac: sudo npm run
-// You can change the port by the following methods:
-// port = 9528 npm run dev OR npm run dev --port = 9528
-const port = process.env.port || process.env.npm_config_port || 9528 // dev port
+// 如果你想设置新的端口
+// 例如, Mac: sudo npm run
+// 您可以通过 改变port 更改端口:
+// port=9528 npm run dev OR npm run dev --port=9528
+// 在npm 中设置process.env.port为新的端口，process.env的属性不区分大小写
+const port = process.env.PROT || process.env.npm_config_port || 9528 // dev port
 
 // All configuration item explanations can be find in https://cli.vuejs.org/config/
+
 module.exports = {
   /**
    * 如果您计划在子路径下部署您的站点，您将需要设置publicPath，
@@ -33,32 +35,32 @@ module.exports = {
    */
   publicPath: './',       // 打包路径
   outputDir: 'dist',      // 打包文件名称
-  assetsDir: 'static',  // 打包静态资源文件名
-  lintOnSave: process.env.NODE_ENV === 'development',
-  productionSourceMap: false,
-  devServer: {
-    port: port,
-    open: true,
-    overlay: {
-      warnings: false,
-      errors: true
+  assetsDir: 'static',    // 打包静态资源文件名
+  lintOnSave: process.env.NODE_ENV === 'development', // 是否使用 ESLint 校验
+  // sourceMap：运行压缩后的文件报错后会自动指向原文件，便于deBug
+  productionSourceMap: false, // 如果你不需要生产环境的 source map，可以将其设置为 false 以加速生产环境构建
+  devServer: {         // 配置开发服务器
+    port: port,        // 指定要监听请求的端口号
+    open: true,        // 告诉 dev-server 在 server 启动后打开浏览器。默认禁用。
+    overlay: {         // 当出现编译器错误或警告时，在浏览器中显示全屏覆盖层。默认禁用
+      warnings: false, // 警告错误
+      errors: true     // 编译错误
     },
-    proxy: {
+    proxy: {           // 启动代理
       // change xxx-api/login => mock/login
       // detail: https://cli.vuejs.org/config/#devserver-proxy
       [process.env.VUE_APP_BASE_API]: {
-        target: `http://127.0.0.1:${port}/mock`,
-        changeOrigin: true,
-        pathRewrite: {
+        target: 'http://192.168.1.11', // 目标服务器 host
+        changeOrigin: true,                      // 设置为true, 本地就会虚拟一个服务器接收你的请求并代你发送该请求 主要解决跨域问题
+        pathRewrite: {                           // 覆写路径：http://localhost:8080/api/123 = http://localhost:3001/123
           ['^' + process.env.VUE_APP_BASE_API]: ''
         }
       }
     },
-    after: require('./mock/mock-server.js')
+    // after: require('./mock/mock-server.js') // 挂载 mock服务器
   },
   configureWebpack: {
-    // provide the app's title in webpack's name field, so that
-    // it can be accessed in index.html to inject the correct title.
+    // 设置路径别名
     name: name,
     resolve: {
       alias: {
@@ -66,7 +68,22 @@ module.exports = {
       }
     }
   },
-  chainWebpack(config) {
+
+  // 将sourcemap文件中源代码的script内容单独打包出来，区别于非源代码部分，源代码部分文件命名不包含hash字符
+  configureWebpack: config => {
+    if (!production) { // 当为开发环境时
+      // output.devtoolXXXX之类的配置都是用来处理sourcemap文件的配置，output.devtoolModuleFilenameTemplate用于处理输出的sourcemap文件的文件名及路径。
+      // output.devtoolModuleFilenameTemplate对于输出的sourcemap文件，相当于output.filename对于本地代码打包后的文件。
+      config.output.devtoolModuleFilenameTemplate = info => {
+        const resPath = info.resourcePath
+        if ((/\.vue$/.test(resPath) && !/type=script/.test(info.identifier)) || /node_modules/.test(resPath)) {
+          return `webpack:///${resPath}?${info.hash}`
+        }
+        return `webpack:///${resPath.replace('./src', 'my-code/src')}`
+      }
+    }
+  },
+  chainWebpack(config) {  // 是一个函数，会接收一个基于 webpack-chain 的 ChainableConfig 实例。允许对内部的 webpack 配置进行更细粒度的修改。
     config.plugins.delete('preload') // TODO: need test
     config.plugins.delete('prefetch') // TODO: need test
 

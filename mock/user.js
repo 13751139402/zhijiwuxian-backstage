@@ -1,9 +1,10 @@
 /*
- * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-10-18 13:58:44
- * @LastEditTime: 2019-10-19 17:09:35
- * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2019-10-22 16:44:02
+ * @LastEditors: your name
+ * @Description: In User Settings Edit
+ * @FilePath: \vue-admit-template\mock\user.js
  */
 
 const tokens = {
@@ -18,15 +19,15 @@ const tokens = {
 const users = {
   'admin-token': {
     roles: ['admin'],
-    introduction: '我是超级管理员',
+    introduction: 'I am a super administrator',
     avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
-    name: '超级管理员'
+    name: 'Super Admin'
   },
   'editor-token': {
     roles: ['editor'],
-    introduction: '我是管理员',
+    introduction: 'I am an editor',
     avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
-    name: '管理员'
+    name: 'Normal Editor'
   }
 }
 

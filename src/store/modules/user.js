@@ -1,29 +1,38 @@
 /*
- * @Description: user 数据模块 因为调用是通过async的方式，所以所有actions都需要返回promise
- * @Author: your name
- * @Date: 2019-10-18 13:58:44
- * @LastEditTime: 2019-10-19 10:03:56
+ * @Descripttion: learning
+ * @version: learning
+ * @Author: 戴训伟
+ * @Date: 2019-09-28 10:33:37
  * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2019-10-24 10:23:22
  */
-import { login, logout, getInfo } from '@/api/user' // 请求user的getInfo
+import { login, logout, getInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
-import { resetRouter } from '@/router'
+import router, { resetRouter } from '@/router'
 
 const state = {
   token: getToken(),
+  id: '',
   name: '',
-  avatar: ''
+  account: '',
+  rank: ""
 }
 
 const mutations = {
   SET_TOKEN: (state, token) => {
     state.token = token
   },
+  SET_ID: (state, id) => {
+    state.id = id
+  },
   SET_NAME: (state, name) => {
     state.name = name
   },
-  SET_AVATAR: (state, avatar) => {
-    state.avatar = avatar
+  SET_ACCOUNT: (state, account) => {
+    state.account = account
+  },
+  SET_RANK: (state, rank) => {
+    state.rank = rank
   }
 }
 
@@ -33,9 +42,13 @@ const actions = {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
       login({ username: username.trim(), password: password }).then(response => {
-        const { data } = response
-        commit('SET_TOKEN', data.token)
-        setToken(data.token)
+        const { id, name, account, rank } = response.result
+        // commit('SET_TOKEN', "data.token") // commit不能传入undefined 否则会出错
+        // setToken(data.token)
+        commit('SET_ID', id)
+        commit('SET_NAME', name)
+        commit('SET_ACCOUNT', account)
+        commit('SET_RANK', rank)
         resolve()
       }).catch(error => {
         reject(error)
@@ -43,20 +56,28 @@ const actions = {
     })
   },
 
-  // 获取用户信息
+  // get user info
+  // 通过用户token 获取用户角色roles
   getInfo({ commit, state }) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => { // 给axios实例添加then和catch并返回一个Promise
       getInfo(state.token).then(response => {
         const { data } = response
 
         if (!data) {
-          reject('验证失败，请重新登录。')
+          reject('验证失败，请重新登录')
         }
 
-        const { name, avatar } = data
+        const { roles, name, avatar, introduction } = data
 
+        // 角色必须是非空数组
+        if (!roles || roles.length <= 0) {
+          reject('getInfo: 角色必须是非空数组!')
+        }
+
+        commit('SET_ROLES', roles)
         commit('SET_NAME', name)
         commit('SET_AVATAR', avatar)
+        commit('SET_INTRODUCTION', introduction)
         resolve(data)
       }).catch(error => {
         reject(error)
@@ -64,11 +85,12 @@ const actions = {
     })
   },
 
-  // 用户登出
+  // user logout
   logout({ commit, state }) {
     return new Promise((resolve, reject) => {
       logout(state.token).then(() => {
         commit('SET_TOKEN', '')
+        commit('SET_ROLES', [])
         removeToken()
         resetRouter()
         resolve()
@@ -78,11 +100,37 @@ const actions = {
     })
   },
 
-  // 删除 token
+  // 重置用户信息
   resetToken({ commit }) {
     return new Promise(resolve => {
-      commit('SET_TOKEN', '') // 清零 vuex中的token
-      removeToken() // 清零 cookie中的token
+      commit('SET_TOKEN', '') // 设置token为空
+      commit('SET_ROLES', []) // 设置权限为空
+      removeToken() // 移除cookie 的 token
+      resolve()
+    })
+  },
+
+  // dynamically modify permissions
+  changeRoles({ commit, dispatch }, role) {
+    return new Promise(async resolve => {
+      const token = role + '-token'
+
+      commit('SET_TOKEN', token)
+      setToken(token)
+
+      const { roles } = await dispatch('getInfo')
+
+      resetRouter()
+
+      // generate accessible routes map based on roles
+      const accessRoutes = await dispatch('permission/generateRoutes', roles, { root: true })
+
+      // dynamically add accessible routes
+      router.addRoutes(accessRoutes)
+
+      // reset visited views and cached views
+      dispatch('tagsView/delAllViews', null, { root: true })
+
       resolve()
     })
   }
@@ -94,4 +142,3 @@ export default {
   mutations,
   actions
 }
-

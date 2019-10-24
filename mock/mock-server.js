@@ -1,3 +1,11 @@
+/*
+ * @Author: mock 服务器
+ * @Date: 2019-10-18 13:58:44
+ * @LastEditTime: 2019-10-21 14:25:33
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: /c:\Users\14374\Documents\GitHub\vue-admit-template\mock\mock-server.js
+ */
 const chokidar = require('chokidar')
 const bodyParser = require('body-parser')
 const chalk = require('chalk')
@@ -52,7 +60,7 @@ module.exports = app => {
         // remove mock routes stack
         app._router.stack.splice(mockStartIndex, mockRoutesLength)
 
-        // clear routes cache
+        // 清除路由缓存
         unregisterRoutes()
 
         const mockRoutes = registerRoutes(app)

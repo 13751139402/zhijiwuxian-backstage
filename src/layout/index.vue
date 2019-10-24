@@ -2,7 +2,7 @@
  * @Description: 布局主页
  * @Author: 戴训伟
  * @Date: 2019-10-18 13:58:44
- * @LastEditTime: 2019-10-19 11:34:59
+ * @LastEditTime: 2019-10-22 16:59:01
  * @LastEditors: Please set LastEditors
  -->
 <template>
@@ -13,11 +13,13 @@
     <!-- 侧边栏组件 -->
     <sidebar class="sidebar-container" />
     <!-- 主体区 -->
-    <div class="main-container">
+    <div :class="{hasTagsView:needTagsView}" class="main-container">
       <!-- 导航条 -->
       <nav :class="{'fixed-header':fixedHeader}">
         <!-- 面包屑 -->
         <navbar />
+        <!-- 标签栏 -->
+        <tags-view v-if="needTagsView" />
       </nav>
       <app-main />
     </div>
@@ -25,18 +27,22 @@
 </template>
 
 <script>
-import { Navbar, Sidebar, AppMain } from './components'
+import { Navbar, Sidebar, AppMain, TagsView } from './components'
 import ResizeMixin from './mixin/ResizeHandler' // 窗口调整切换移动端或PC端
-
+import { mapState } from 'vuex'
 export default {
   name: 'Layout',
   components: {
     Navbar,
     Sidebar,
-    AppMain
+    AppMain,
+    TagsView
   },
   mixins: [ResizeMixin],
   computed: {
+    ...mapState({
+      needTagsView: state => state.settings.tagsView // 是否显示标签栏
+    }),
     sidebar() {
       return this.$store.state.app.sidebar // 侧边栏
     },

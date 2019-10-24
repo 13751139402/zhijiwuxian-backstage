@@ -1,9 +1,13 @@
-/**
- * Created by PanJiaChen on 16/11/18.
+/*
+ * @Author: your name
+ * @Date: 2019-10-18 13:58:44
+ * @LastEditTime: 2019-10-21 11:27:37
+ * @LastEditors: your name
+ * @Description: In User Settings Edit
+ * @FilePath: /c:\Users\14374\Documents\GitHub\vue-admit-template\src\utils\index.js
  */
-
 /**
- * Parse the time to string
+ * 解析时间到字符串
  * @param {(Object|string|number)} time
  * @param {string} cFormat
  * @returns {string}

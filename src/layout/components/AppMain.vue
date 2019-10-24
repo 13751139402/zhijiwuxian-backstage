@@ -2,7 +2,7 @@
  * @Description: layout的main，用于切换不同route
  * @Author: your name
  * @Date: 2019-10-18 13:58:44
- * @LastEditTime: 2019-10-19 11:35:41
+ * @LastEditTime: 2019-10-23 15:41:09
  * @LastEditors: Please set LastEditors
  -->
 <template>
@@ -28,7 +28,7 @@ export default {
 <style scoped>
 .app-main {
   /*50 = navbar  */
-  min-height: calc(100vh - 50px);
+  min-height: calc(100vh - 84px);
   width: 100%;
   position: relative;
   overflow: hidden;

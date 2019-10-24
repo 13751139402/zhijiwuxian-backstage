@@ -2,7 +2,7 @@
  * @Description: ROUTER
  * @Author: your name
  * @Date: 2019-10-18 13:58:44
- * @LastEditTime: 2019-10-19 17:07:08
+ * @LastEditTime: 2019-10-23 09:38:59
  * @LastEditors: Please set LastEditors
  */
 import Vue from 'vue'
@@ -43,15 +43,25 @@ export const constantRoutes = [
   {
     path: '/login',
     component: () => import('@/views/login/index'),
-    hidden: false
+    hidden: true
   },
 
   {
     path: '/404',
     component: () => import('@/views/404'),
-    hidden: false
+    hidden: true
   },
-
+  {
+    path: '/redirect',
+    component: Layout,
+    hidden: true,
+    children: [
+      {
+        path: '/redirect/:path*', // :path为 params , *为通配符 pathMath
+        component: () => import('@/views/redirect/index')
+      }
+    ]
+  },
   {
     path: '/', // 默认页面 如果没有登录会直接跳转login
     component: Layout,
@@ -60,31 +70,144 @@ export const constantRoutes = [
       path: 'dashboard',
       name: 'Dashboard',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: '首页', icon: 'dashboard' }
+      meta: {
+        title: '首页', icon: 'dashboard', affix: true
+      }
     }]
   },
 
-  // {
-  //   path: '/example',
-  //   component: Layout,
-  //   redirect: '/example/table',
-  //   name: 'Example',
-  //   meta: { title: 'Example', icon: 'example' },
-  //   children: [
-  //     {
-  //       path: 'table',
-  //       name: 'Table',
-  //       component: () => import('@/views/table/index'),
-  //       meta: { title: 'Table', icon: 'table' }
-  //     },
-  //     {
-  //       path: 'tree',
-  //       name: 'Tree',
-  //       component: () => import('@/views/tree/index'),
-  //       meta: { title: 'Tree', icon: 'tree' }
-  //     }
-  //   ]
-  // },
+  {
+    path: '/manage-user',
+    component: Layout,
+    name: 'manage-user',
+    redirect: '/manage-user/user-list',
+    meta: { title: '用户管理', icon: 'user' },
+    children: [{
+      path: 'user-list',
+      name: 'user-list',
+      component: () => import('@/views/manage-user/user-list'),
+      meta: { title: '用户列表' }
+    },
+    {
+      path: 'batch-signup-user',
+      name: 'batch-signup-user',
+      component: () => import('@/views/manage-user/batch-signup-user'),
+      meta: { title: '批量注册用户' }
+    }]
+  },
+
+  {
+    path: '/advertis',
+    component: Layout,
+    name: 'advertis',
+    redirect: '/advertis/advertis-docking',
+    meta: { title: '广告对接', icon: 'eye-open' },
+    children: [{
+      path: 'advertis-docking',
+      name: 'advertis-docking',
+      component: () => import('@/views/advertis/advertis-docking'),
+      meta: { title: '广告对接' }
+    },
+    {
+      path: 'advertis-list',
+      name: 'advertis-list',
+      component: () => import('@/views/advertis/advertis-list'),
+      meta: { title: '广告列表' }
+    },
+    {
+      path: 'play-stats',
+      name: 'play-stats',
+      component: () => import('@/views/advertis/play-stats'),
+      meta: { title: '播放统计' }
+    }]
+  },
+
+  {
+    path: '/dig-treasure',
+    component: Layout,
+    name: 'dig-treasure',
+    redirect: '/dig-treasure/goods-control',
+    meta: { title: '挖宝功能', icon: 'nested' },
+    children: [{
+      path: 'goods-control',
+      name: 'goods-control',
+      component: () => import('@/views/dig-treasure/goods-control'),
+      meta: { title: '福利管理' }
+    },
+    {
+      path: 'treasure-record',
+      name: 'treasure-record',
+      component: () => import('@/views/dig-treasure/treasure-record'),
+      meta: { title: '物品管理' }
+    },
+    {
+      path: 'welfare-control',
+      name: 'welfare-control',
+      component: () => import('@/views/dig-treasure/welfare-control'),
+      meta: { title: '挖宝记录' }
+    }]
+  },
+
+  {
+    path: '/statistics-deal',
+    component: Layout,
+    name: 'statistics-deal',
+    redirect: '/statistics-deal/apply-list',
+    meta: { title: '交易统计', icon: 'password' },
+    children: [{
+      path: 'apply-list',
+      name: 'apply-list',
+      component: () => import('@/views/statistics-deal/apply-list'),
+      meta: { title: '申请列表' }
+    },
+    {
+      path: 'withdraw-account',
+      name: 'withdraw-account',
+      component: () => import('@/views/statistics-deal/withdraw-account'),
+      meta: { title: '提现账户' }
+    },
+    {
+      path: 'withdraw-record',
+      name: 'withdraw-record',
+      component: () => import('@/views/statistics-deal/withdraw-record'),
+      meta: { title: '提现记录' }
+    }]
+  },
+
+  {
+    path: '/statistics-data',
+    component: Layout,
+    redirect: '/statistics-data',
+    name: 'statistics-data',
+    children: [{
+      path: 'statistics-data',
+      name: 'statistics-data',
+      component: () => import('@/views/statistics-data'),
+      meta: { title: '数据统计', icon: 'table' }
+    }]
+  },
+
+  {
+    path: '/example',
+    component: Layout,
+    redirect: '/example/table',
+    name: 'Example',
+    meta: { title: 'Example', icon: 'example' },
+    children: [
+      {
+        path: 'table',
+        name: 'Table',
+        component: () => import('@/views/table/index'),
+        meta: { title: 'Table', icon: 'table' }
+      },
+      {
+        path: 'tree',
+        name: 'Tree',
+        component: () => import('@/views/tree/index'),
+        meta: { title: 'Tree', icon: 'tree' }
+      }
+    ]
+  },
 
   // {
   //   path: '/form',

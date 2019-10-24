@@ -1,3 +1,11 @@
+<!--
+ * @Author: your name
+ * @Date: 2019-10-18 13:58:44
+ * @LastEditTime: 2019-10-23 15:59:31
+ * @LastEditors: your name
+ * @Description: In User Settings Edit
+ * @FilePath: \vue-admit-template\src\components\Breadcrumb\index.vue
+ -->
 <template>
   <el-breadcrumb class="app-breadcrumb" separator="/">
     <transition-group name="breadcrumb">
@@ -28,7 +36,7 @@ export default {
   },
   methods: {
     getBreadcrumb() {
-      // only show routes with meta.title
+      // 只显示带有meta.title的路由
       let matched = this.$route.matched.filter(item => item.meta && item.meta.title)
       const first = matched[0]
 
