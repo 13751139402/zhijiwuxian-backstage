@@ -1,7 +1,7 @@
 /*
  * @Author: 创建axios实例，添加token验证
  * @Date: 2019-10-18 13:58:44
- * @LastEditTime: 2019-10-24 10:00:35
+ * @LastEditTime: 2019-10-25 17:24:11
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /c:\Users\14374\Documents\GitHub\vue-admit-template\src\utils\request.js
@@ -14,7 +14,7 @@ import { getToken } from '@/utils/auth'
 // 创建一个axios实例
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API, // url = 基本url +请求url
-  // withCredentials: true, // 当跨域请求时发送cookie
+  withCredentials: true, // 当跨域请求时发送cookie
   timeout: 5000, // 请求超时
 })
 
@@ -22,7 +22,7 @@ const service = axios.create({
 service.interceptors.request.use(
   config => {
     // 在发送请求之前做些什么
-
+    config.credentials = true;
     if (store.getters.token) {
       // 让每个请求携带toekn
       // ['X-Token']是一个自定义key
@@ -54,7 +54,7 @@ service.interceptors.response.use(
     const res = response.data
 
     // 如果自定义代码不是1，则判断为错误。
-    
+
     if (res.code !== 1) {
       Message({
         message: res.message || 'Error',
@@ -75,7 +75,7 @@ service.interceptors.response.use(
           })
         })
       }
-      return Promise.reject(new Error(res.message || 'Error'))
+      return Promise.reject(new Error(res.msg || 'Error'))
     } else {
       return res
     }

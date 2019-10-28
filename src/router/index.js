@@ -2,7 +2,7 @@
  * @Description: ROUTER
  * @Author: your name
  * @Date: 2019-10-18 13:58:44
- * @LastEditTime: 2019-10-23 09:38:59
+ * @LastEditTime: 2019-10-26 18:17:58
  * @LastEditors: Please set LastEditors
  */
 import Vue from 'vue'
@@ -89,12 +89,46 @@ export const constantRoutes = [
       meta: { title: '用户列表' }
     },
     {
-      path: 'batch-signup-user',
-      name: 'batch-signup-user',
-      component: () => import('@/views/manage-user/batch-signup-user'),
-      meta: { title: '批量注册用户' }
-    }]
+      path: 'administrator-list',
+      name: 'administrator-list',
+      component: () => import('@/views/manage-user/administrator-list'),
+      meta: { title: '管理员列表' }
+    }, {
+      path: 'user-data',
+      name: 'user-data',
+      component: () => import('@/views/manage-user/user-data'),
+      meta: { title: '用户信息' }
+    },
+
+      // {
+      //   path: 'batch-signup-user',
+      //   name: 'batch-signup-user',
+      //   component: () => import('@/views/manage-user/batch-signup-user'),
+      //   meta: { title: '批量注册用户' }
+      // }
+    ]
   },
+
+  {
+    path: '/welfare',
+    component: Layout,
+    name: 'welfare',
+    redirect: '/welfare/add-welfare',
+    meta: { title: '福利管理', icon: 'user' },
+    children: [{
+      path: 'add-welfare',
+      name: 'add-welfare',
+      component: () => import('@/views/welfare/add-welfare'),
+      meta: { title: '添加福利' }
+    }, {
+      path: 'welfare-list',
+      name: 'welfare-list',
+      component: () => import('@/views/welfare/welfare-list'),
+      meta: { title: '福利列表' }
+    },
+    ]
+  },
+
 
   {
     path: '/advertis',
@@ -178,7 +212,6 @@ export const constantRoutes = [
     path: '/statistics-data',
     component: Layout,
     redirect: '/statistics-data',
-    name: 'statistics-data',
     children: [{
       path: 'statistics-data',
       name: 'statistics-data',

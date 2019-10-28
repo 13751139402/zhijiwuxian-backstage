@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2019-10-21 14:54:15
- * @LastEditTime: 2019-10-24 11:27:38
+ * @LastEditTime: 2019-10-26 14:54:02
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admit-template\src\api\article.js
@@ -43,9 +43,57 @@ export function createArticle(data) {
   })
 }
 
+/**
+ * @description: 用户列表 编辑用户数据
+ * @param {type} 
+ * @return: 
+ */
 export function updateArticle(data) {
   return request({
-    url: '/article/update',
+    url: '/editUser',
+    method: 'post',
+    data
+  })
+}
+
+
+/**
+ * @description: 管理员列表
+ * @param {type} 
+ * @return: 
+ */
+export function getAdminList(data) {
+  return request({
+    url: '/getAdminList',
+    method: 'post',
+    data
+  })
+}
+
+/**
+ * @description: 修改管理员信息 / 删除
+ * @param {type} 
+ * @return: 
+ */
+export function adminUpdate(data) {
+  console.log(data);
+  return request({
+    url: '/adminUpdate',
+    method: 'post',
+    data
+  })
+}
+
+
+/**
+ * @description: 添加管理员
+ * @param {type} 
+ * @return: 
+ */
+export function addAdmin(data) {
+  console.log(data);
+  return request({
+    url: '/addAdmin',
     method: 'post',
     data
   })

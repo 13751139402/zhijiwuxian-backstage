@@ -1,0 +1,160 @@
+<!--
+ * @Author: your name
+ * @Date: 2019-10-25 19:03:38
+ * @LastEditTime: 2019-10-26 10:00:52
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: \vue-admit-template\index.html
+ -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <form action="http://192.168.1.11/editUser" method="post" enctype="multipart/form-data">
+        <input type="text" value="57190288894" name="account"/>
+        <input type="file" id="fileUpdata" @change="beforeAvatarUpload" name="icon" />
+        <input type="submit" value="Submit" />
+    </form>
+</body>
+
+</html>
+<!-- <!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>使用FormData上传压缩裁剪后的图片Blob对象</title>
+    </head>
+    
+    <body>
+        <input type="file" name="myfile" id="myfile" onchange="uploadHandler(event)">
+    
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    
+        <script>
+            function uploadHandler(e) {
+                var files = e.target.files || e.dataTransfer.files;
+    
+                if (files && files.length > 0) {
+                    var file = files[0]; // 获取blob对象
+    
+                    resizeImage(file).then(function (result) {
+                        return typeof result === 'string' ? convertToBlob(result, file.type) : result;
+                    }).then(function (blob) {
+                        // 构建FormData
+                        var formData = new FormData();
+                        //注意：此处第3个参数最好传入一个带后缀名的文件名，否则很有可能被后台认为不是有效的图片文件
+                        formData.append("file", blob, file.name); 
+                        // 上传文件
+                        $.ajax({
+                            url: '/api/upload',
+                            method: "POST",
+                            data: formData,
+                            cache: false,
+                            processData: false,
+                            contentType: false
+                        }).then(function (res) {
+                            console.log(res);
+                        }).catch(function (err) {
+                            console.log(err);
+                        })
+                    });
+                }
+            }
+    
+            /**
+             * 压缩裁剪图片
+             */
+            function resizeImage(file) {
+                return new Promise(function (resolve, reject) {
+                    var reader = new FileReader();
+    
+                    reader.onload = function () {
+                        var img = new Image();
+    
+                        img.onload = function () {
+                            var w = this.naturalWidth;
+                            var h = this.naturalHeight;
+                            var maxW = 500;
+                            var maxH = 500;
+    
+                            // 如果图片尺寸小于最大限制，则不压缩直接上传
+                            if (w <= maxW && h <= maxH) {
+                                resolve(file);
+                                return;
+                            }
+    
+                            var level = 0.6;
+                            var multiple = Math.max(w / maxW, h / maxH);
+                            var resizeW = w / multiple;
+                            var resizeH = h / multiple;
+    
+                            var canvas = document.createElement("canvas");
+    
+                            canvas.width = resizeW;
+                            canvas.height = resizeH;
+    
+                            var ctx = canvas.getContext("2d");
+    
+                            ctx.drawImage(img, 0, 0, resizeW, resizeH);
+    
+                            var base64Img = canvas.toDataURL(file.type, level);
+                            var arr = base64Img.split(",");
+    
+                            resolve(arr[1]);
+                        };
+    
+                        img.src = this.result;
+                    };
+    
+                    reader.readAsDataURL(file);
+                });
+            }
+    
+            /**
+             * 将图片的base64字符串转换为Blob对象
+             */
+            function convertToBlob(base64Str, fileType) {
+                var base64 = window.atob(base64Str);
+                var len = base64.length;
+                var buff = new ArrayBuffer(len);
+                var uarr = new Uint8Array(buff);
+    
+                for (var i = 0; i < len; i++) {
+                    uarr[i] = base64.charCodeAt(i);
+                }
+    
+                var blob = null;
+    
+                try {
+                    blob = new Blob([buff], { type: fileType });
+                } catch (e) {
+                    var BlobBuilder = window.BlobBuilder = (
+                        window.BlobBuilder ||
+                        window.WebKitBlobBuilder ||
+                        window.MozBlobBuilder ||
+                        window.MSBlobBuilder
+                    );
+    
+                    if (e.name === "TypeError" && BlobBuilder) {
+                        var builder = new BlobBuilder();
+                        builder.append(buff);
+                        blob = builder.getBlob(fileType);
+                    }
+                }
+    
+                return blob;
+            }
+        </script>
+    </body>
+    
+    </html> -->
