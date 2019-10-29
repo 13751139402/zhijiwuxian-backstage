@@ -1,46 +1,47 @@
 /*
  * @Author: your name
- * @Date: 2019-10-26 15:07:47
- * @LastEditTime: 2019-10-28 11:01:42
+ * @Date: 2019-10-28 17:42:54
+ * @LastEditTime: 2019-10-28 19:17:12
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
- * @FilePath: \vue-admit-template\src\api\welfare.js
+ * @FilePath: \vue-admit-template\src\api\treasure.js
  */
 import request from '@/utils/request'
+
 /**
- * @description: 添加福利
+ * @description: 文档添加
  * @param {type}
  * @return:
  */
-export function addWelfare(data) {
+export function addHelpText(data) {
   return request({
-    url: '/addWelfare',
+    url: '/addHelpText',
     method: 'post',
     data
   })
 }
 
 /**
- * @description: 福利列表
+ * @description: 文档列表
  * @param {type}
  * @return:
  */
-export function welfareList(data) {
+export function getHelpList(data) {
   return request({
-    url: '/welfareList',
+    url: '/getHelpList',
     method: 'post',
     data
   })
 }
 
 /**
- * @description: 福利编辑 / 删除
+ * @description: 文档修改 / 删除
  * @param {type}
  * @return:
  */
-export function welfareUpdate(data) {
+export function editHelpText(data) {
   return request({
-    url: '/welfareUpdate',
+    url: '/editHelpText',
     method: 'post',
     data
   })

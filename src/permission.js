@@ -20,7 +20,7 @@ NProgress.configure({ showSpinner: false }) // NProgress配置
 
 const whiteList = ['/login', '/auth-redirect'] // 没有重定向白名单
 
-router.beforeEach(async (to, from, next) => { // 路由跳转前触发
+router.beforeEach(async(to, from, next) => { // 路由跳转前触发
   // 开始进度条
 
   NProgress.start()

@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2019-10-25 19:14:30
- * @LastEditTime: 2019-10-29 16:55:18
+ * @LastEditTime: 2019-10-29 16:48:03
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admit-template\src\views\manage-user\administrator-list\index.vue
@@ -27,80 +27,33 @@
       highlight-current-row
       style="width: 100%;"
     >
-      <el-table-column label="任务ID" prop="id" align="center">
+      <el-table-column label="id" prop="id" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.id }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="任务名称" prop="name" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.name }}</span>
-        </template>
-      </el-table-column>
 
-      <el-table-column label="任务类型" prop="type" align="center">
+      <el-table-column label="文章标题" prop="title" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.type }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column label="任务描述" prop="describe" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.describe }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column label="任务限定" prop="worth" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.worth }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column label="任务图片" prop="image" align="center">
-        <template slot-scope="scope">
-          <img :src="server+scope.row.image" class="user-avatar">
-        </template>
-      </el-table-column>
-
-      <el-table-column label="任务奖励" prop="reward" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.reward }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column label="过期时间" prop="time_valid" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.time_valid? scope.row.time_valid:'永久' }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column label="任务数量" prop="amount" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.amount }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column label="是否审核" prop="examine" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.examine=="1"?"需要":"不需要" }}</span>
+          <span>{{ scope.row.title }}</span>
         </template>
       </el-table-column>
 
       <el-table-column label="任务状态" prop="status" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.status?"正常":"禁用" }}</span>
+          <span>{{ scope.row.status }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="任务内容" prop="texts" min-width="300px" align="center">
+        <template slot-scope="scope">
+          <span class="texts">{{ scope.row.texts }}</span>
         </template>
       </el-table-column>
 
       <el-table-column label="创建时间" prop="created_at" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.created_at }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column label="更新时间" prop="updated_at" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.updated_at }}</span>
         </template>
       </el-table-column>
 
@@ -134,10 +87,10 @@
 </template>
 
 <script>
-import { welfareList, welfareUpdate } from '@/api/welfare'
+import { getHelpList, editHelpText } from '@/api/treasure'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 export default {
-  name: 'WelfareList',
+  name: 'GetHelpList',
   components: {
     Pagination
   },
@@ -148,6 +101,7 @@ export default {
       total: 0,
       server: this.$store.getters.server,
       tableKey: 0,
+      account: this.$store.getters.account,
       listLoading: false,
       listQuery: {
         page: 1,
@@ -158,38 +112,39 @@ export default {
   },
   mounted() {
     this.getList()
-    // Object.assign(this.listQuery, this.$store.state.welfare.page);
+    console.log('Wd')
+    // Object.assign(this.listQuery, this.$store.state.treasure.page);
   },
   methods: {
     getList() {
       this.listLoading = true
-      welfareList(this.listQuery).then(({ result }) => {
+      getHelpList(this.listQuery).then(({ result }) => {
         this.list = result.data
         this.listLoading = false
         this.total = result.total
       })
     },
     handleEdit(temp) {
-      this.$store.dispatch('welfare/changeData', {
+      this.$store.dispatch('treasure/changeData', {
         data: temp,
         type: 'change',
         page: this.listQuery
       })
-      this.$router.push({ path: 'add-welfare' })
+      this.$router.push({ path: 'add-help-text' })
     },
     handleCreate() {
-      this.$router.push('add-welfare')
+      this.$router.push('add-help-text')
     },
     handleUpdate(temp) {
-      this.$confirm('此操作将永久删除该福利, 是否继续?', '提示', {
+      this.$confirm('此操作将永久删除该文章, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       })
         .then(() => {
           temp.del = 1
-          temp.account = this.listQuery.account
-          welfareUpdate(temp).then(() => {
+          temp.account = this.account
+          editHelpText(temp).then(() => {
             this.getList()
             this.$notify({
               title: '成功',
@@ -277,5 +232,11 @@ export default {
 }
 .el-button + .el-button {
   margin-left: 0;
+}
+.texts {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
 }
 </style>

@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2019-10-19 17:14:45
- * @LastEditTime: 2019-10-26 11:08:56
+ * @LastEditTime: 2019-10-29 17:30:04
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admit-template\src\views\manage-user\user-list\index.vue
@@ -104,7 +104,7 @@
       <!-- sortable="custom" -->
       <el-table-column label="用户ID" prop="id" align="center" :class-name="getSortClass('id')">
         <template slot-scope="scope">
-          <span>{{scope.row.id}}</span>
+          <span>{{ scope.row.id }}</span>
         </template>
       </el-table-column>
 
@@ -141,7 +141,7 @@
 
       <el-table-column label="用户头像" align="center">
         <template slot-scope="scope">
-          <img :src="avatar+scope.row.icon" class="user-avatar" v-if="scope.row.icon" />
+          <img v-if="scope.row.icon" :src="server+scope.row.icon" class="user-avatar">
         </template>
       </el-table-column>
 
@@ -191,7 +191,7 @@
       v-show="total>0"
       :total="total"
       :page.sync="listQuery.page"
-      :limit.sync="listQuery.limit"
+      :limit.sync="listQuery.page_size"
       @pagination="getList"
     />
 
@@ -208,15 +208,15 @@
           <section>
             <el-form-item label="标识" prop="tags">
               <el-select v-model="temp.tags" placeholder="请选择">
-                <el-option :label="1" :value="1"></el-option>
-                <el-option :label="2" :value="2"></el-option>
-                <el-option :label="3" :value="3"></el-option>
-                <el-option :label="4" :value="4"></el-option>
-                <el-option :label="5" :value="5"></el-option>
-                <el-option :label="6" :value="6"></el-option>
-                <el-option :label="7" :value="7"></el-option>
-                <el-option :label="8" :value="8"></el-option>
-                <el-option :label="9" :value="9"></el-option>
+                <el-option :label="1" :value="1" />
+                <el-option :label="2" :value="2" />
+                <el-option :label="3" :value="3" />
+                <el-option :label="4" :value="4" />
+                <el-option :label="5" :value="5" />
+                <el-option :label="6" :value="6" />
+                <el-option :label="7" :value="7" />
+                <el-option :label="8" :value="8" />
+                <el-option :label="9" :value="9" />
               </el-select>
             </el-form-item>
             <el-form-item label="昵称" prop="nickname">
@@ -242,23 +242,23 @@
                 type="date"
                 placeholder="选择日期"
                 format="yyyy 年 MM 月 dd 日"
-              ></el-date-picker>
+              />
             </el-form-item>
             <el-form-item label="头像" prop="icon">
               <el-upload
+                ref="upload"
                 class="avatar-uploader"
                 :show-file-list="false"
-                ref="upload"
                 action
                 :http-request="beforeAvatarUpload"
               >
                 <img
                   v-if="temp.icon"
-                  :src="/^data/.test(temp.icon)?temp.icon:avatar+temp.icon"
-                  class="avatar"
                   ref="updataImg"
-                />
-                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                  :src="/^data/.test(temp.icon)?temp.icon:server+temp.icon"
+                  class="avatar"
+                >
+                <i v-else class="el-icon-plus avatar-uploader-icon" />
               </el-upload>
             </el-form-item>
           </section>
@@ -331,26 +331,26 @@ import {
   fetchPv,
   createArticle,
   updateArticle
-} from "@/api/manage-user";
-import waves from "@/directive/waves"; // waves directive
-import address from "@/assets/address";
-import { parseTime } from "@/utils";
-import "@/utils/dateFormat.js";
-import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
-let { area, city, province } = address;
+} from '@/api/manage-user'
+import waves from '@/directive/waves' // waves directive
+import address from '@/assets/address'
+import { parseTime } from '@/utils'
+import '@/utils/dateFormat.js'
+import Pagination from '@/components/Pagination' // secondary package based on el-pagination
+const { area, city, province } = address
 const calendarTypeOptions = [
-  { key: "CN", display_name: "China" },
-  { key: "US", display_name: "USA" },
-  { key: "JP", display_name: "Japan" },
-  { key: "EU", display_name: "Eurozone" }
-];
+  { key: 'CN', display_name: 'China' },
+  { key: 'US', display_name: 'USA' },
+  { key: 'JP', display_name: 'Japan' },
+  { key: 'EU', display_name: 'Eurozone' }
+]
 // arr to obj, such as { CN : "China", US : "USA" }
 const calendarTypeKeyValue = calendarTypeOptions.reduce((acc, cur) => {
-  acc[cur.key] = cur.display_name;
-  return acc;
-}, {});
+  acc[cur.key] = cur.display_name
+  return acc
+}, {})
 export default {
-  name: "ComplexTable",
+  name: 'ComplexTable',
   components: {
     Pagination
   },
@@ -358,25 +358,25 @@ export default {
   filters: {
     statusFilter(status) {
       const statusMap = {
-        published: "success",
-        draft: "info",
-        deleted: "danger"
-      };
-      return statusMap[status];
+        published: 'success',
+        draft: 'info',
+        deleted: 'danger'
+      }
+      return statusMap[status]
     },
     typeFilter(type) {
-      return calendarTypeKeyValue[type];
+      return calendarTypeKeyValue[type]
     }
   },
   data() {
     const validateCity = (rule, value, callback) => {
       if (!(value && value.length === 3)) {
-        callback(new Error("请输入完整的地址"));
+        callback(new Error('请输入完整的地址'))
       }
-      callback();
-    };
+      callback()
+    }
     return {
-      avatar: process.env.VUE_APP_BASE_API,
+      server: this.$store.getters.server,
       tableKey: 0,
       list: null,
       formFile: false,
@@ -388,161 +388,173 @@ export default {
         province: []
       },
       activeAddress: {
-        area: "",
-        city: "",
-        province: ""
+        area: '',
+        city: '',
+        province: ''
       },
       listQuery: {
         page: 1,
-        limit: 20,
+        page_size: 20,
         importance: undefined,
         title: undefined,
         type: undefined,
-        sort: "+id"
+        sort: '+id'
       },
       importanceOptions: [1, 2, 3],
       calendarTypeOptions,
       sortOptions: [
-        { label: "ID Ascending", key: "+id" },
-        { label: "ID Descending", key: "-id" }
+        { label: 'ID Ascending', key: '+id' },
+        { label: 'ID Descending', key: '-id' }
       ],
-      statusOptions: ["published", "draft", "deleted"],
+      statusOptions: ['published', 'draft', 'deleted'],
       showReviewer: false,
       temp: {
         id: undefined,
         tags: 1,
         gender: 1,
         icon: false,
-        nickname: "",
-        birth: "",
-        title: "",
-        type: "",
-        status: "published",
+        nickname: '',
+        birth: '',
+        title: '',
+        type: '',
+        status: 'published',
         city: []
       },
       dialogFormVisible: false,
-      dialogStatus: "",
+      dialogStatus: '',
       textMap: {
-        edit: "编辑",
-        create: "创建"
+        edit: '编辑',
+        create: '创建'
       },
       dialogPvVisible: false,
       pvData: [],
       rules: {
-        tags: [{ required: true, message: "请输入昵称", trigger: "blur" }],
-        gender: [{ required: true, message: "请输入性别", trigger: "blur" }],
-        nickname: [{ required: true, message: "请输入昵称", trigger: "blur" }],
-        industry: [{ required: true, message: "请输入行业", trigger: "blur" }],
+        tags: [{ required: true, message: '请输入昵称', trigger: 'blur' }],
+        gender: [{ required: true, message: '请输入性别', trigger: 'blur' }],
+        nickname: [{ required: true, message: '请输入昵称', trigger: 'blur' }],
+        industry: [{ required: true, message: '请输入行业', trigger: 'blur' }],
         occupation: [
-          { required: true, message: "请输入职业", trigger: "blur" }
+          { required: true, message: '请输入职业', trigger: 'blur' }
         ],
-        birth: [{ required: true, message: "请输入生日", trigger: "blur" }]
+        birth: [{ required: true, message: '请输入生日', trigger: 'blur' }]
         // city: [{ required: true, validator: validateCity, trigger: "blur" }],
         // icon: [{ required: true, trigger: "blur", message: "请选择头像" }]
       },
       downloadLoading: false
-    };
+    }
+  },
+  watch: {
+    activeAddress: {
+      handler: function({ province, city, area }, oldVal) {
+        if (area !== '') {
+          this.temp.address_tag = [province, city, area]
+        } else {
+          this.temp.address_tag = []
+        }
+      },
+      deep: true
+    }
   },
   created() {
-    this.getList();
-    this.getProvinceData();
+    this.getList()
+    this.getProvinceData()
   },
   methods: {
     changeCityData() {},
     getProvinceData() {
-      this.address.province = province;
+      this.address.province = province
     },
     choseProvince(index) {
-      this.address.city = city[index];
-      this.address.area = [];
-      this.activeAddress.city = "";
-      this.activeAddress.area = "";
+      this.address.city = city[index]
+      this.address.area = []
+      this.activeAddress.city = ''
+      this.activeAddress.area = ''
     },
     choseCity(index) {
       this.address.area =
-        area[this.activeAddress.province][this.activeAddress.city];
-      this.activeAddress.area = "";
+        area[this.activeAddress.province][this.activeAddress.city]
+      this.activeAddress.area = ''
     },
     choseArea() {},
     getList() {
-      this.listLoading = true;
+      this.listLoading = true
       fetchList(this.listQuery).then(({ result }) => {
-        this.list = result.data;
-        this.total = result.total;
-        this.listLoading = false;
-      });
+        this.list = result.data
+        this.total = result.total
+        this.listLoading = false
+      })
     },
     handleFilter() {
-      this.listQuery.page = 1;
-      this.getList();
+      this.listQuery.page = 1
+      this.getList()
     },
     handleModifyStatus(row, status) {
       this.$message({
-        message: "操作Success",
-        type: "success"
-      });
-      row.status = status;
+        message: '操作Success',
+        type: 'success'
+      })
+      row.status = status
     },
     sortChange(data) {
-      const { prop, order } = data;
-      if (prop === "id") {
-        this.sortByID(order);
+      const { prop, order } = data
+      if (prop === 'id') {
+        this.sortByID(order)
       }
     },
     sortByID(order) {
-      if (order === "ascending") {
-        this.listQuery.sort = "+id";
+      if (order === 'ascending') {
+        this.listQuery.sort = '+id'
       } else {
-        this.listQuery.sort = "-id";
+        this.listQuery.sort = '-id'
       }
-      this.handleFilter();
+      this.handleFilter()
     },
     resetTemp() {
       this.temp = {
         id: undefined,
         importance: 1,
-        remark: "",
+        remark: '',
         timestamp: new Date(),
-        title: "",
-        status: "published",
-        type: ""
-      };
+        title: '',
+        status: 'published',
+        type: ''
+      }
     },
     handleCreate() {
-      this.resetTemp();
-      this.dialogStatus = "create";
-      this.dialogFormVisible = true;
+      this.resetTemp()
+      this.dialogStatus = 'create'
+      this.dialogFormVisible = true
       this.$nextTick(() => {
-        this.$refs["dataForm"].clearValidate();
-      });
+        this.$refs['dataForm'].clearValidate()
+      })
     },
     createData() {
-      this.$refs["dataForm"].validate(valid => {
+      this.$refs['dataForm'].validate(valid => {
         if (valid) {
           createArticle(this.temp).then(() => {
-            this.dialogFormVisible = false;
+            this.dialogFormVisible = false
             this.$notify({
-              title: "Success",
-              message: "Created Successfully",
-              type: "success",
+              title: '成功',
+              message: '创建成功',
+              type: 'success',
               duration: 2000
-            });
-          });
+            })
+          })
         }
-      });
+      })
     },
     handleUpdate(row) {
-      this.temp = Object.assign({}, row); // copy obj
-      this.temp.birth = new Date(this.temp.birth);
-      this.dialogStatus = "edit";
-      this.dialogFormVisible = true;
+      this.temp = Object.assign({}, row) // copy obj
+      this.temp.birth = new Date(this.temp.birth)
+      this.dialogStatus = 'edit'
+      this.dialogFormVisible = true
 
       this.$nextTick(() => {
-        this.$refs["dataForm"].clearValidate();
-      });
+        this.$refs['dataForm'].clearValidate()
+      })
     },
     updateData() {
-      this.$refs["dataForm"].validate(valid => {
+      this.$refs['dataForm'].validate(valid => {
         if (valid) {
           const {
             tags,
@@ -554,7 +566,7 @@ export default {
             occupation,
             account,
             address_tag
-          } = this.temp;
+          } = this.temp
           const tempData = {
             account,
             tags,
@@ -564,105 +576,105 @@ export default {
             industry,
             occupation
             // icon
-          };
+          }
           if (tempData.birth) {
-            tempData.birth = tempData.birth.Format("yyyy-MM-dd");
+            tempData.birth = tempData.birth.Format('yyyy-MM-dd')
           }
           updateArticle(tempData).then(() => {
             // this.getList();
             for (const v of this.list) {
               if (v.account === this.temp.account) {
-                const index = this.list.indexOf(v);
-                this.list.splice(index, 1, this.temp);
-                break;
+                const index = this.list.indexOf(v)
+                this.list.splice(index, 1, this.temp)
+                break
               }
             }
             this.$notify({
-              title: "成功",
-              message: "修改数据成功",
-              type: "success",
+              title: '成功',
+              message: '修改数据成功',
+              type: 'success',
               duration: 1000,
               onClose: () => {
-                this.dialogFormVisible = false;
+                this.dialogFormVisible = false
               }
-            });
-          });
+            })
+          })
         }
-      });
+      })
     },
     handleDelete(row) {
       this.$notify({
-        title: "Success",
-        message: "Delete Successfully",
-        type: "success",
+        title: 'Success',
+        message: 'Delete Successfully',
+        type: 'success',
         duration: 2000
-      });
-      const index = this.list.indexOf(row);
-      this.list.splice(index, 1);
+      })
+      const index = this.list.indexOf(row)
+      this.list.splice(index, 1)
     },
     handleFetchPv(pv) {
       fetchPv(pv).then(response => {
-        this.pvData = response.data.pvData;
-        this.dialogPvVisible = true;
-      });
+        this.pvData = response.data.pvData
+        this.dialogPvVisible = true
+      })
     },
     handleDownload() {
-      this.downloadLoading = true;
-      import("@/vendor/Export2Excel").then(excel => {
-        const tHeader = ["timestamp", "title", "type", "importance", "status"];
+      this.downloadLoading = true
+      import('@/vendor/Export2Excel').then(excel => {
+        const tHeader = ['timestamp', 'title', 'type', 'importance', 'status']
         const filterVal = [
-          "timestamp",
-          "title",
-          "type",
-          "importance",
-          "status"
-        ];
-        const data = this.formatJson(filterVal, this.list);
+          'timestamp',
+          'title',
+          'type',
+          'importance',
+          'status'
+        ]
+        const data = this.formatJson(filterVal, this.list)
         excel.export_json_to_excel({
           header: tHeader,
           data,
-          filename: "table-list"
-        });
-        this.downloadLoading = false;
-      });
+          filename: 'table-list'
+        })
+        this.downloadLoading = false
+      })
     },
     formatJson(filterVal, jsonData) {
       return jsonData.map(v =>
         filterVal.map(j => {
-          if (j === "timestamp") {
-            return parseTime(v[j]);
+          if (j === 'timestamp') {
+            return parseTime(v[j])
           } else {
-            return v[j];
+            return v[j]
           }
         })
-      );
+      )
     },
     getSortClass: function(key) {
-      const sort = this.listQuery.sort;
+      const sort = this.listQuery.sort
       return sort === `+${key}`
-        ? "ascending"
+        ? 'ascending'
         : sort === `-${key}`
-        ? "descending"
-        : "";
+          ? 'descending'
+          : ''
     },
     blobToDataURL(blob, cb) {
-      let reader = new FileReader();
+      const reader = new FileReader()
       reader.onload = function(evt) {
-        var base64 = evt.target.result;
-        cb(base64);
-      };
-      reader.readAsDataURL(blob);
+        var base64 = evt.target.result
+        cb(base64)
+      }
+      reader.readAsDataURL(blob)
     },
-    beforeAvatarUpload({file}) {
+    beforeAvatarUpload({ file }) {
       // API 读取 本地文件
-      var reader = new FileReader();
+      var reader = new FileReader()
       // 将文件读取为base64的格式，也就是可以当成图片的src
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(file)
 
-      //读取文件成功后执行的方法函数
+      // 读取文件成功后执行的方法函数
       reader.onload = e => {
-        this.temp.icon = e.target.result;
-      };
+        this.temp.icon = e.target.result
+      }
 
       // 图片上传有两种数据格式
       // 1.base64上传，但是需要后端进行转化
@@ -670,41 +682,29 @@ export default {
       // 表单上传的content-type 两种格式
       // 1.multipart/form-data 表单里有文件的上传,form的input会以二进制的方式转过去 窗体数据被编码为一条消息，页上的每个控件对应消息中的一个部分。
       // 2.application/x-www-form-urlencoded 窗体数据被编码为名称/值对。这是标准（默认）的编码格式
-      const formFile = new FormData(); // 创建一个新的FormData对象 (窗体数据)
+      const formFile = new FormData() // 创建一个新的FormData对象 (窗体数据)
 
       // 在窗体数据中添加一个“部分”
       // 这里添加了一个blob对象，该对象会传输时会转化为二进制，传入服务器进行保存
       // (键,值,图片名称)
-      formFile.append("icon", file, file.name);
-      const { account } = this.temp;
-      formFile.append("account", account); // 添加一个键值对,账号account,用于判断是需要修改哪个账号的头像
+      formFile.append('icon', file, file.name)
+      const { account } = this.temp
+      formFile.append('account', account) // 添加一个键值对,账号account,用于判断是需要修改哪个账号的头像
       updateArticle(formFile).then(() => {
-        this.getList();
+        this.getList()
         this.$notify({
-          title: "成功",
-          message: "头像更改成功",
-          type: "success",
+          title: '成功',
+          message: '头像更改成功',
+          type: 'success',
           duration: 2000,
           onClose: () => {
-            this.getList();
+            this.getList()
           }
-        });
-      });
-    }
-  },
-  watch: {
-    activeAddress: {
-      handler: function({ province, city, area }, oldVal) {
-        if (area !== "") {
-          this.temp.address_tag = [province, city, area];
-        } else {
-          this.temp.address_tag = [];
-        }
-      },
-      deep: true
+        })
+      })
     }
   }
-};
+}
 </script>
 
 <style scoped>

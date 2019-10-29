@@ -1,3 +1,11 @@
+/*
+ * @Author: your name
+ * @Date: 2019-10-18 13:58:44
+ * @LastEditTime: 2019-10-28 11:20:16
+ * @LastEditors: your name
+ * @Description: In User Settings Edit
+ * @FilePath: \vue-admit-template\tests\unit\components\Breadcrumb.spec.js
+ */
 import { mount, createLocalVue } from '@vue/test-utils'
 import VueRouter from 'vue-router'
 import ElementUI from 'element-ui'
@@ -13,7 +21,7 @@ const routes = [
     name: 'home',
     children: [{
       path: 'dashboard',
-      name: 'dashboard'
+      name: '首页'
     }]
   },
   {

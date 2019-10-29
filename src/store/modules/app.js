@@ -1,3 +1,11 @@
+/*
+ * @Author: your name
+ * @Date: 2019-10-18 13:58:44
+ * @LastEditTime: 2019-10-28 10:26:53
+ * @LastEditors: your name
+ * @Description: In User Settings Edit
+ * @FilePath: \vue-admit-template\src\store\modules\app.js
+ */
 import Cookies from 'js-cookie'
 
 const state = {
@@ -5,7 +13,8 @@ const state = {
     opened: Cookies.get('sidebarStatus') ? !!+Cookies.get('sidebarStatus') : true,
     withoutAnimation: false
   },
-  device: 'desktop'
+  device: 'desktop',
+  server: 'http://192.168.1.11'
 }
 
 const mutations = {

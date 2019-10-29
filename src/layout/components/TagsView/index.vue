@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2019-10-22 14:24:49
- * @LastEditTime: 2019-10-23 10:39:27
+ * @LastEditTime: 2019-10-29 17:16:13
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admit-template\src\layout\components\TagsView\index.vue
@@ -17,6 +17,7 @@
         :to="{ path: tag.path, query: tag.query, fullPath: tag.fullPath }"
         tag="span"
         class="tags-view-item"
+        @click.native="addCachedView(tag)"
         @click.middle.native="!isAffix(tag)?closeSelectedTag(tag):''"
         @contextmenu.prevent.native="openMenu(tag,$event)"
       >
@@ -80,6 +81,10 @@ export default {
     this.addTags()
   },
   methods: {
+    addCachedView(tag) {
+      console.log(tag)
+      this.$store.dispatch('tagsView/addCachedView', tag)
+    },
     /**
      * @description: 判断是否为当前活跃router
      * @param {type}

@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2019-10-22 14:30:55
- * @LastEditTime: 2019-10-23 10:13:49
+ * @LastEditTime: 2019-10-29 17:17:29
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admit-template\src\store\modules\tagsView.js
@@ -24,6 +24,9 @@ const mutations = {
     if (state.cachedViews.includes(view.name)) return
     if (!view.meta.noCache) {
       state.cachedViews.push(view.name)
+      if (state.cachedViews.length > 5) {
+        state.cachedViews.shift()
+      }
     }
   },
 

@@ -77,64 +77,64 @@
 </template>
 
 <script>
-import { validUsername } from "@/utils/validate"; // 把所有验证函数都放在同一个目录下
-import { log } from 'util';
+import { validUsername } from '@/utils/validate' // 把所有验证函数都放在同一个目录下
+import { log } from 'util'
 
 export default {
-  name: "Login",
+  name: 'Login',
   data() {
     // 私有方法，非响应式方法
     const validateUsername = (rule, value, callback) => {
       // !validUsername(value)
       if (!value.trim()) {
-        callback(new Error("请输入正确的用户名"));
+        callback(new Error('请输入正确的用户名'))
       } else {
-        callback();
+        callback()
       }
-    };
+    }
     const validatePassword = (rule, value, callback) => {
       if (value.length < 6) {
-        callback(new Error("密码不能少于6位"));
+        callback(new Error('密码不能少于6位'))
       } else {
-        callback();
+        callback()
       }
-    };
+    }
     return {
       loginForm: {
-        username: "1728309",
-        password: "123456"
+        username: '1728309',
+        password: '123456'
       },
       loginRules: {
         username: [
-          { required: true, trigger: "blur", validator: validateUsername }
+          { required: true, trigger: 'blur', validator: validateUsername }
         ],
         password: [
-          { required: true, trigger: "blur", validator: validatePassword }
+          { required: true, trigger: 'blur', validator: validatePassword }
         ]
       },
       loading: false,
-      passwordType: "password",
+      passwordType: 'password',
       redirect: undefined
-    };
+    }
   },
   watch: {
     $route: {
       handler: function(route) {
-        this.redirect = route.query && route.query.redirect; // 取出除了redirect之外的其他参数
+        this.redirect = route.query && route.query.redirect // 取出除了redirect之外的其他参数
       },
       immediate: true // 该回调将会在侦听开始之后被立即调用
     }
   },
   methods: {
     showPwd() {
-      if (this.passwordType === "password") {
-        this.passwordType = "";
+      if (this.passwordType === 'password') {
+        this.passwordType = ''
       } else {
-        this.passwordType = "password";
+        this.passwordType = 'password'
       }
       this.$nextTick(() => {
-        this.$refs.password.focus();
-      });
+        this.$refs.password.focus()
+      })
     },
     handleLogin() {
       // 提交登录
@@ -142,26 +142,26 @@ export default {
         // 获取form表单中的validate
         if (valid) {
           // 如果验证通过则登录
-          this.loading = true; // 开启加载
+          this.loading = true // 开启加载
           this.$store
-            .dispatch("user/login", this.loginForm)
+            .dispatch('user/login', this.loginForm)
             .then(() => {
               // 调用axios login
-              this.$router.push({ path: this.redirect || "/" }); // 成功后如果有redirect则回跳，没有则调至默认页面
-              this.loading = false; // 加载完毕
+              this.$router.push({ path: this.redirect || '/' }) // 成功后如果有redirect则回跳，没有则调至默认页面
+              this.loading = false // 加载完毕
             })
             .catch(() => {
-              this.loading = false;
-            });
+              this.loading = false
+            })
         } else {
           // 验证不通过
-          console.log("登录错误!!");
-          return false;
+          console.log('登录错误!!')
+          return false
         }
-      });
+      })
     }
   }
-};
+}
 </script>
 
 <style lang="scss">

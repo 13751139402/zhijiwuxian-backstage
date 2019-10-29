@@ -15,14 +15,14 @@ import { getToken } from '@/utils/auth'
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API, // url = 基本url +请求url
   withCredentials: true, // 当跨域请求时发送cookie
-  timeout: 5000, // 请求超时
+  timeout: 5000 // 请求超时
 })
 
 // 请求 拦截器
 service.interceptors.request.use(
   config => {
     // 在发送请求之前做些什么
-    config.credentials = true;
+    config.credentials = true
     if (store.getters.token) {
       // 让每个请求携带toekn
       // ['X-Token']是一个自定义key

@@ -4,7 +4,7 @@
  * @Author: 戴训伟
  * @Date: 2019-09-28 10:33:37
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2019-10-26 15:24:11
+ * @LastEditTime: 2019-10-29 18:14:32
  */
 import { login, logout, getInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
@@ -12,10 +12,10 @@ import router, { resetRouter } from '@/router'
 
 const state = {
   token: getToken(),
-  id: '',
+  id: '2',
   name: '',
   account: '1728309',
-  rank: ""
+  rank: ''
 }
 
 const mutations = {
