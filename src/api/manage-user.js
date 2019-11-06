@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2019-10-21 14:54:15
- * @LastEditTime: 2019-10-29 18:10:16
+ * @LastEditTime: 2019-10-30 19:01:33
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admit-template\src\api\article.js
@@ -94,3 +94,64 @@ export function addAdmin(data) {
     data
   })
 }
+
+/**
+ * @description: 添加管理员
+ * @param {type}
+ * @return:
+ */
+export const industry =
+  [
+    '保险业',
+    '采矿',
+    '能源',
+    '餐饮',
+    '宾馆',
+    '电讯业',
+    '房地产',
+    '服务',
+    '服装业',
+    '公益组织',
+    '广告业',
+    '航空航天',
+    '化学',
+    '健康',
+    '保健',
+    '建筑业',
+    '教育',
+    '培训',
+    '计算机',
+    '金属冶炼',
+    '警察',
+    '消防',
+    '军人',
+    '会计',
+    '美容',
+    '媒体',
+    '出版',
+    '木材',
+    '造纸',
+    '零售',
+    '批发',
+    '农业',
+    '旅游业',
+    '司法',
+    '律师',
+    '司机',
+    '体育运动',
+    '学术研究',
+    '演艺',
+    '医疗服务',
+    '艺术',
+    '设计',
+    '银行',
+    '金融',
+    '因特网',
+    '音乐舞蹈',
+    '邮政快递',
+    '运输业',
+    '政府机关',
+    '机械制造',
+    '咨询',
+    '其他'
+  ]

@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2019-10-19 17:14:45
- * @LastEditTime: 2019-10-29 17:30:04
+ * @LastEditTime: 2019-11-04 15:43:41
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admit-template\src\views\manage-user\user-list\index.vue
@@ -145,15 +145,15 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="职业" align="center">
+      <!-- <el-table-column label="职业" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.industry }}</span>
         </template>
-      </el-table-column>
+      </el-table-column>-->
 
       <el-table-column label="行业" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.occupation }}</span>
+          <span>{{ industry[scope.row.industry] }}</span>
         </template>
       </el-table-column>
 
@@ -166,23 +166,6 @@
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
-          <!-- <el-button
-            v-if="scope.status!='published'"
-            size="mini"
-            type="success"
-            @click="handleModifyStatus(scope,'published')"
-          >禁用</el-button>
-          <el-button
-            v-if="scope.status!='draft'"
-            size="mini"
-            @click="handleModifyStatus(scope,'draft')"
-          >启动</el-button>
-          <el-button
-            v-if="scope.status!='deleted'"
-            size="mini"
-            type="danger"
-            @click="handleModifyStatus(scope,'deleted')"
-          >删除</el-button>-->
         </template>
       </el-table-column>
     </el-table>
@@ -223,11 +206,18 @@
               <el-input v-model="temp.nickname" />
             </el-form-item>
             <el-form-item label="行业" prop="industry">
-              <el-input v-model="temp.industry" />
+              <el-select v-model="temp.industry" filterable placeholder="请选择">
+                <el-option
+                  v-for="(item,index) in industry"
+                  :key="index"
+                  :label="item"
+                  :value="`${index}`"
+                />
+              </el-select>
             </el-form-item>
-            <el-form-item label="职业" prop="occupation">
+            <!-- <el-form-item label="职业" prop="occupation">
               <el-input v-model="temp.occupation" />
-            </el-form-item>
+            </el-form-item>-->
           </section>
           <section style="margin-left:30px">
             <el-form-item label="性别" prop="gender">
@@ -312,16 +302,6 @@
         <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">编辑</el-button>
       </div>
     </el-dialog>
-
-    <!-- <el-dialog :visible.sync="dialogPvVisible" title="Reading statistics">
-      <el-table :data="pvData" border fit highlight-current-row style="width: 100%">
-        <el-table-column prop="key" label="Channel" />
-        <el-table-column prop="pv" label="Pv" />
-      </el-table>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogPvVisible = false">Confirm</el-button>
-      </span>
-    </el-dialog>-->
   </div>
 </template>
 
@@ -330,13 +310,16 @@ import {
   fetchList,
   fetchPv,
   createArticle,
-  updateArticle
+  updateArticle,
+  industry
 } from '@/api/manage-user'
 import waves from '@/directive/waves' // waves directive
 import address from '@/assets/address'
 import { parseTime } from '@/utils'
 import '@/utils/dateFormat.js'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
+import { resizeImage } from '@/utils/handleImage'
+
 const { area, city, province } = address
 const calendarTypeOptions = [
   { key: 'CN', display_name: 'China' },
@@ -440,7 +423,8 @@ export default {
         // city: [{ required: true, validator: validateCity, trigger: "blur" }],
         // icon: [{ required: true, trigger: "blur", message: "请选择头像" }]
       },
-      downloadLoading: false
+      downloadLoading: false,
+      industry: industry
     }
   },
   watch: {
@@ -665,17 +649,12 @@ export default {
       }
       reader.readAsDataURL(blob)
     },
-    beforeAvatarUpload({ file }) {
-      // API 读取 本地文件
-      var reader = new FileReader()
-      // 将文件读取为base64的格式，也就是可以当成图片的src
-      reader.readAsDataURL(file)
 
-      // 读取文件成功后执行的方法函数
-      reader.onload = e => {
-        this.temp.icon = e.target.result
-      }
+    async beforeAvatarUpload({ file }) {
+      console.log('A')
 
+      const imageData = await resizeImage(file)
+      this.temp.icon = imageData.base64
       // 图片上传有两种数据格式
       // 1.base64上传，但是需要后端进行转化
       // 2.blob对象（类文件对象）可以直接转化为二进制对象
@@ -687,7 +666,7 @@ export default {
       // 在窗体数据中添加一个“部分”
       // 这里添加了一个blob对象，该对象会传输时会转化为二进制，传入服务器进行保存
       // (键,值,图片名称)
-      formFile.append('icon', file, file.name)
+      formFile.append('icon', imageData.blob, file.name)
       const { account } = this.temp
       formFile.append('account', account) // 添加一个键值对,账号account,用于判断是需要修改哪个账号的头像
       updateArticle(formFile).then(() => {
@@ -711,7 +690,7 @@ export default {
 .user-avatar {
   width: 3rem;
   height: 3rem;
-  border-radius: 50px;
+  border-radius: 5px;
 }
 .el-button--mini {
   padding: 7px 10px;

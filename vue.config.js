@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-10-18 13:58:44
- * @LastEditTime: 2019-10-24 10:15:07
+ * @LastEditTime: 2019-11-04 17:48:42
  * @LastEditors: Please set LastEditors
  */
 'use strict'
@@ -36,7 +36,7 @@ module.exports = {
   publicPath: './',       // 打包路径
   outputDir: 'dist',      // 打包文件名称
   assetsDir: 'static',    // 打包静态资源文件名
-  lintOnSave: process.env.NODE_ENV === 'development', // 是否使用 ESLint 校验
+  lintOnSave: false, // 是否使用 ESLint 校验  process.env.NODE_ENV === 'development'
   // sourceMap：运行压缩后的文件报错后会自动指向原文件，便于deBug
   productionSourceMap: false, // 如果你不需要生产环境的 source map，可以将其设置为 false 以加速生产环境构建
   devServer: {         // 配置开发服务器

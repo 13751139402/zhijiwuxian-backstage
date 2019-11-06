@@ -2,7 +2,7 @@
  * @Description: ROUTER
  * @Author: your name
  * @Date: 2019-10-18 13:58:44
- * @LastEditTime: 2019-10-29 17:03:11
+ * @LastEditTime: 2019-10-31 10:49:52
  * @LastEditors: Please set LastEditors
  */
 import Vue from 'vue'
@@ -122,25 +122,93 @@ export const constantRoutes = [
       name: 'welfare-list',
       component: () => import('@/views/welfare/welfare-list'),
       meta: { title: '福利列表' }
+    }, {
+      path: 'DirSir-promotion',
+      meta: { title: '二级福利添加' },
+      children: [{
+        path: 'DirSir-promotion',
+        name: 'DirSir-promotion',
+        component: () => import('@/views/welfare/add-welfare/second-add-welfare/DirSir-promotion'),
+        meta: { title: '公众号推广' }
+      }, {
+        path: 'public-number-promotion',
+        name: 'public-number-promotion',
+        component: () => import('@/views/welfare/add-welfare/second-add-welfare/public-number-promotion'),
+        meta: { title: '福利推广' }
+      }]
     }
     ]
+
   },
 
   {
-    path: '/treasure',
+    path: '/manage-treasure',
     component: Layout,
-    name: 'treasure',
+    name: 'manage-treasure',
     meta: { title: '财富管理', icon: 'user' },
     children: [{
       path: 'add-help-text',
       name: 'add-help-text',
-      component: () => import('@/views/treasure/add-help-text'),
+      component: () => import('@/views/manage-treasure/add-help-text'),
       meta: { title: '文档添加', noCache: true }
     }, {
       path: 'get-help-list',
       name: 'get-help-list',
-      component: () => import('@/views/treasure/get-help-list'),
+      component: () => import('@/views/manage-treasure/get-help-list'),
       meta: { title: '文档列表' }
+    }]
+  },
+  {
+    path: '/dig-treasure',
+    component: Layout,
+    meta: { title: '挖宝功能', icon: 'nested' },
+    children: [{
+      path: 'item-list',
+      name: 'item-list',
+      component: () => import('@/views/dig-treasure/item-list'),
+      meta: { title: '物品列表' }
+    }, {
+      path: 'item-prob-list',
+      name: 'item-prob-list',
+      component: () => import('@/views/dig-treasure/item-prob-list'),
+      meta: { title: '物品爆率列表' }
+    }
+      // {
+      //   path: 'treasure-record',
+      //   name: 'treasure-record',
+      //   component: () => import('@/views/dig-treasure/treasure-record'),
+      //   meta: { title: '物品管理' }
+      // },
+      // {
+      //   path: 'welfare-control',
+      //   name: 'welfare-control',
+      //   component: () => import('@/views/dig-treasure/welfare-control'),
+      //   meta: { title: '挖宝记录' }
+      // }
+    ]
+  },
+
+  {
+    path: '/statistics-deal',
+    component: Layout,
+    meta: { title: '交易统计', icon: 'password' },
+    children: [{
+      path: 'apply-list',
+      name: 'apply-list',
+      component: () => import('@/views/statistics-deal/apply-list'),
+      meta: { title: '申请列表' }
+    },
+    {
+      path: 'withdraw-account',
+      name: 'withdraw-account',
+      component: () => import('@/views/statistics-deal/withdraw-account'),
+      meta: { title: '提现账户' }
+    },
+    {
+      path: 'withdraw-record',
+      name: 'withdraw-record',
+      component: () => import('@/views/statistics-deal/withdraw-record'),
+      meta: { title: '提现记录' }
     }]
   },
 
@@ -168,56 +236,6 @@ export const constantRoutes = [
       meta: { title: '播放统计' }
     }]
   },
-
-  {
-    path: '/dig-treasure',
-    component: Layout,
-    redirect: '/dig-treasure/goods-control',
-    meta: { title: '挖宝功能', icon: 'nested' },
-    children: [{
-      path: 'goods-control',
-      name: 'goods-control',
-      component: () => import('@/views/dig-treasure/goods-control'),
-      meta: { title: '福利管理' }
-    },
-    {
-      path: 'treasure-record',
-      name: 'treasure-record',
-      component: () => import('@/views/dig-treasure/treasure-record'),
-      meta: { title: '物品管理' }
-    },
-    {
-      path: 'welfare-control',
-      name: 'welfare-control',
-      component: () => import('@/views/dig-treasure/welfare-control'),
-      meta: { title: '挖宝记录' }
-    }]
-  },
-
-  {
-    path: '/statistics-deal',
-    component: Layout,
-    meta: { title: '交易统计', icon: 'password' },
-    children: [{
-      path: 'apply-list',
-      name: 'apply-list',
-      component: () => import('@/views/statistics-deal/apply-list'),
-      meta: { title: '申请列表' }
-    },
-    {
-      path: 'withdraw-account',
-      name: 'withdraw-account',
-      component: () => import('@/views/statistics-deal/withdraw-account'),
-      meta: { title: '提现账户' }
-    },
-    {
-      path: 'withdraw-record',
-      name: 'withdraw-record',
-      component: () => import('@/views/statistics-deal/withdraw-record'),
-      meta: { title: '提现记录' }
-    }]
-  },
-
   {
     path: '/statistics-data',
     component: Layout,

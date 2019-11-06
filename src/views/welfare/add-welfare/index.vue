@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2019-10-26 15:09:04
- * @LastEditTime: 2019-10-29 16:55:35
+ * @LastEditTime: 2019-11-02 16:52:04
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admit-template\src\views\welfare\add-welfare\index.vue
@@ -28,7 +28,11 @@
         </el-select>
       </el-form-item>
       <el-form-item label="福利描述" prop="describe">
-        <el-input v-model="ruleForm.describe" placeholder="请填写福利描述" />
+        <section v-for="(item,index) in ruleForm.describe" :key="index" style="margin:5px 0">
+          <el-input v-model="item.value" style="width:50%" />
+          <el-button @click.prevent="removeArray(index,'describe')">删除</el-button>
+        </section>
+        <el-button style="margin-top:10px" @click="addArray('describe')">新增描述</el-button>
       </el-form-item>
       <el-form-item label="福利限制" prop="worth">
         <el-input v-model="ruleForm.worth" disabled />
@@ -53,9 +57,9 @@
       <el-form-item label="福利奖励" prop="reward">
         <section v-for="(item,index) in ruleForm.reward" :key="index" style="margin:5px 0">
           <el-input v-model="item.value" style="width:50%" />
-          <el-button @click.prevent="removeReward(index)">删除</el-button>
+          <el-button @click.prevent="removeArray(index,'reward')">删除</el-button>
         </section>
-        <el-button style="margin-top:10px" @click="addReward">新增福利</el-button>
+        <el-button style="margin-top:10px" @click="addArray('reward')">新增福利</el-button>
       </el-form-item>
 
       <el-form-item label="过期时间" prop="time_valid">
@@ -91,11 +95,29 @@ import { addWelfare, welfareUpdate } from '@/api/welfare'
 export default {
   name: 'AddWelfare',
   data() {
+    const validateDescribe = (rule, value, callback) => {
+      for (const item of value) {
+        if (!item.value.trim()) {
+          callback(new Error('请完整的输入描述，或者删除空的描述'))
+          return
+        }
+      }
+      callback()
+    }
+    const validateReward = (rule, value, callback) => {
+      for (const item of value) {
+        if (!item.value.trim()) {
+          callback(new Error('请完整的输入奖励，或者删除空的奖励'))
+          return
+        }
+      }
+      callback()
+    }
     return {
       ruleForm: {
         name: '',
         type: '',
-        describe: '',
+        describe: [{ value: '' }],
         worth: 0,
         image: '',
         reward: [{ value: '' }],
@@ -115,12 +137,12 @@ export default {
         ],
         type: [{ required: true, message: '请选择福利类型', trigger: 'blur' }],
         describe: [
-          { required: true, message: '请填写福利描述', trigger: 'blur' }
+          { required: true, validator: validateDescribe, trigger: 'blur' }
         ],
         worth: [{ required: true, message: '请填写福利限制', trigger: 'blur' }],
         image: [{ required: true, message: '请上传福利图片', trigger: 'blur' }],
         reward: [
-          { required: true, message: '请填写福利奖励', trigger: 'blur' }
+          { required: true, validator: validateDescribe, trigger: 'blur' }
         ],
         amount: [
           {
@@ -156,17 +178,25 @@ export default {
     returnRouter() {
       this.$router.push('welfare-list')
     },
+    switchJson(key, ruleForm) {
+      const data = ruleForm[key].reduce((target, item) => {
+        const tirmValue = item.value.trim()
+        if (tirmValue) {
+          target.push(tirmValue)
+        }
+        return target
+      }, [])
+      console.log(data)
+      return JSON.stringify(data)
+    },
     submitForm(formName, type) {
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.buttonLoading = true
           const ruleForm = JSON.parse(JSON.stringify(this.ruleForm))
-          const reward = ruleForm.reward.reduce((target, item) => {
-            target.push(item.value)
-            return target
-          }, [])
           delete ruleForm.image
-          ruleForm.reward = JSON.stringify(reward)
+          ruleForm.reward = this.switchJson('reward', ruleForm)
+          ruleForm.describe = this.switchJson('describe', ruleForm)
           for (const i in ruleForm) {
             this.formFile.append(i, ruleForm[i])
           }
@@ -219,11 +249,11 @@ export default {
       }
       this.formFile.append('image', file, file.name)
     },
-    removeReward(index) {
-      this.ruleForm.reward.splice(index, 1)
+    removeArray(index, key) {
+      this.ruleForm[key].splice(index, 1)
     },
-    addReward() {
-      this.ruleForm.reward.push({ value: '' })
+    addArray(key) {
+      this.ruleForm[key].push({ value: '' })
     }
   }
 }

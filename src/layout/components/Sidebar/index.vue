@@ -2,7 +2,7 @@
  * @Description: 侧边栏 index
  * @Author: your name
  * @Date: 2019-10-18 13:58:44
- * @LastEditTime: 2019-10-21 13:38:10
+ * @LastEditTime: 2019-11-04 16:58:14
  * @LastEditors: Please set LastEditors
  -->
 <template>
@@ -38,13 +38,11 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import Logo from './Logo'
 import SidebarItem from './SidebarItem'
 import variables from '@/styles/variables.scss'
-import { log } from 'util'
 
 export default {
-  components: { SidebarItem, Logo },
+  components: { SidebarItem },
   computed: {
     ...mapGetters(['sidebar']), // TODO: 这里映射的时getter
     routes() {
