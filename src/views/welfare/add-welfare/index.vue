@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2019-10-26 15:09:04
- * @LastEditTime: 2019-11-02 16:52:04
+ * @LastEditTime: 2019-11-06 17:33:22
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admit-template\src\views\welfare\add-welfare\index.vue
@@ -21,10 +21,7 @@
       </el-form-item>
       <el-form-item label="福利类型" prop="type">
         <el-select v-model="ruleForm.type" placeholder="请选择福利类型">
-          <el-option label="1" value="1" />
-          <el-option label="2" value="2" />
-          <el-option label="3" value="3" />
-          <el-option label="4" value="4" />
+          <el-option :label="item" :value="index" v-for="(item,index) in typeList" :key="index" />
         </el-select>
       </el-form-item>
       <el-form-item label="福利描述" prop="describe">
@@ -50,7 +47,7 @@
             ref="updataImg"
             :src="/^data/.test(ruleForm.image)?ruleForm.image:server+ruleForm.image"
             class="avatar"
-          >
+          />
           <i v-else class="el-icon-plus avatar-uploader-icon" />
         </el-upload>
       </el-form-item>
@@ -91,172 +88,175 @@
 </template>
 
 <script>
-import { addWelfare, welfareUpdate } from '@/api/welfare'
+import { addWelfare, welfareUpdate, getWelfareType } from "@/api/welfare";
 export default {
-  name: 'AddWelfare',
+  name: "AddWelfare",
   data() {
     const validateDescribe = (rule, value, callback) => {
       for (const item of value) {
         if (!item.value.trim()) {
-          callback(new Error('请完整的输入描述，或者删除空的描述'))
-          return
+          callback(new Error("请完整的输入描述，或者删除空的描述"));
+          return;
         }
       }
-      callback()
-    }
+      callback();
+    };
     const validateReward = (rule, value, callback) => {
       for (const item of value) {
         if (!item.value.trim()) {
-          callback(new Error('请完整的输入奖励，或者删除空的奖励'))
-          return
+          callback(new Error("请完整的输入奖励，或者删除空的奖励"));
+          return;
         }
       }
-      callback()
-    }
+      callback();
+    };
     return {
       ruleForm: {
-        name: '',
-        type: '',
-        describe: [{ value: '' }],
+        name: "",
+        type: "",
+        describe: [{ value: "" }],
         worth: 0,
-        image: '',
-        reward: [{ value: '' }],
-        time_valid: '',
-        amount: '',
-        examine: '2',
-        id: ''
+        image: "",
+        reward: [{ value: "" }],
+        time_valid: "",
+        amount: "",
+        examine: "2",
+        id: ""
       },
+      typeList: [],
       buttonLoading: false,
       server: this.$store.getters.server,
       type: this.$store.state.welfare.type,
       imageBinary: {},
       rules: {
         name: [
-          { required: true, message: '请填写福利名称', trigger: 'blur' }
+          { required: true, message: "请填写福利名称", trigger: "blur" }
           // { min: 3, max: 5, message: "长度在 3 到 5 个字符", trigger: "blur" }
         ],
-        type: [{ required: true, message: '请选择福利类型', trigger: 'blur' }],
+        type: [{ required: true, message: "请选择福利类型", trigger: "blur" }],
         describe: [
-          { required: true, validator: validateDescribe, trigger: 'blur' }
+          { required: true, validator: validateDescribe, trigger: "blur" }
         ],
-        worth: [{ required: true, message: '请填写福利限制', trigger: 'blur' }],
-        image: [{ required: true, message: '请上传福利图片', trigger: 'blur' }],
+        worth: [{ required: true, message: "请填写福利限制", trigger: "blur" }],
+        image: [{ required: true, message: "请上传福利图片", trigger: "blur" }],
         reward: [
-          { required: true, validator: validateDescribe, trigger: 'blur' }
+          { required: true, validator: validateDescribe, trigger: "blur" }
         ],
         amount: [
           {
             required: true,
-            message: '请填写任务数量',
-            trigger: 'blur'
+            message: "请填写任务数量",
+            trigger: "blur"
           }
         ]
       },
       formFile: new FormData()
-    }
+    };
   },
   computed: {
     account() {
-      return this.$store.getters.account
+      return this.$store.getters.account;
     }
-  },
-  mounted() {
-    if (this.type === 'change') {
-      this.$route.meta.title = '修改福利'
-      this.ruleForm = Object.assign(
-        this.ruleForm,
-        this.$store.state.welfare.data
-      )
-    } else {
-      this.$route.meta.title = '添加福利'
-    }
-  },
-  beforeDestroy() {
-    this.$store.dispatch('welfare/init')
   },
   methods: {
     returnRouter() {
-      this.$router.push('welfare-list')
+      this.$router.push("welfare-list");
     },
     switchJson(key, ruleForm) {
       const data = ruleForm[key].reduce((target, item) => {
-        const tirmValue = item.value.trim()
+        const tirmValue = item.value.trim();
         if (tirmValue) {
-          target.push(tirmValue)
+          target.push(tirmValue);
         }
-        return target
-      }, [])
-      console.log(data)
-      return JSON.stringify(data)
+        return target;
+      }, []);
+      return JSON.stringify(data);
     },
     submitForm(formName, type) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.buttonLoading = true
-          const ruleForm = JSON.parse(JSON.stringify(this.ruleForm))
-          delete ruleForm.image
-          ruleForm.reward = this.switchJson('reward', ruleForm)
-          ruleForm.describe = this.switchJson('describe', ruleForm)
+          this.buttonLoading = true;
+          const ruleForm = JSON.parse(JSON.stringify(this.ruleForm));
+          delete ruleForm.image;
+          ruleForm.reward = this.switchJson("reward", ruleForm);
+          ruleForm.describe = this.switchJson("describe", ruleForm);
           for (const i in ruleForm) {
-            this.formFile.append(i, ruleForm[i])
+            this.formFile.append(i, ruleForm[i]);
           }
-          this.formFile.append('account', this.account)
-          if (type === 'create') {
+          this.formFile.append("account", this.account);
+          if (type === "create") {
             addWelfare(this.formFile).then(() => {
               this.$notify({
-                title: '成功',
-                message: '添加数据成功',
-                type: 'success',
+                title: "成功",
+                message: "添加数据成功",
+                type: "success",
                 duration: 1000,
                 onClose: () => {
-                  this.buttonLoading = false
-                  this.$router.push('welfare-list')
+                  this.buttonLoading = false;
+                  this.$router.push("welfare-list");
                 }
-              })
-            })
+              });
+            });
           } else {
             welfareUpdate(this.formFile).then(() => {
               this.$notify({
-                title: '成功',
-                message: '修改数据成功',
-                type: 'success',
+                title: "成功",
+                message: "修改数据成功",
+                type: "success",
                 duration: 1000,
                 onClose: () => {
-                  this.buttonLoading = false
-                  this.$router.push('welfare-list')
+                  this.buttonLoading = false;
+                  this.$router.push("welfare-list");
                 }
-              })
-            })
+              });
+            });
           }
         }
-      })
+      });
     },
     resetForm(formName) {
-      Object.assign(this.$data, this.$options.data())
+      Object.assign(this.$data, this.$options.data());
       this.$nextTick(() => {
-        this.$refs['ruleForm'].clearValidate()
-      })
+        this.$refs["ruleForm"].clearValidate();
+      });
     },
     beforeAvatarUpload({ file }) {
       // API 读取 本地文件
-      var reader = new FileReader()
+      var reader = new FileReader();
       // 将文件读取为base64的格式，也就是可以当成图片的src
-      reader.readAsDataURL(file)
+      reader.readAsDataURL(file);
 
       // 读取文件成功后执行的方法函数
       reader.onload = e => {
-        this.ruleForm.image = e.target.result
-      }
-      this.formFile.append('image', file, file.name)
+        this.ruleForm.image = e.target.result;
+      };
+      this.formFile.append("image", file, file.name);
     },
     removeArray(index, key) {
-      this.ruleForm[key].splice(index, 1)
+      this.ruleForm[key].splice(index, 1);
     },
     addArray(key) {
-      this.ruleForm[key].push({ value: '' })
+      this.ruleForm[key].push({ value: "" });
     }
+  },
+  mounted() {
+    if (this.type === "change") {
+      this.$route.meta.title = "修改福利";
+      this.ruleForm = Object.assign(
+        this.ruleForm,
+        this.$store.state.welfare.data
+      );
+    } else {
+      this.$route.meta.title = "添加福利";
+    }
+    getWelfareType().then(({ result }) => {
+      this.typeList = result;
+    });
+  },
+  beforeDestroy() {
+    this.$store.dispatch("welfare/init");
   }
-}
+};
 </script>
 
 <style scoped>

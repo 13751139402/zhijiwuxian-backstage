@@ -1,7 +1,7 @@
 /*
  * @Author: 创建axios实例，添加token验证
  * @Date: 2019-10-18 13:58:44
- * @LastEditTime: 2019-11-04 17:55:13
+ * @LastEditTime: 2019-11-06 17:36:05
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /c:\Users\14374\Documents\GitHub\vue-admit-template\src\utils\request.js
@@ -22,7 +22,21 @@ const service = axios.create({
 // 请求 拦截器
 service.interceptors.request.use(
   config => {
+    const account = store.getters.account;
     // 在发送请求之前做些什么
+
+    // 如果账号存在则添加，因为大部分请求都需要添加操作人账号
+    if (account) {
+      var data = config.data || config.params;
+      if (!data) {
+        config.data = data = {};
+      }
+      if (data instanceof FormData) {
+        data.append('account', account);
+      } else {
+        data.account = account;
+      }
+    }
     config.credentials = true
     if (store.getters.token) {
       // 让每个请求携带toekn

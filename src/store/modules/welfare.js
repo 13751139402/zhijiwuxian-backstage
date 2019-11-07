@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2019-10-18 13:58:44
- * @LastEditTime: 2019-10-29 10:32:30
+ * @LastEditTime: 2019-11-06 17:53:03
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /c:\Users\14374\Documents\GitHub\vue-admit-template\src\store\modules\settings.js
@@ -13,7 +13,8 @@ const state = {
   page: {
     page: 1,
     page_size: 20
-  }
+  },
+  secondId: false // 二级福利对应的id
 }
 
 const mutations = {
@@ -36,7 +37,10 @@ const mutations = {
   },
   CHANGE_PAGE: (state, page) => {
     state.page = page
-  }
+  },
+  CHANGE_SECONDID: (state, secondId) => {
+    state.secondId = secondId
+  },
 }
 
 const actions = {
@@ -48,6 +52,9 @@ const actions = {
   init({ commit }) {
     commit('CHANGE_WELFARE', false)
     commit('CHANGE_TYPE', 'create')
+  },
+  changeSecondId({ commit }, id) {
+    commit('CHANGE_SECONDID', id);
   }
 }
 

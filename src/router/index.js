@@ -2,7 +2,7 @@
  * @Description: ROUTER
  * @Author: your name
  * @Date: 2019-10-18 13:58:44
- * @LastEditTime: 2019-10-31 10:49:52
+ * @LastEditTime: 2019-11-07 11:02:50
  * @LastEditors: Please set LastEditors
  */
 import Vue from 'vue'
@@ -124,18 +124,16 @@ export const constantRoutes = [
       meta: { title: '福利列表' }
     }, {
       path: 'DirSir-promotion',
-      meta: { title: '二级福利添加' },
-      children: [{
-        path: 'DirSir-promotion',
-        name: 'DirSir-promotion',
-        component: () => import('@/views/welfare/add-welfare/second-add-welfare/DirSir-promotion'),
-        meta: { title: '公众号推广' }
-      }, {
-        path: 'public-number-promotion',
-        name: 'public-number-promotion',
-        component: () => import('@/views/welfare/add-welfare/second-add-welfare/public-number-promotion'),
-        meta: { title: '福利推广' }
-      }]
+      name: 'DirSir-promotion',
+      hidden: true,
+      component: () => import('@/views/welfare/welfare-list/children/DirSir-promotion'),
+      meta: { title: '公众号推广' }
+    }, {
+      path: 'public-number-promotion',
+      name: 'public-number-promotion',
+      hidden: true,
+      component: () => import('@/views/welfare/welfare-list/children/public-number-promotion'),
+      meta: { title: '电商推广' }
     }
     ]
 
@@ -163,15 +161,15 @@ export const constantRoutes = [
     component: Layout,
     meta: { title: '挖宝功能', icon: 'nested' },
     children: [{
-      path: 'item-list',
-      name: 'item-list',
-      component: () => import('@/views/dig-treasure/item-list'),
-      meta: { title: '物品列表' }
+      path: 'prob-list',
+      name: 'prob-list',
+      component: () => import('@/views/dig-treasure/prob-list'),
+      meta: { title: '挖宝道具列表' }
     }, {
-      path: 'item-prob-list',
-      name: 'item-prob-list',
-      component: () => import('@/views/dig-treasure/item-prob-list'),
-      meta: { title: '物品爆率列表' }
+      path: 'article-list',
+      name: 'article-list',
+      component: () => import('@/views/dig-treasure/article-list'),
+      meta: { title: '宝箱物品列表' }
     }
       // {
       //   path: 'treasure-record',

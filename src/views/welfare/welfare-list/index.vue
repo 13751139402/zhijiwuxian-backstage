@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2019-10-25 19:14:30
- * @LastEditTime: 2019-10-29 16:55:18
+ * @LastEditTime: 2019-11-07 09:55:44
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admit-template\src\views\manage-user\administrator-list\index.vue
@@ -27,42 +27,42 @@
       highlight-current-row
       style="width: 100%;"
     >
-      <el-table-column label="任务ID" prop="id" align="center">
+      <el-table-column label="福利ID" prop="id" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.id }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="任务名称" prop="name" align="center">
+      <el-table-column label="福利名称" prop="name" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.name }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="任务类型" prop="type" align="center">
+      <el-table-column label="福利类型" prop="type" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.type }}</span>
+          <span>{{ typeList[scope.row.type] }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="任务描述" prop="describe" align="center">
+      <el-table-column label="福利描述" prop="describe" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.describe }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="任务限定" prop="worth" align="center">
+      <el-table-column label="福利限定" prop="worth" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.worth }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="任务图片" prop="image" align="center">
+      <el-table-column label="福利图片" prop="image" align="center">
         <template slot-scope="scope">
-          <img :src="server+scope.row.image" class="user-avatar">
+          <img :src="server+scope.row.image" class="user-avatar" />
         </template>
       </el-table-column>
 
-      <el-table-column label="任务奖励" prop="reward" align="center">
+      <el-table-column label="福利奖励" prop="reward" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.reward }}</span>
         </template>
@@ -74,7 +74,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="任务数量" prop="amount" align="center">
+      <el-table-column label="福利数量" prop="amount" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.amount }}</span>
         </template>
@@ -86,15 +86,9 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="任务状态" prop="status" align="center">
+      <el-table-column label="福利状态" prop="status" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.status?"正常":"禁用" }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column label="创建时间" prop="created_at" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.created_at }}</span>
         </template>
       </el-table-column>
 
@@ -104,9 +98,11 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="删除时间" prop="deleted_at" align="center">
+      <el-table-column label="二级操作" prop="deleted_at" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.deleted_at }}</span>
+          <div class="second-btn" v-if="scope.row.type==3">
+            <el-button type="primary" size="mini" @click="linkSecond(scope.row.id)">公众号推广</el-button>
+          </div>
         </template>
       </el-table-column>
 
@@ -130,14 +126,15 @@
       :limit.sync="listQuery.page_size"
       @pagination="getList"
     />
+    <router-view />
   </div>
 </template>
 
 <script>
-import { welfareList, welfareUpdate } from '@/api/welfare'
-import Pagination from '@/components/Pagination' // secondary package based on el-pagination
+import { welfareList, welfareUpdate, getWelfareType } from "@/api/welfare";
+import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
 export default {
-  name: 'WelfareList',
+  name: "WelfareList",
   components: {
     Pagination
   },
@@ -146,6 +143,7 @@ export default {
       list: [],
       formFile: false,
       total: 0,
+      typeList: [],
       server: this.$store.getters.server,
       tableKey: 0,
       listLoading: false,
@@ -154,63 +152,69 @@ export default {
         page_size: 20,
         account: this.$store.getters.account
       }
-    }
+    };
   },
   mounted() {
-    this.getList()
-    // Object.assign(this.listQuery, this.$store.state.welfare.page);
+    this.getList();
+    getWelfareType().then(({ result }) => {
+      this.typeList = result;
+    });
   },
   methods: {
+    linkSecond(id) {
+      this.$store.dispatch("welfare/changeSecondId", id);
+      this.$router.push({ path: "public-number-promotion" });
+    },
     getList() {
-      this.listLoading = true
+      this.listLoading = true;
       welfareList(this.listQuery).then(({ result }) => {
-        this.list = result.data
-        this.listLoading = false
-        this.total = result.total
-      })
+        this.list = result.data;
+        this.listLoading = false;
+        this.total = result.total;
+      });
     },
     handleEdit(temp) {
-      this.$store.dispatch('welfare/changeData', {
+      this.$store.dispatch("welfare/changeData", {
         data: temp,
-        type: 'change',
+        type: "change",
         page: this.listQuery
-      })
-      this.$router.push({ path: 'add-welfare' })
+      });
+      this.$router.push({ path: "add-welfare" });
     },
     handleCreate() {
-      this.$router.push('add-welfare')
+      this.$router.push("add-welfare");
     },
     handleUpdate(temp) {
-      this.$confirm('此操作将永久删除该福利, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
+      this.$confirm("此操作将永久删除该福利, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
       })
         .then(() => {
-          temp.del = 1
-          temp.account = this.listQuery.account
+          temp.del = 1;
+          temp.account = this.listQuery.account;
           welfareUpdate(temp).then(() => {
-            this.getList()
+            this.getList();
             this.$notify({
-              title: '成功',
-              message: '删除成功',
-              type: 'success',
+              title: "成功",
+              message: "删除成功",
+              type: "success",
               duration: 1000,
               onClose: () => {
-                this.dialogFormVisible = false
+                this.dialogFormVisible = false;
               }
-            })
-          })
+            });
+          });
         })
         .catch(() => {
           this.$message({
-            type: 'info',
-            message: '已取消删除'
-          })
-        })
+            type: "info",
+            message: "已取消删除"
+          });
+        });
     }
   }
-}
+};
 </script>
 
 <style scoped>
@@ -277,5 +281,8 @@ export default {
 }
 .el-button + .el-button {
   margin-left: 0;
+}
+.second-btn >>> .el-button--mini {
+  width: auto;
 }
 </style>

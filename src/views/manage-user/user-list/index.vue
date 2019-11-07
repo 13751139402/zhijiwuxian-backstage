@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2019-10-19 17:14:45
- * @LastEditTime: 2019-11-04 15:43:41
+ * @LastEditTime: 2019-11-06 15:23:56
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admit-template\src\views\manage-user\user-list\index.vue
@@ -651,8 +651,6 @@ export default {
     },
 
     async beforeAvatarUpload({ file }) {
-      console.log('A')
-
       const imageData = await resizeImage(file)
       this.temp.icon = imageData.base64
       // 图片上传有两种数据格式

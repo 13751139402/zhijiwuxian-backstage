@@ -112,7 +112,6 @@ export default {
   },
   mounted() {
     this.getList()
-    console.log('Wd')
     // Object.assign(this.listQuery, this.$store.state.treasure.page);
   },
   methods: {

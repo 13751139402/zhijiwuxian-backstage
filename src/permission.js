@@ -6,7 +6,7 @@
  * @Author: 戴训伟
  * @Date: 2019-09-28 10:33:37
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2019-10-24 09:52:26
+ * @LastEditTime: 2019-11-07 09:33:01
  */
 import router from './router' // 获取router实例
 import store from './store' // 获取store
@@ -20,9 +20,8 @@ NProgress.configure({ showSpinner: false }) // NProgress配置
 
 const whiteList = ['/login', '/auth-redirect'] // 没有重定向白名单
 
-router.beforeEach(async(to, from, next) => { // 路由跳转前触发
+router.beforeEach(async (to, from, next) => { // 路由跳转前触发
   // 开始进度条
-
   NProgress.start()
 
   // set page title

@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2019-10-25 19:14:30
- * @LastEditTime: 2019-11-04 16:56:35
+ * @LastEditTime: 2019-11-07 15:59:46
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admit-template\src\views\manage-user\administrator-list\index.vue
@@ -33,27 +33,15 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="物品名称" prop="name" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.name }}</span>
-        </template>
-      </el-table-column>
-
       <el-table-column label="物品类型" prop="type" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.type|propType }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="物品数量" prop="amount" align="center">
+      <el-table-column label="物品名称" prop="name" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.amount }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column label="作用目标" prop="affect" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.affect }}</span>
+          <span>{{ scope.row.name }}</span>
         </template>
       </el-table-column>
 
@@ -63,21 +51,21 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="挖宝爆出" prop="to_box" align="center">
+      <el-table-column label="物品爆率" prop="burst_rate" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.to_box==1?"是":"否" }}</span>
+          <span>{{ scope.row.burst_rate }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="过期时间" prop="expire_time" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.expire_time?scope.row.expire_time+'分钟':"永久" }}</span>
         </template>
       </el-table-column>
 
       <el-table-column label="物品状态" prop="status" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.status==1?"正常":"异常" }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column label="修改时间" prop="updated_at" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.updated_at }}</span>
         </template>
       </el-table-column>
 
@@ -118,20 +106,39 @@
             </el-form-item>
             <el-form-item label="物品类型" prop="type">
               <el-select v-model="temp.type" placeholder="请选择物品类型">
-                <el-option label="立即生效" :value="1" />
-                <el-option label="延时生效" :value="2" />
-                <el-option label="道具" :value="3" />
+                <el-option label="普通" :value="1" />
+                <el-option label="进阶" :value="2" />
+                <el-option label="高级" :value="3" />
               </el-select>
             </el-form-item>
-            <el-form-item label="物品数量" prop="amount">
-              <el-input v-model="temp.amount" type="number" placeholder="请填写物品数量" :min="0" />
-            </el-form-item>
-            <el-form-item label="作用目标" prop="affect">
-              <el-input v-model="temp.affect" placeholder="请填写作用目标" disabled />
-            </el-form-item>
-            <el-form-item label="描述" prop="describe">
+            <el-form-item label="物品描述" prop="describe">
               <el-input v-model="temp.describe" type="textarea" placeholder="请填写物品目标" />
             </el-form-item>
+
+            <el-form-item label="物品爆率" prop="burst_rate">
+              <el-input
+                v-model="temp.burst_rate"
+                type="number"
+                placeholder="请填写物品爆率爆率"
+                :step="0.01"
+                :min="0.00"
+                :max="100.00"
+              >
+                <template slot="append">%</template>
+              </el-input>
+            </el-form-item>
+
+            <el-form-item label="过期时间" prop="expire_time">
+              <el-input
+                v-model="temp.expire_time"
+                type="number"
+                placeholder="请填写过期时间,不填则永久"
+                :min="0"
+              >
+                <template slot="append">分钟</template>
+              </el-input>
+            </el-form-item>
+
             <el-form-item label="状态" prop="status">
               <el-select v-model="temp.status" placeholder="请选择状态">
                 <el-option label="正常" :value="1" />
@@ -153,24 +160,24 @@
 </template>
 
 <script>
-import { getPropList, addProp } from '@/api/dig-welfare'
-import Pagination from '@/components/Pagination' // secondary package based on el-pagination
+import { getPropList, addProp, editProp } from "@/api/dig-welfare";
+import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
 export default {
-  name: 'GetHelpList',
+  name: "GetHelpList",
   filters: {
     propType(text) {
       switch (text) {
         case 1:
-          return '立即生效'
-          break
+          return "普通";
+          break;
         case 2:
-          return '延时生效'
-          break
+          return "进阶";
+          break;
         case 3:
-          return '道具'
-          break
+          return "高级";
+          break;
         default:
-          return '类型错误'
+          return "类型错误";
       }
     }
   },
@@ -178,6 +185,17 @@ export default {
     Pagination
   },
   data() {
+    var validateBurst = (rule, value, callback) => {
+      if (Number(value)) {
+        if (value >= 0 && value <= 100) {
+          callback();
+        } else {
+          callback(new Error("请输入0~100的数字"));
+        }
+      } else {
+        callback(new Error("请输入数字"));
+      }
+    };
     return {
       list: [],
       total: 0,
@@ -191,142 +209,146 @@ export default {
         account: this.$store.getters.account
       },
       textMap: {
-        create: '创建物品',
-        change: '修改物品'
+        create: "添加物品",
+        change: "修改物品"
       },
       temp: {
-        name: '',
+        name: "",
         type: undefined,
-        amount: undefined,
-        affect: '[]',
         describe: undefined,
-        status: undefined
+        burst_rate: undefined,
+        expire_time: undefined,
+        status: 1
       },
       ruleForm: {
-        name: [{ required: true, message: '请输入名称', trigger: 'blur' }],
-        type: [{ required: true, message: '请输入物品类型', trigger: 'blur' }],
+        name: [{ required: true, message: "请输入名称", trigger: "blur" }],
+        type: [{ required: true, message: "请输入物品类型", trigger: "blur" }],
         amount: [
-          { required: true, message: '请输入物品数量', trigger: 'blur' }
+          { required: true, message: "请输入物品数量", trigger: "blur" }
         ],
         affect: [
-          { required: true, message: '请输入作用目标', trigger: 'blur' }
+          { required: true, message: "请输入作用目标", trigger: "blur" }
         ],
         describe: [
-          { required: true, message: '请输入物品描述', trigger: 'blur' }
+          { required: true, message: "请输入物品描述", trigger: "blur" }
+        ],
+        burst_rate: [
+          {
+            trigger: "blur",
+            required: true,
+            validator: validateBurst
+          }
         ]
       },
-      dialogStatus: 'create',
+      dialogStatus: "create",
       dialogFormVisible: false
-    }
+    };
   },
   mounted() {
-    this.getList()
+    this.getList();
   },
   methods: {
     getList() {
-      this.listLoading = true
+      this.listLoading = true;
       getPropList(this.listQuery).then(({ result }) => {
-        this.list = result.data
-        this.listLoading = false
-        this.total = result.total
-      })
+        this.list = result.data;
+        this.listLoading = false;
+        this.total = result.total;
+      });
     },
     resetTemp() {
       this.temp = {
-        name: '',
+        name: "",
         type: undefined,
         amount: undefined,
-        affect: '[]',
+        affect: "[]",
         describe: undefined,
         status: undefined
-      }
+      };
     },
     createItem() {
-      this.$refs['dataForm'].validate(valid => {
+      this.$refs["dataForm"].validate(valid => {
         if (valid) {
-          this.temp.account = this.account
+          this.temp.account = this.account;
           addProp(this.temp).then(() => {
-            this.getList()
+            this.getList();
             this.$notify({
-              title: '成功',
-              message: '添加成功',
-              type: 'success',
+              title: "成功",
+              message: "添加成功",
+              type: "success",
               duration: 1000,
               onClose: () => {
-                this.dialogFormVisible = false
+                this.dialogFormVisible = false;
               }
-            })
-          })
+            });
+          });
         }
-      })
+      });
     },
     updataItem() {
-      this.$refs['dataForm'].validate(valid => {
+      this.$refs["dataForm"].validate(valid => {
         if (valid) {
-          this.temp.account = this.account
           addProp(this.temp).then(() => {
-            this.getList()
+            this.getList();
             this.$notify({
-              title: '成功',
-              message: '修改成功',
-              type: 'success',
+              title: "成功",
+              message: "修改成功",
+              type: "success",
               duration: 1000,
               onClose: () => {
-                this.dialogFormVisible = false
+                this.dialogFormVisible = false;
               }
-            })
-          })
+            });
+          });
         }
-      })
+      });
     },
     handleCreate() {
-      this.dialogStatus = 'create'
-      this.dialogFormVisible = true
-      this.resetTemp()
+      this.dialogStatus = "create";
+      this.dialogFormVisible = true;
+      this.resetTemp();
       this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
+        this.$refs["dataForm"].clearValidate();
+      });
     },
     handleChange(temp) {
-      this.dialogStatus = 'change'
-      Object.assign(this.temp, temp)
-      console.log(this.temp)
-      this.dialogFormVisible = true
+      this.dialogStatus = "change";
+      this.dialogFormVisible = true;
+      Object.assign(this.temp, temp);
       this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
+        this.$refs["dataForm"].clearValidate();
+      });
     },
     handleDelete(temp) {
-      this.$confirm('此操作将永久删除该文章, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
+      this.$confirm("此操作将永久删除该文章, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
       })
         .then(() => {
-          temp.del = 1
-          temp.account = this.account
-          editHelpText(temp).then(() => {
-            this.getList()
+          temp.del = 1;
+          editProp(temp).then(() => {
+            this.getList();
             this.$notify({
-              title: '成功',
-              message: '删除成功',
-              type: 'success',
+              title: "成功",
+              message: "删除成功",
+              type: "success",
               duration: 1000,
               onClose: () => {
-                this.dialogFormVisible = false
+                this.dialogFormVisible = false;
               }
-            })
-          })
+            });
+          });
         })
         .catch(() => {
           this.$message({
-            type: 'info',
-            message: '已取消删除'
-          })
-        })
+            type: "info",
+            message: "已取消删除"
+          });
+        });
     }
   }
-}
+};
 </script>
 
 <style scoped>
