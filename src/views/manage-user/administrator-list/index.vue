@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2019-10-25 19:14:30
- * @LastEditTime: 2019-10-30 16:06:28
+ * @LastEditTime: 2019-11-11 11:12:14
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admit-template\src\views\manage-user\administrator-list\index.vue
@@ -280,10 +280,8 @@ export default {
           }
           const account = this.temp.account
           const temp = Object.assign({}, this.temp)
-          console.log(temp)
           temp.account = 1728309
           adminUpdate(temp).then(() => {
-            console.log(temp)
             this.getList()
             this.$notify({
               title: '成功',

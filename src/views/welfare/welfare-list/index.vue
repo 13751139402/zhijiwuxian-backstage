@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2019-10-25 19:14:30
- * @LastEditTime: 2019-11-07 09:55:44
+ * @LastEditTime: 2019-12-02 17:27:19
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admit-template\src\views\manage-user\administrator-list\index.vue
@@ -126,7 +126,6 @@
       :limit.sync="listQuery.page_size"
       @pagination="getList"
     />
-    <router-view />
   </div>
 </template>
 
@@ -134,7 +133,7 @@
 import { welfareList, welfareUpdate, getWelfareType } from "@/api/welfare";
 import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
 export default {
-  name: "WelfareList",
+  name: "welfare-list",
   components: {
     Pagination
   },
@@ -160,10 +159,15 @@ export default {
       this.typeList = result;
     });
   },
+  activated() {
+    this.getList();
+  },
   methods: {
     linkSecond(id) {
       this.$store.dispatch("welfare/changeSecondId", id);
-      this.$router.push({ path: "public-number-promotion" });
+      this.$router.push({
+        path: "public-number-promotion"
+      });
     },
     getList() {
       this.listLoading = true;
@@ -222,9 +226,7 @@ export default {
   padding: 20px;
 }
 .user-avatar {
-  width: 3rem;
-  height: 3rem;
-  border-radius: 50px;
+  width: 100%;
 }
 .el-button--mini {
   padding: 7px 10px;

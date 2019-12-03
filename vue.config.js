@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-10-18 13:58:44
- * @LastEditTime: 2019-11-04 17:48:42
+ * @LastEditTime: 2019-11-29 17:18:20
  * @LastEditors: Please set LastEditors
  */
 'use strict'
@@ -50,7 +50,7 @@ module.exports = {
       // change xxx-api/login => mock/login
       // detail: https://cli.vuejs.org/config/#devserver-proxy
       [process.env.VUE_APP_BASE_API]: {
-        target: 'http://192.168.1.11', // 目标服务器 host
+        target: 'https://www.ahd168.com/', // 目标服务器 host
         changeOrigin: true,                      // 设置为true, 本地就会虚拟一个服务器接收你的请求并代你发送该请求 主要解决跨域问题
         pathRewrite: {                           // 覆写路径：http://localhost:8080/api/123 = http://localhost:3001/123
           ['^' + process.env.VUE_APP_BASE_API]: ''

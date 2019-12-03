@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2019-10-25 19:14:30
- * @LastEditTime: 2019-11-07 15:59:46
+ * @LastEditTime: 2019-12-03 11:42:26
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admit-template\src\views\manage-user\administrator-list\index.vue
@@ -57,6 +57,18 @@
         </template>
       </el-table-column>
 
+      <el-table-column label="物品价格" prop="price" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.price }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="物品图片" prop="price" align="center">
+        <template slot-scope="scope">
+          <img :src="server+scope.row.img" class="user-avatar" v-if="scope.row.img" />
+        </template>
+      </el-table-column>
+
       <el-table-column label="过期时间" prop="expire_time" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.expire_time?scope.row.expire_time+'分钟':"永久" }}</span>
@@ -97,7 +109,6 @@
         :model="temp"
         label-position="right"
         label-width="100px"
-        style="width: 60%; margin-left:50px;"
       >
         <article class="editForm">
           <section>
@@ -109,12 +120,25 @@
                 <el-option label="普通" :value="1" />
                 <el-option label="进阶" :value="2" />
                 <el-option label="高级" :value="3" />
+                <el-option label="离线" :value="4" />
               </el-select>
             </el-form-item>
             <el-form-item label="物品描述" prop="describe">
-              <el-input v-model="temp.describe" type="textarea" placeholder="请填写物品目标" />
+              <el-input v-model="temp.describe" type="textarea" placeholder="请填写物品描述" />
             </el-form-item>
 
+            <el-form-item label="物品价格" prop="price">
+              <el-input
+                v-model="temp.price"
+                type="number"
+                placeholder="请填写物品价格"
+                :step="0.01"
+                :min="0.00"
+                :max="100.00"
+              />
+            </el-form-item>
+          </section>
+          <section>
             <el-form-item label="物品爆率" prop="burst_rate">
               <el-input
                 v-model="temp.burst_rate"
@@ -145,6 +169,24 @@
                 <el-option label="异常" :value="2" />
               </el-select>
             </el-form-item>
+
+            <el-form-item label="物品图片" prop="img">
+              <el-upload
+                ref="upload"
+                class="avatar-uploader"
+                :show-file-list="false"
+                action
+                :http-request="beforeAvatarUpload"
+              >
+                <img
+                  v-if="temp.img"
+                  ref="updataImg"
+                  :src="/^data/.test(temp.img)?temp.img:server+temp.img"
+                  class="avatar"
+                />
+                <i v-else class="el-icon-plus avatar-uploader-icon" />
+              </el-upload>
+            </el-form-item>
           </section>
         </article>
       </el-form>
@@ -162,6 +204,7 @@
 <script>
 import { getPropList, addProp, editProp } from "@/api/dig-welfare";
 import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
+import { switchFormData } from "@/utils/handleData";
 export default {
   name: "GetHelpList",
   filters: {
@@ -175,6 +218,9 @@ export default {
           break;
         case 3:
           return "高级";
+          break;
+        case 4:
+          return "离线";
           break;
         default:
           return "类型错误";
@@ -199,14 +245,11 @@ export default {
     return {
       list: [],
       total: 0,
-      server: this.$store.getters.server,
       tableKey: 0,
-      account: this.$store.getters.account,
       listLoading: false,
       listQuery: {
         page: 1,
-        page_size: 20,
-        account: this.$store.getters.account
+        page_size: 20
       },
       textMap: {
         create: "添加物品",
@@ -218,7 +261,9 @@ export default {
         describe: undefined,
         burst_rate: undefined,
         expire_time: undefined,
-        status: 1
+        price: undefined,
+        status: 1,
+        img: undefined
       },
       ruleForm: {
         name: [{ required: true, message: "请输入名称", trigger: "blur" }],
@@ -229,6 +274,7 @@ export default {
         affect: [
           { required: true, message: "请输入作用目标", trigger: "blur" }
         ],
+        price: [{ required: true, message: "请输入物品价格", trigger: "blur" }],
         describe: [
           { required: true, message: "请输入物品描述", trigger: "blur" }
         ],
@@ -241,13 +287,31 @@ export default {
         ]
       },
       dialogStatus: "create",
-      dialogFormVisible: false
+      dialogFormVisible: false,
+      tempImg: false
     };
+  },
+  computed: {
+    server() {
+      return this.$store.getters.server;
+    }
   },
   mounted() {
     this.getList();
   },
   methods: {
+    beforeAvatarUpload({ file }) {
+      // API 读取 本地文件
+      var reader = new FileReader();
+      // 将文件读取为base64的格式，也就是可以当成图片的src
+      reader.readAsDataURL(file);
+
+      // 读取文件成功后执行的方法函数
+      reader.onload = e => {
+        this.temp.img = e.target.result;
+      };
+      this.tempImg = file;
+    },
     getList() {
       this.listLoading = true;
       getPropList(this.listQuery).then(({ result }) => {
@@ -257,20 +321,17 @@ export default {
       });
     },
     resetTemp() {
-      this.temp = {
-        name: "",
-        type: undefined,
-        amount: undefined,
-        affect: "[]",
-        describe: undefined,
-        status: undefined
-      };
+      Object.assign(this.temp, this.$options.data().temp);
+      this.tempImg = false;
     },
     createItem() {
       this.$refs["dataForm"].validate(valid => {
         if (valid) {
-          this.temp.account = this.account;
-          addProp(this.temp).then(() => {
+          let params = switchFormData(this.temp);
+          if (this.tempImg) {
+            params.append("img", this.tempImg, this.tempImg.name);
+          }
+          addProp(params).then(() => {
             this.getList();
             this.$notify({
               title: "成功",
@@ -288,7 +349,11 @@ export default {
     updataItem() {
       this.$refs["dataForm"].validate(valid => {
         if (valid) {
-          addProp(this.temp).then(() => {
+          let params = switchFormData(this.temp);
+          if (this.tempImg) {
+            params.append("img", this.tempImg, this.tempImg.name);
+          }
+          editProp(params).then(() => {
             this.getList();
             this.$notify({
               title: "成功",
@@ -307,17 +372,12 @@ export default {
       this.dialogStatus = "create";
       this.dialogFormVisible = true;
       this.resetTemp();
-      this.$nextTick(() => {
-        this.$refs["dataForm"].clearValidate();
-      });
     },
     handleChange(temp) {
       this.dialogStatus = "change";
       this.dialogFormVisible = true;
+      this.resetTemp();
       Object.assign(this.temp, temp);
-      this.$nextTick(() => {
-        this.$refs["dataForm"].clearValidate();
-      });
     },
     handleDelete(temp) {
       this.$confirm("此操作将永久删除该文章, 是否继续?", "提示", {
@@ -347,6 +407,13 @@ export default {
           });
         });
     }
+  },
+  watch: {
+    dialogFormVisible(to, form) {
+      if (to === false) {
+        this.$refs["dataForm"].resetFields();
+      }
+    }
   }
 };
 </script>
@@ -356,9 +423,8 @@ export default {
   padding: 20px;
 }
 .user-avatar {
-  width: 3rem;
+  width: 100%;
   height: 3rem;
-  border-radius: 50px;
 }
 .el-button--mini {
   padding: 7px 10px;

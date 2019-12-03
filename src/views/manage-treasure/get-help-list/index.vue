@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2019-10-25 19:14:30
- * @LastEditTime: 2019-10-29 16:48:03
+ * @LastEditTime: 2019-11-11 11:09:42
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admit-template\src\views\manage-user\administrator-list\index.vue
@@ -57,12 +57,6 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="删除时间" prop="deleted_at" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.deleted_at }}</span>
-        </template>
-      </el-table-column>
-
       <el-table-column
         label="操作"
         align="center"
@@ -83,14 +77,49 @@
       :limit.sync="listQuery.page_size"
       @pagination="getList"
     />
+
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
+      <el-form
+        ref="dataForm"
+        :rules="ruleForm"
+        :model="temp"
+        label-position="right"
+        label-width="100px"
+        style="width: 60%; margin-left:50px;"
+      >
+        <article class="editForm">
+          <section>
+            <el-form-item label="文档标题" prop="title">
+              <el-input v-model="temp.title" />
+            </el-form-item>
+            <el-form-item label="文档类型" prop="type">
+              <el-select v-model="temp.type" placeholder="请选择文档类型">
+                <el-option label="1" value="1" />
+                <el-option label="2" value="2" />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="活动形式" prop="texts">
+              <el-input v-model="temp.texts" type="textarea" rows="20" />
+            </el-form-item>
+          </section>
+        </article>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取消</el-button>
+        <el-button
+          type="primary"
+          @click="dialogStatus==='create'?createData():updataData()"
+        >{{ dialogStatus==='create'?"添加":"修改" }}</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { getHelpList, editHelpText } from '@/api/treasure'
-import Pagination from '@/components/Pagination' // secondary package based on el-pagination
+import { getHelpList, editHelpText, addHelpText } from "@/api/treasure";
+import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
 export default {
-  name: 'GetHelpList',
+  name: "GetHelpList",
   components: {
     Pagination
   },
@@ -99,77 +128,143 @@ export default {
       list: [],
       formFile: false,
       total: 0,
-      server: this.$store.getters.server,
       tableKey: 0,
-      account: this.$store.getters.account,
       listLoading: false,
+      dialogStatus: "",
+      buttonLoading: false,
+      dialogFormVisible: false,
       listQuery: {
         page: 1,
-        page_size: 20,
-        account: this.$store.getters.account
+        page_size: 20
+      },
+      temp: {
+        title: "",
+        type: "",
+        texts: ""
+      },
+      ruleForm: {
+        title: [
+          { required: true, message: "请填写文章标题", trigger: "blur" }
+          // { min: 3, max: 5, message: "长度在 3 到 5 个字符", trigger: "blur" }
+        ],
+        type: [{ required: true, message: "请选择文章类型", trigger: "change" }],
+        texts: [{ required: true, message: "请填写文章内容", trigger: "blur" }]
+      },
+      textMap: {
+        change: "修改",
+        create: "添加"
       }
-    }
+    };
   },
   mounted() {
-    this.getList()
-    // Object.assign(this.listQuery, this.$store.state.treasure.page);
+    this.getList();
   },
   methods: {
     getList() {
-      this.listLoading = true
+      this.listLoading = true;
       getHelpList(this.listQuery).then(({ result }) => {
-        this.list = result.data
-        this.listLoading = false
-        this.total = result.total
-      })
+        this.list = result.data;
+        this.listLoading = false;
+        this.total = result.total;
+      });
     },
-    handleEdit(temp) {
-      this.$store.dispatch('treasure/changeData', {
-        data: temp,
-        type: 'change',
-        page: this.listQuery
-      })
-      this.$router.push({ path: 'add-help-text' })
-    },
-    handleCreate() {
-      this.$router.push('add-help-text')
-    },
-    handleUpdate(temp) {
-      this.$confirm('此操作将永久删除该文章, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      })
-        .then(() => {
-          temp.del = 1
-          temp.account = this.account
-          editHelpText(temp).then(() => {
-            this.getList()
+
+    createData() {
+      this.$refs["dataForm"].validate(valid => {
+        if (valid) {
+          this.buttonLoading = true;
+          addHelpText(this.temp).then(() => {
             this.$notify({
-              title: '成功',
-              message: '删除成功',
-              type: 'success',
+              title: "成功",
+              message: "添加文档成功",
+              type: "success",
               duration: 1000,
               onClose: () => {
-                this.dialogFormVisible = false
+                this.getList();
+                this.buttonLoading = false;
+                this.dialogFormVisible = false;
               }
-            })
-          })
+            });
+          });
+        }
+      });
+    },
+    updataData() {
+      this.$refs["dataForm"].validate(valid => {
+        if (valid) {
+          this.buttonLoading = true;
+          editHelpText(this.temp).then(() => {
+            this.$notify({
+              title: "成功",
+              message: "修改文档成功",
+              type: "success",
+              duration: 1000,
+              onClose: () => {
+                this.getList();
+                this.buttonLoading = false;
+                this.dialogFormVisible = false;
+              }
+            });
+          });
+        }
+      });
+    },
+
+    handleEdit(temp) {
+      this.dialogStatus = "change";
+      this.dialogFormVisible = true;
+      Object.assign(this.temp, temp);
+    },
+    handleCreate() {
+      this.dialogStatus = "create";
+      this.dialogFormVisible = true;
+    },
+
+    handleUpdate(temp) {
+      this.$confirm("此操作将永久删除该文章, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          temp.del = 1;
+          editHelpText(temp).then(() => {
+            this.getList();
+            this.$notify({
+              title: "成功",
+              message: "删除成功",
+              type: "success",
+              duration: 1000,
+              onClose: () => {
+                this.dialogFormVisible = false;
+              }
+            });
+          });
         })
         .catch(() => {
           this.$message({
-            type: 'info',
-            message: '已取消删除'
-          })
-        })
+            type: "info",
+            message: "已取消删除"
+          });
+        });
+    }
+  },
+  watch: {
+    dialogFormVisible(to, form) {
+      if (to === false) {
+        this.$refs["dataForm"].resetFields();
+      }
     }
   }
-}
+};
 </script>
 
 <style scoped>
 #administrator-list {
   padding: 20px;
+}
+#administrator-list >>> .el-form--label-right {
+  width: 75% !important;
 }
 .user-avatar {
   width: 3rem;

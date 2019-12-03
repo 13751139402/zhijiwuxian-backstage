@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2019-10-25 19:14:30
- * @LastEditTime: 2019-11-07 16:12:19
+ * @LastEditTime: 2019-11-27 11:43:54
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admit-template\src\views\manage-user\administrator-list\index.vue
@@ -75,6 +75,12 @@
         </template>
       </el-table-column>
 
+      <el-table-column label="物品图片" prop="img" align="center">
+        <template slot-scope="scope">
+          <img :src="server+scope.row.img" class="user-avatar" v-if="scope.row.img" />
+        </template>
+      </el-table-column>
+
       <el-table-column label="物品级别" prop="stage" align="center">
         <template slot-scope="scope">
           <span>{{ stageMap[scope.row.stage]||"错误" }}</span>
@@ -139,80 +145,111 @@
         :model="temp"
         label-position="right"
         label-width="100px"
-        style="width: 60%; margin-left:50px;"
       >
         <article class="editForm">
-          <section>
-            <el-form-item label="物品名称" prop="name">
-              <el-input v-model.number="temp.name" type="text" placeholder="请填写物品名称" />
-            </el-form-item>
+          <section class="editForm_section">
+            <article>
+              <el-form-item label="物品名称" prop="name">
+                <el-input v-model.number="temp.name" type="text" placeholder="请填写物品名称" />
+              </el-form-item>
 
-            <el-form-item label="物品类型" prop="type">
-              <el-select v-model="temp.type" placeholder="请选择物品类型">
-                <el-option v-for="(item,name) in typeMap" :label="item" :value="+name" :key="name" />
-              </el-select>
-            </el-form-item>
+              <el-form-item label="物品类型" prop="type">
+                <el-select v-model="temp.type" placeholder="请选择物品类型">
+                  <el-option
+                    v-for="(item,name) in typeMap"
+                    :label="item"
+                    :value="+name"
+                    :key="name"
+                  />
+                </el-select>
+              </el-form-item>
 
-            <el-form-item label="物品级别" prop="stage">
-              <el-select v-model="temp.stage" placeholder="请选择物品级别">
-                <el-option
-                  v-for="(item,name) in stageMap"
-                  :label="item"
-                  :value="+name"
-                  :key="name"
+              <el-form-item label="物品级别" prop="stage">
+                <el-select v-model="temp.stage" placeholder="请选择物品级别">
+                  <el-option
+                    v-for="(item,name) in stageMap"
+                    :label="item"
+                    :value="+name"
+                    :key="name"
+                  />
+                </el-select>
+              </el-form-item>
+
+              <el-form-item label="物品图片" prop="img">
+                <el-upload
+                  ref="upload"
+                  class="avatar-uploader"
+                  :show-file-list="false"
+                  action
+                  :http-request="beforeAvatarUpload"
+                >
+                  <img
+                    v-if="temp.img"
+                    ref="updataImg"
+                    :src="/^data/.test(temp.img)?temp.img:server+temp.img"
+                    class="avatar"
+                  />
+                  <i v-else class="el-icon-plus avatar-uploader-icon" />
+                </el-upload>
+              </el-form-item>
+            </article>
+
+            <article>
+              <el-form-item label="物品描述" prop="describe">
+                <el-input v-model.number="temp.describe" type="text" placeholder="请填写物品描述" />
+              </el-form-item>
+
+              <el-form-item label="默认数量" :prop="temp.type===4?'amount':''">
+                <el-input
+                  v-model.number="temp.amount"
+                  type="number"
+                  placeholder="请填写默认数量"
+                  :min="0"
                 />
-              </el-select>
-            </el-form-item>
+              </el-form-item>
 
-            <el-form-item label="物品描述" prop="describe">
-              <el-input v-model.number="temp.describe" type="text" placeholder="请填写物品描述" />
-            </el-form-item>
+              <el-form-item label="爆率" :prop="temp.type===4?'rate':''">
+                <el-input
+                  v-model="temp.rate"
+                  type="number"
+                  placeholder="请填写爆率"
+                  :step="0.01"
+                  :min="0.00"
+                  :max="100.00"
+                >
+                  <template slot="append">%</template>
+                </el-input>
+              </el-form-item>
 
-            <el-form-item label="默认数量" :prop="temp.type===4?'amount':''">
-              <el-input v-model.number="temp.amount" type="number" placeholder="请填写默认数量" :min="0" />
-            </el-form-item>
+              <el-form-item label="最小数量" :prop="temp.type===1||temp.type===3?'min_amount':''">
+                <el-input
+                  v-model="temp.min_amount"
+                  type="number"
+                  placeholder="请填写最小数量"
+                  :step="1"
+                  :min="0"
+                  :max="100"
+                ></el-input>
+              </el-form-item>
 
-            <el-form-item label="爆率" :prop="temp.type===4?'rate':''">
-              <el-input
-                v-model="temp.rate"
-                type="number"
-                placeholder="请填写爆率"
-                :step="0.01"
-                :min="0.00"
-                :max="100.00"
-              >
-                <template slot="append">%</template>
-              </el-input>
-            </el-form-item>
+              <el-form-item label="最大数量" :prop="temp.type===1||temp.type===3?'max_amount':''">
+                <el-input
+                  v-model="temp.max_amount"
+                  type="number"
+                  placeholder="请填写最大数量"
+                  :step="1"
+                  :min="0"
+                  :max="100"
+                ></el-input>
+              </el-form-item>
 
-            <el-form-item label="最小数量" :prop="temp.type===1||temp.type===3?'min_amount':''">
-              <el-input
-                v-model="temp.min_amount"
-                type="number"
-                placeholder="请填写最小数量"
-                :step="1"
-                :min="0"
-                :max="100"
-              ></el-input>
-            </el-form-item>
-
-            <el-form-item label="最大数量" :prop="temp.type===1||temp.type===3?'max_amount':''">
-              <el-input
-                v-model="temp.max_amount"
-                type="number"
-                placeholder="请填写最大数量"
-                :step="1"
-                :min="0"
-                :max="100"
-              ></el-input>
-            </el-form-item>
-
-            <el-form-item label="物品级别" prop="status">
-              <el-select v-model="temp.status" filterable placeholder="请选择物品级别">
-                <el-option label="正常" :value="1" />
-                <el-option label="异常" :value="2" />
-              </el-select>
-            </el-form-item>
+              <el-form-item label="物品级别" prop="status">
+                <el-select v-model="temp.status" filterable placeholder="请选择物品级别">
+                  <el-option label="正常" :value="1" />
+                  <el-option label="异常" :value="2" />
+                </el-select>
+              </el-form-item>
+            </article>
           </section>
         </article>
       </el-form>
@@ -282,7 +319,8 @@ export default {
         rate: undefined,
         min_amount: undefined,
         max_amount: undefined,
-        status: 1
+        status: 1,
+        img: undefined
       },
       ruleForm: {
         name: [{ required: true, message: "请输入物品名称", trigger: "blur" }],
@@ -292,6 +330,7 @@ export default {
         stage: [
           { required: true, message: "请选择物品级别", trigger: "change" }
         ],
+        img: [{ required: true, message: "请选择物品图片", trigger: "blur" }],
         describe: [
           { required: true, message: "请输入物品描述", trigger: "blur" }
         ],
@@ -319,14 +358,32 @@ export default {
       },
       dialogStatus: "create",
       dialogFormVisible: false,
-      itemList: []
+      itemList: [],
+      tempImg: ""
     };
+  },
+  computed: {
+    server() {
+      return this.$store.getters.server;
+    }
   },
   mounted() {
     this.getList();
     this.getPropType();
   },
   methods: {
+    beforeAvatarUpload({ file }) {
+      // API 读取 本地文件
+      var reader = new FileReader();
+      // 将文件读取为base64的格式，也就是可以当成图片的src
+      reader.readAsDataURL(file);
+
+      // 读取文件成功后执行的方法函数
+      reader.onload = e => {
+        this.temp.img = e.target.result;
+      };
+      this.tempImg = file;
+    },
     getList() {
       this.listLoading = true;
       getArticleList(this.listQuery).then(({ result }) => {
@@ -346,10 +403,20 @@ export default {
     resetTemp() {
       Object.assign(this.temp, this.$options.data().temp);
     },
+    handleParams() {
+      let params = new FormData();
+      for (let item of Object.keys(this.temp)) {
+        if (this.temp[item]) {
+          params.append(item, this.temp[item]);
+        }
+      }
+      params.append("img", this.tempImg, this.tempImg.name);
+      return params;
+    },
     createItem() {
       this.$refs["dataForm"].validate(valid => {
         if (valid) {
-          addArticle(this.temp).then(() => {
+          addArticle(this.handleParams()).then(() => {
             this.getList();
             this.$notify({
               title: "成功",
@@ -367,7 +434,7 @@ export default {
     updataItem() {
       this.$refs["dataForm"].validate(valid => {
         if (valid) {
-          editArticle(this.temp).then(() => {
+          editArticle(this.handleParams()).then(() => {
             this.getList();
             this.$notify({
               title: "成功",
@@ -401,7 +468,7 @@ export default {
       });
     },
     handleDelete(temp) {
-      this.$confirm("此操作将永久删除该物品爆率, 是否继续?", "提示", {
+      this.$confirm("此操作将永久删除该宝箱物品, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
@@ -426,6 +493,13 @@ export default {
 </script>
 
 <style scoped>
+.editForm_section {
+  display: flex;
+  justify-content: space-between;
+}
+.editForm_section > article {
+  flex: 1;
+}
 #administrator-list {
   padding: 20px;
 }

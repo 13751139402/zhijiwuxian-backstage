@@ -2,7 +2,7 @@
  * @Description: ROUTER
  * @Author: your name
  * @Date: 2019-10-18 13:58:44
- * @LastEditTime: 2019-11-07 11:02:50
+ * @LastEditTime: 2019-11-11 18:02:42
  * @LastEditors: Please set LastEditors
  */
 import Vue from 'vue'
@@ -32,6 +32,7 @@ import Layout from '@/layout'
     icon: 'svg-name'             设置该路由的图标
     breadcrumb: false            如果设置为false，则该项将隐藏在面包屑中(默认为true)
     activeMenu: '/example/list'  如果设置路径，侧栏将突出显示您设置的路径
+    navbar:true                  是否将当前路由展示到导航条中，默认为true
   }
  */
 
@@ -96,7 +97,7 @@ export const constantRoutes = [
       path: 'user-data',
       name: 'user-data',
       component: () => import('@/views/manage-user/user-data'),
-      meta: { title: '用户信息', noCache: true }
+      meta: { title: '个人信息', noCache: true }
     }
 
       // {
@@ -121,19 +122,19 @@ export const constantRoutes = [
       path: 'welfare-list',
       name: 'welfare-list',
       component: () => import('@/views/welfare/welfare-list'),
-      meta: { title: '福利列表' }
+      meta: { title: '福利列表' },
     }, {
       path: 'DirSir-promotion',
       name: 'DirSir-promotion',
       hidden: true,
       component: () => import('@/views/welfare/welfare-list/children/DirSir-promotion'),
-      meta: { title: '公众号推广' }
+      meta: { title: '公众号推广', navbar: false }
     }, {
       path: 'public-number-promotion',
-      name: 'public-number-promotion',
+      // name: 'public-number-promotion',
       hidden: true,
       component: () => import('@/views/welfare/welfare-list/children/public-number-promotion'),
-      meta: { title: '电商推广' }
+      meta: { title: '电商推广', navbar: false }
     }
     ]
 
@@ -143,13 +144,9 @@ export const constantRoutes = [
     path: '/manage-treasure',
     component: Layout,
     name: 'manage-treasure',
+    alwaysShow: true,
     meta: { title: '财富管理', icon: 'user' },
     children: [{
-      path: 'add-help-text',
-      name: 'add-help-text',
-      component: () => import('@/views/manage-treasure/add-help-text'),
-      meta: { title: '文档添加', noCache: true }
-    }, {
       path: 'get-help-list',
       name: 'get-help-list',
       component: () => import('@/views/manage-treasure/get-help-list'),

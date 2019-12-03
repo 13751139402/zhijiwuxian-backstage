@@ -1,8 +1,8 @@
 /*
  * @Author: your name
  * @Date: 2019-10-18 13:58:44
- * @LastEditTime: 2019-10-28 10:26:53
- * @LastEditors: your name
+ * @LastEditTime: 2019-12-02 17:21:06
+ * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admit-template\src\store\modules\app.js
  */
@@ -14,7 +14,7 @@ const state = {
     withoutAnimation: false
   },
   device: 'desktop',
-  server: 'http://192.168.1.11'
+  server: process.env.VUE_APP_BASE_API
 }
 
 const mutations = {

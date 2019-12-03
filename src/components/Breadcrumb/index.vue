@@ -1,8 +1,8 @@
 <!--
  * @Author: your name
  * @Date: 2019-10-18 13:58:44
- * @LastEditTime: 2019-10-23 15:59:31
- * @LastEditors: your name
+ * @LastEditTime: 2019-11-11 17:54:43
+ * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admit-template\src\components\Breadcrumb\index.vue
  -->
@@ -38,11 +38,11 @@ export default {
     getBreadcrumb() {
       // 只显示带有meta.title的路由
       let matched = this.$route.matched.filter(item => item.meta && item.meta.title)
-      const first = matched[0]
+      // const first = matched[0]
 
-      if (!this.isDashboard(first)) {
-        matched = [{ path: '/dashboard', meta: { title: 'Dashboard' }}].concat(matched)
-      }
+      // if (!this.isDashboard(first)) {
+      //   matched = [{ path: '/dashboard', meta: { title: 'Dashboard' }}].concat(matched)
+      // }
 
       this.levelList = matched.filter(item => item.meta && item.meta.title && item.meta.breadcrumb !== false)
     },

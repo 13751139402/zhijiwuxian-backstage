@@ -1,14 +1,14 @@
 <!--
  * @Author: your name
  * @Date: 2019-10-26 15:00:10
- * @LastEditTime: 2019-10-29 18:12:58
+ * @LastEditTime: 2019-11-11 11:04:44
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admit-template\src\views\manage-user\user-data\index.vue
  -->
 <template>
   <article style="padding:50px">
-    <h1>用户信息修改</h1>
+    <h1>个人信息修改</h1>
     <el-form
       ref="createForm"
       :rules="rules"

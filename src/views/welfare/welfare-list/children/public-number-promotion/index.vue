@@ -1,13 +1,13 @@
 <!--
  * @Author: your name
  * @Date: 2019-10-25 19:14:30
- * @LastEditTime: 2019-11-06 18:23:13
+ * @LastEditTime: 2019-11-11 16:04:58
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admit-template\src\views\manage-user\administrator-list\index.vue
  -->
 <template>
-  <div id="administrator-list" class="app-containeFr">
+  <div id="public-number-promotion" class="app-containeFr">
     <div class="filter-container">
       <el-button
         class="filter-item"
@@ -364,8 +364,11 @@ export default {
 </script>
 
 <style scoped>
-#administrator-list {
+#public-number-promotion {
+  position: absolute;
+  top: 0;
   padding: 20px;
+  width: 100%;
 }
 .user-avatar {
   width: 3rem;

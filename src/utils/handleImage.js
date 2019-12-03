@@ -22,7 +22,6 @@
  */
 function resizeImage(file) {
   return new Promise(function(resolve, reject) {
-    console.log('464')
     var reader = new FileReader() // 用于异步读取存储在用户计算机的文件 使用file或blob指定文件
 
     reader.readAsDataURL(file) // 读取文件，返回base64

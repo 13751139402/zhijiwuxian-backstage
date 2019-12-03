@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2019-10-22 14:24:49
- * @LastEditTime: 2019-10-29 17:16:13
+ * @LastEditTime: 2019-11-11 18:01:56
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admit-template\src\layout\components\TagsView\index.vue
@@ -41,8 +41,8 @@
 </template>
 
 <script>
-import ScrollPane from './ScrollPane'
-import path from 'path'
+import ScrollPane from "./ScrollPane";
+import path from "path";
 export default {
   components: { ScrollPane },
   data() {
@@ -51,39 +51,40 @@ export default {
       top: 0,
       left: 0,
       selectedTag: {},
-      affixTags: []
-    }
+      affixTags: [],
+      lastRoute: false
+    };
   },
   computed: {
     visitedViews() {
-      return this.$store.state.tagsView.visitedViews
+      return this.$store.state.tagsView.visitedViews;
     },
     routes() {
-      return this.$store.state.permission.routes
+      return this.$store.state.permission.routes;
     }
   },
   watch: {
-    $route() {
-      this.addTags()
-      this.moveToCurrentTag()
+    $route(to, form) {
+      this.lastRoute = form.path;
+      this.addTags();
+      this.moveToCurrentTag();
     },
     visible(value) {
       // 当右击菜单展示时,在body中添加一个事件隐藏右击菜单
       if (value) {
-        document.body.addEventListener('click', this.closeMenu)
+        document.body.addEventListener("click", this.closeMenu);
       } else {
-        document.body.removeEventListener('click', this.closeMenu)
+        document.body.removeEventListener("click", this.closeMenu);
       }
     }
   },
   mounted() {
-    this.initTags()
-    this.addTags()
+    this.initTags();
+    this.addTags();
   },
   methods: {
     addCachedView(tag) {
-      console.log(tag)
-      this.$store.dispatch('tagsView/addCachedView', tag)
+      this.$store.dispatch("tagsView/addCachedView", tag);
     },
     /**
      * @description: 判断是否为当前活跃router
@@ -92,7 +93,12 @@ export default {
      */
 
     isActive(route) {
-      return route.path === this.$route.path
+      console.log("8922");
+      if (this.$route.meta.navbar === false) {
+        return route.path === this.lastRoute;
+      } else {
+        return route.path === this.$route.path;
+      }
     },
     /**
      * @description: 判断是否有固钉
@@ -101,7 +107,7 @@ export default {
      */
 
     isAffix(tag) {
-      return tag.meta && tag.meta.affix
+      return tag.meta && tag.meta.affix;
     },
     /**
      * @description: 过滤出图钉标签
@@ -109,33 +115,33 @@ export default {
      * @return:
      */
 
-    filterAffixTags(routes, basePath = '/') {
-      let tags = []
+    filterAffixTags(routes, basePath = "/") {
+      let tags = [];
       routes.forEach(route => {
         if (route.meta && route.meta.affix) {
-          const tagPath = path.resolve(basePath, route.path) // 解析 当前路径
+          const tagPath = path.resolve(basePath, route.path); // 解析 当前路径
           tags.push({
             fullPath: tagPath,
             path: tagPath,
             name: route.name,
             meta: { ...route.meta }
-          })
+          });
         }
         if (route.children) {
-          const tempTags = this.filterAffixTags(route.children, route.path)
+          const tempTags = this.filterAffixTags(route.children, route.path);
           if (tempTags.length >= 1) {
-            tags = [...tags, ...tempTags] // 把子固钉和父固钉合并在一起
+            tags = [...tags, ...tempTags]; // 把子固钉和父固钉合并在一起
           }
         }
-      })
-      return tags
+      });
+      return tags;
     },
     initTags() {
-      const affixTags = (this.affixTags = this.filterAffixTags(this.routes))
+      const affixTags = (this.affixTags = this.filterAffixTags(this.routes));
       for (const tag of affixTags) {
         // 必须有标签名 keep-alive通过name来判断是否缓存
         if (tag.name) {
-          this.$store.dispatch('tagsView/addVisitedView', tag)
+          this.$store.dispatch("tagsView/addVisitedView", tag);
         }
       }
     },
@@ -145,11 +151,11 @@ export default {
      * @return:
      */
     addTags() {
-      const { name } = this.$route
+      const { name } = this.$route;
       if (name) {
-        this.$store.dispatch('tagsView/addView', this.$route)
+        this.$store.dispatch("tagsView/addView", this.$route);
       }
-      return false
+      return false;
     },
     /**
      * @description: 移动至当前标签
@@ -158,35 +164,35 @@ export default {
      */
 
     moveToCurrentTag() {
-      const tags = this.$refs.tag // tags 是一个包含所有tags的标签
+      const tags = this.$refs.tag; // tags 是一个包含所有tags的标签
       this.$nextTick(() => {
         for (const tag of tags) {
           // 标签路径 === 路由路径
           if (tag.to.path === this.$route.path) {
-            this.$refs.scrollPane.moveToTarget(tag) // 修改子组件 触发 moveToTarget
+            this.$refs.scrollPane.moveToTarget(tag); // 修改子组件 触发 moveToTarget
             // 当完整路径是不同的，然后更新
 
             if (tag.to.fullPath !== this.$route.fullPath) {
-              this.$store.dispatch('tagsView/updateVisitedView', this.$route)
+              this.$store.dispatch("tagsView/updateVisitedView", this.$route);
             }
-            break
+            break;
           }
         }
-      })
+      });
     },
     refreshSelectedTag(view) {
-      this.$store.dispatch('tagsView/delCachedView', view).then(() => {
-        const { fullPath } = view
+      this.$store.dispatch("tagsView/delCachedView", view).then(() => {
+        const { fullPath } = view;
         this.$nextTick(() => {
           // router是根据url的改变进行刷新的
           // 1.此处先跳转至中转页面 ==>redirect 再跳转回来fullPath 达到刷新的效果
           //   replace不保存redirect页面进记录
           // 2.添加new Date 进参数，但是url会很丑的跟着一串时间字符串
           this.$router.replace({
-            path: '/redirect' + fullPath
-          })
-        })
-      })
+            path: "/redirect" + fullPath
+          });
+        });
+      });
     },
     /**
      * @description: 删除某个导航条
@@ -196,30 +202,30 @@ export default {
 
     closeSelectedTag(view) {
       this.$store
-        .dispatch('tagsView/delView', view)
+        .dispatch("tagsView/delView", view)
         .then(({ visitedViews }) => {
           // 返回删除后的新的访问数组
           if (this.isActive(view)) {
-            this.toLastView(visitedViews, view)
+            this.toLastView(visitedViews, view);
           }
-        })
+        });
     },
     closeOthersTags() {
-      this.$router.push(this.selectedTag)
+      this.$router.push(this.selectedTag);
       this.$store
-        .dispatch('tagsView/delOthersViews', this.selectedTag)
+        .dispatch("tagsView/delOthersViews", this.selectedTag)
         .then(() => {
-          this.moveToCurrentTag()
-        })
+          this.moveToCurrentTag();
+        });
     },
     closeAllTags(view) {
-      this.$store.dispatch('tagsView/delAllViews').then(({ visitedViews }) => {
+      this.$store.dispatch("tagsView/delAllViews").then(({ visitedViews }) => {
         if (this.affixTags.some(tag => tag.path === view.path)) {
           // 如果图钉组中有path
-          return
+          return;
         }
-        this.toLastView(visitedViews, view) // 退回最后一个项中
-      })
+        this.toLastView(visitedViews, view); // 退回最后一个项中
+      });
     },
     /**
      * @description:
@@ -228,41 +234,41 @@ export default {
      */
 
     toLastView(visitedViews, view) {
-      const latestView = visitedViews.slice(-1)[0] // slice 浅拷贝 最后一个项 ，返回一个数组
+      const latestView = visitedViews.slice(-1)[0]; // slice 浅拷贝 最后一个项 ，返回一个数组
       if (latestView) {
         // 为真跳转上一次路由
-        this.$router.push(latestView.fullPath)
+        this.$router.push(latestView.fullPath);
       } else {
         // 现在默认是重定向到主页，如果没有标签视图，
         // 你可以根据你的需要来调整。
-        if (view.name === 'Dashboard') {
+        if (view.name === "Dashboard") {
           // 要重新加载主页
-          this.$router.replace({ path: '/redirect' + view.fullPath })
+          this.$router.replace({ path: "/redirect" + view.fullPath });
         } else {
-          this.$router.push('/')
+          this.$router.push("/");
         }
       }
     },
     openMenu(tag, e) {
-      const menuMinWidth = 105
-      const offsetLeft = this.$el.getBoundingClientRect().left // container margin left
-      const offsetWidth = this.$el.offsetWidth // container width
-      const maxLeft = offsetWidth - menuMinWidth // left boundary
-      const left = e.clientX - offsetLeft + 15 // 15: margin right
+      const menuMinWidth = 105;
+      const offsetLeft = this.$el.getBoundingClientRect().left; // container margin left
+      const offsetWidth = this.$el.offsetWidth; // container width
+      const maxLeft = offsetWidth - menuMinWidth; // left boundary
+      const left = e.clientX - offsetLeft + 15; // 15: margin right
       if (left > maxLeft) {
-        this.left = maxLeft
+        this.left = maxLeft;
       } else {
-        this.left = left
+        this.left = left;
       }
-      this.top = e.clientY
-      this.visible = true
-      this.selectedTag = tag
+      this.top = e.clientY;
+      this.visible = true;
+      this.selectedTag = tag;
     },
     closeMenu() {
-      this.visible = false
+      this.visible = false;
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
