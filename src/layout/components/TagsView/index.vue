@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2019-10-22 14:24:49
- * @LastEditTime: 2019-11-11 18:01:56
+ * @LastEditTime: 2019-12-04 15:03:42
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admit-template\src\layout\components\TagsView\index.vue
@@ -93,7 +93,6 @@ export default {
      */
 
     isActive(route) {
-      console.log("8922");
       if (this.$route.meta.navbar === false) {
         return route.path === this.lastRoute;
       } else {

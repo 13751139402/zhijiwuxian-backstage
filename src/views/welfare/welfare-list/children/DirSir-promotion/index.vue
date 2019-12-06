@@ -1,26 +1,39 @@
 <!--
  * @Author: your name
  * @Date: 2019-10-25 19:14:30
- * @LastEditTime: 2019-11-06 18:23:03
+ * @LastEditTime: 2019-12-05 16:33:34
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admit-template\src\views\manage-user\administrator-list\index.vue
  -->
 <template>
-  <div id="administrator-list" class="app-containeFr">
-    <div class="filter-container">
-      <el-select v-model="listQuery.status" placeholder="请选择任务状态" @change="getList">
-        <el-option label="正常" :value="1"></el-option>
-        <el-option label="异常" :value="2"></el-option>
-      </el-select>
-      <el-button
-        class="filter-item"
-        style="margin-left: 10px;"
-        type="primary"
-        icon="el-icon-edit"
-        @click="handleCreate"
-      >添加</el-button>
-    </div>
+  <div id="public-number-promotion" class="app-containeFr">
+    <article class="filter-container">
+      <section>
+        <el-button
+          class="filter-item"
+          style="margin-left: 10px;"
+          type="primary"
+          icon="el-icon-back"
+          @click="linkReturn"
+        >返回</el-button>
+        <el-select v-model="listQuery.status" placeholder="请选择任务状态" @change="getList">
+          <el-option label="正常" :value="1"></el-option>
+          <el-option label="异常" :value="2"></el-option>
+        </el-select>
+        <el-button
+          class="filter-item"
+          style="margin-left: 10px;"
+          type="primary"
+          icon="el-icon-edit"
+          @click="handleCreate"
+        >添加</el-button>
+      </section>
+      <section>
+        <h1>电商推广</h1>
+      </section>
+    </article>
+
     <el-table
       :key="tableKey"
       v-loading="listLoading"
@@ -48,6 +61,18 @@
         </template>
       </el-table-column>
 
+      <el-table-column label="福利价格" prop="price" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.price }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="跳转连接" prop="url" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.url }}</span>
+        </template>
+      </el-table-column>
+
       <el-table-column label="任务描述" prop="describe" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.describe }}</span>
@@ -65,6 +90,7 @@
           <span>{{ scope.row.updated_at }}</span>
         </template>
       </el-table-column>
+
       <el-table-column
         label="操作"
         align="center"
@@ -97,10 +123,10 @@
       >
         <article class="editForm">
           <section>
-            <el-form-item label="商品名称" prop="name">
-              <el-input v-model="temp.name" placeholder="请填写商品名称" />
+            <el-form-item label="福利名称" prop="name">
+              <el-input v-model="temp.name" placeholder="请填写福利名称" />
             </el-form-item>
-            <el-form-item label="商品图片" prop="image">
+            <el-form-item label="福利图片" prop="image">
               <el-upload
                 ref="upload"
                 class="avatar-uploader"
@@ -120,6 +146,12 @@
             <el-form-item label="任务描述" prop="describe">
               <el-input v-model="temp.describe" placeholder="请填写任务描述" />
             </el-form-item>
+            <el-form-item label="福利价格" prop="price">
+              <el-input v-model="temp.price" type="number" placeholder="请填写福利价格" :min="0" />
+            </el-form-item>
+            <el-form-item label="跳转连接" prop="url">
+              <el-input v-model="temp.url" placeholder="请填写跳转连接" />
+            </el-form-item>
             <el-form-item label="任务状态" prop="status">
               <el-select v-model="temp.status" placeholder="请选择任务状态">
                 <el-option label="正常" :value="1"></el-option>
@@ -133,6 +165,7 @@
         <el-button @click="dialogFormVisible = false">取消</el-button>
         <el-button
           type="primary"
+          :loading="buttonLoading"
           @click="dialogStatus==='create'?createItem():updataItem()"
         >{{ dialogStatus==='create'?"添加":"修改" }}</el-button>
       </div>
@@ -142,14 +175,14 @@
 
 <script>
 import {
-  addWelfareListTask,
-  welfareListTask,
-  editWelfareListTask
+  getRecommendTask,
+  addRecommendTask,
+  editRecommendTask
 } from "@/api/welfare";
 import { handleFormData } from "../../../util.js";
 import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
 export default {
-  name: "public-number-promotion",
+  name: "DirSir-promotion",
   components: {
     Pagination
   },
@@ -162,12 +195,11 @@ export default {
       listQuery: {
         page: 1,
         page_size: 20,
-        status: 1,
-        welfare_id: 22
+        status: 1
       },
       textMap: {
-        create: "添加商品",
-        change: "修改商品"
+        create: "添加福利",
+        change: "修改福利"
       },
       temp: {
         name: undefined,
@@ -178,12 +210,22 @@ export default {
         status: 1
       },
       ruleForm: {
-        name: [{ required: true, message: "请输入商品名称", trigger: "blur" }],
+        name: [{ required: true, message: "请输入福利名称", trigger: "blur" }],
         image: [
-          { required: true, message: "请输入商品图片", trigger: "change" }
+          { required: true, message: "请输入福利图片", trigger: "change" }
         ],
         describe: [
           { required: true, message: "请输入任务描述", trigger: "blur" }
+        ],
+        price: [
+          {
+            required: true,
+            message: "请输入福利价格",
+            trigger: "blur"
+          }
+        ],
+        url: [
+          { required: true, message: "请输入物品跳转链接", trigger: "blur" }
         ]
       },
       dialogStatus: "create",
@@ -194,12 +236,19 @@ export default {
   computed: {
     server() {
       return this.$store.getters.server;
+    },
+    secondId() {
+      return this.$store.state.welfare.secondId;
     }
   },
   methods: {
+    linkReturn() {
+      this.$router.go(-1);
+    },
     getList() {
       this.listLoading = true;
-      welfareListTask(this.listQuery).then(({ result }) => {
+      this.listQuery.welfare_id = this.secondId;
+      getRecommendTask(this.listQuery).then(({ result }) => {
         this.list = result.data;
         this.listLoading = false;
         this.total = result.total;
@@ -209,10 +258,10 @@ export default {
       this.$refs["dataForm"].validate(valid => {
         if (valid) {
           let tempMap = JSON.parse(JSON.stringify(this.temp));
-          tempMap.welfare_id = "22";
+          tempMap.welfare_id = this.secondId;
           tempMap.image = this.imageFile;
           const params = handleFormData(tempMap);
-          addWelfareListTask(params).then(() => {
+          addRecommendTask(params).then(() => {
             this.getList();
             this.$notify({
               title: "成功",
@@ -231,10 +280,10 @@ export default {
       this.$refs["dataForm"].validate(valid => {
         if (valid) {
           let tempMap = JSON.parse(JSON.stringify(this.temp));
-          tempMap.welfare_id = "22";
+          tempMap.welfare_id = this.secondId;
           tempMap.image = this.imageFile;
           const params = handleFormData(tempMap);
-          editWelfareListTask(params).then(() => {
+          editRecommendTask(params).then(() => {
             this.getList();
             this.$notify({
               title: "成功",
@@ -286,7 +335,7 @@ export default {
     },
 
     handleDelete(temp) {
-      this.$confirm("此操作将永久删除该商品, 是否继续?", "提示", {
+      this.$confirm("此操作将永久删除该福利, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
@@ -321,8 +370,14 @@ export default {
 </script>
 
 <style scoped>
-#administrator-list {
+h1 {
+  margin: 0;
+}
+#public-number-promotion {
+  position: absolute;
+  top: 0;
   padding: 20px;
+  width: 100%;
 }
 .user-avatar {
   width: 3rem;
@@ -332,6 +387,11 @@ export default {
 .el-button--mini {
   padding: 7px 10px;
   width: 60px;
+}
+.filter-container {
+  display: flex;
+  justify-content: space-between;
+  padding-right: 5%;
 }
 .filter-container >>> .el-input__inner {
   height: 36px;

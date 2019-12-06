@@ -1,14 +1,14 @@
 <!--
  * @Author: your name
- * @Date: 2019-10-25 19:14:30
- * @LastEditTime: 2019-12-05 16:51:17
+ * @Date: 2019-12-05 17:51:15
+ * @LastEditTime: 2019-12-06 09:40:16
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
- * @FilePath: \vue-admit-template\src\views\manage-user\administrator-list\index.vue
+ * @FilePath: \vue-admit-template\src\views\Feedback\index.vue
  -->
 <template>
   <div id="administrator-list" class="app-containeFr">
-    <article class="filter-container">
+    <!-- <article class="filter-container">
       <section>
         <el-button
           class="filter-item"
@@ -32,7 +32,7 @@
       <section>
         <h1>公众号推广</h1>
       </section>
-    </article>
+    </article>-->
 
     <el-table
       v-loading="listLoading"
@@ -43,49 +43,70 @@
       highlight-current-row
       style="width: 100%;"
     >
-      <el-table-column label="福利id" prop="id" align="center">
+      <el-table-column label="id" prop="id" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.id }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="福利名称" prop="name" align="center">
+      <el-table-column label="昵称" prop="nickname" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.name }}</span>
+          <span>{{ scope.row.nickname }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="福利图片" prop="image" align="center">
+      <el-table-column label="图标" prop="icon" align="center">
         <template slot-scope="scope">
-          <img :src="server+scope.row.image" class="user-avatar" />
+          <img :src="server+scope.row.icon" class="user-avatar" v-if="scope.row.icon" />
         </template>
       </el-table-column>
 
-      <el-table-column label="任务描述" prop="describe" align="center">
+      <el-table-column label="用户id" prop="uid" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.uid }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="型号" prop="brand" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.brand }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="系统" prop="system" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.system }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="版本" prop="version" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.version }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="图片" prop="img" align="center">
+        <template slot-scope="scope">
+          <img
+            :src="server+scope.row.img[0]"
+            class="user-avatar"
+            v-if="scope.row.img"
+            @click="showCarousel(scope.row.img)"
+          />
+        </template>
+      </el-table-column>
+
+      <el-table-column label="描述" prop="describe" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.describe }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="福利状态" prop="status" align="center">
+      <el-table-column label="状态" prop="status" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.status==1?"正常":"异常" }}</span>
+          <span>{{ scope.row.status }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="修改时间" prop="updated_at" align="center">
+      <el-table-column label="创建时间" prop="created_at" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.updated_at }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="操作"
-        align="center"
-        class-name="small-padding fixed-width"
-        min-width="120px"
-      >
-        <template slot-scope="scope">
-          <el-button type="primary" size="mini" @click="handleEdit(scope.row)">修改</el-button>
-          <el-button type="primary" size="mini" @click="deleteData(scope.row)">删除</el-button>
+          <span>{{ scope.row.created_at }}</span>
         </template>
       </el-table-column>
     </el-table>
@@ -98,7 +119,7 @@
       @pagination="selectData"
     />
 
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
+    <!-- <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form
         ref="dataForm"
         :rules="ruleForm"
@@ -159,111 +180,97 @@
           @click="dialogStatus==='create'?createData():updataData()"
         >{{ dialogStatus==='create'?"添加":"修改" }}</el-button>
       </div>
+    </el-dialog>-->
+    <el-dialog title="展示图片" :visible.sync="dialogCarouselVisible">
+      <el-carousel
+        indicator-position="outside"
+        :autoplay="false"
+        height="50vh"
+        :loop="false"
+        arrow="always"
+      >
+        <el-carousel-item v-for="(item,index) in imagesList" :key="index">
+          <figure class="carousel-figure">
+            <img :src="server+item" class="carousel-img" />
+          </figure>
+        </el-carousel-item>
+      </el-carousel>
     </el-dialog>
   </div>
 </template>
 
-<script>
-import {
-  addWelfareListTask,
-  welfareListTask,
-  editWelfareListTask
-} from "@/api/welfare";
-import { handleFormData } from "../../../util.js";
-
-import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
-import { mapState } from "vuex";
+ <script>
+import { getFeedbackList } from "@/api/Feedback";
 import { list } from "@/utils/mixin";
+import { Carousel } from "element-ui";
 export default {
-  name: "public-number-promotion",
-  components: {
-    Pagination
-  },
+  name: "Feedback",
   data() {
     return {
-      // ----------------- 自定义数据
-      // -- 弹出窗标题
       textMap: {
-        create: "添加福利",
-        change: "修改福利"
+        create: "添加$$",
+        change: "修改$$"
       },
-      // -- 临时数据，用于展示弹窗
       temp: {
-        name: undefined,
-        image: undefined,
-        price: undefined,
-        url: undefined,
-        describe: undefined,
-        status: 1
+        name: undefined
       },
-      // -- 弹窗规则判断
       ruleForm: {
-        name: [{ required: true, message: "请输入福利名称", trigger: "blur" }],
-        image: [
-          { required: true, message: "请输入福利图片", trigger: "change" }
-        ]
-      }
+        name: [{ required: true, message: "请输入名称", trigger: "blur" }]
+      },
+      dialogCarouselVisible: false,
+      imagesList: []
     };
-  },
-  computed: {
-    ...mapState("welfare", {
-      secondId: state => state.second_id,
-      showData: state => state.second_showData,
-      typeList: state => state.typeList,
-      describeMap: state => `${state.second_showData.reward}金币`
-    })
   },
   mixins: [list],
   methods: {
-    linkReturn() {
-      this.$router.go(-1);
+    showCarousel(images) {
+      this.imagesList = images;
+      this.$nextTick(() => {
+        this.dialogCarouselVisible = true;
+      });
     },
     select() {
       return new Promise((resolve, reject) => {
-        this.listQuery.welfare_id = this.secondId;
-        welfareListTask(this.listQuery).then(result => {
+        getFeedbackList(this.listQuery).then(result => {
           resolve(result);
         });
       });
     },
     create() {
       return new Promise((resolve, reject) => {
-        let tempMap = JSON.parse(JSON.stringify(this.temp));
-        tempMap.describe = this.describeMap;
-        tempMap.welfare_id = this.secondId;
-        tempMap.image = this.imageFile;
-        const params = handleFormData(tempMap);
-        addWelfareListTask(params).then(() => {
+        $createRequest(this.temp).then(() => {
           resolve();
         });
       });
     },
     updata() {
       return new Promise((resolve, reject) => {
-        let tempMap = JSON.parse(JSON.stringify(this.temp));
-        tempMap.welfare_id = this.secondId;
-        tempMap.image = this.imageFile;
-        const params = handleFormData(tempMap);
-        editWelfareListTask(params).then(() => {
+        $updataRequest(this.temp).then(() => {
           resolve();
         });
       });
     },
     delete(temp) {
       return new Promise((resolve, reject) => {
-        editWelfareListTask(temp).then(() => {
+        $deleteRequest(temp).then(() => {
           resolve();
         });
       });
     }
-  },
-  watch: {
-    describeMap: {
-      handler(to) {
-        this.temp.describe = to;
-      },
-      immediate: true
-    }
   }
 };
 </script>
+
+<style scoped>
+.carousel-figure {
+  margin: 0;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: white;
+}
+.carousel-img {
+  height: 100%;
+}
+</style>
