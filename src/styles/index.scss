@@ -21,7 +21,10 @@ html {
   height: 100%;
   box-sizing: border-box;
 }
-
+.components-container{
+  margin: 30px 50px;
+  position: relative;
+}
 #app {
   height: 100%;
 }
@@ -73,4 +76,8 @@ div:focus {
     display: inline-block;
     vertical-align: middle;
   }
+}
+
+label {
+  font-weight: 700;
 }

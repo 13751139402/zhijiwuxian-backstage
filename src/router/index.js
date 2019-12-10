@@ -2,7 +2,7 @@
  * @Description: ROUTER
  * @Author: your name
  * @Date: 2019-10-18 13:58:44
- * @LastEditTime: 2019-12-05 17:57:06
+ * @LastEditTime: 2019-12-10 17:48:18
  * @LastEditors: Please set LastEditors
  */
 import Vue from 'vue'
@@ -151,6 +151,11 @@ export const constantRoutes = [
       name: 'get-help-list',
       component: () => import('@/views/manage-treasure/get-help-list'),
       meta: { title: '文档列表' }
+    }, {
+      path: 'tinymce',
+      name: 'TinymceDemo',
+      component: () => import('@/views/manage-treasure/tinymce'),
+      meta: { title: '添加文档', noCache: true }
     }]
   },
   {

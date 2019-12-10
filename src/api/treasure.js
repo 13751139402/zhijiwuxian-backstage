@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2019-10-28 17:42:54
- * @LastEditTime: 2019-10-28 19:17:12
+ * @LastEditTime: 2019-12-10 10:30:04
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admit-template\src\api\treasure.js
@@ -42,6 +42,20 @@ export function getHelpList(data) {
 export function editHelpText(data) {
   return request({
     url: '/editHelpText',
+    method: 'post',
+    data
+  })
+}
+
+
+/**
+ * @description: 文档添加 --- 图片
+ * @param {type}
+ * @return:
+ */
+export function updateHelpImg(data) {
+  return request({
+    url: '/updateHelpImg',
     method: 'post',
     data
   })

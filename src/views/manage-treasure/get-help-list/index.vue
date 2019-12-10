@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2019-10-25 19:14:30
- * @LastEditTime: 2019-11-11 11:09:42
+ * @LastEditTime: 2019-12-10 17:38:34
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admit-template\src\views\manage-user\administrator-list\index.vue
@@ -147,7 +147,9 @@ export default {
           { required: true, message: "请填写文章标题", trigger: "blur" }
           // { min: 3, max: 5, message: "长度在 3 到 5 个字符", trigger: "blur" }
         ],
-        type: [{ required: true, message: "请选择文章类型", trigger: "change" }],
+        type: [
+          { required: true, message: "请选择文章类型", trigger: "change" }
+        ],
         texts: [{ required: true, message: "请填写文章内容", trigger: "blur" }]
       },
       textMap: {
@@ -211,13 +213,19 @@ export default {
     },
 
     handleEdit(temp) {
-      this.dialogStatus = "change";
-      this.dialogFormVisible = true;
-      Object.assign(this.temp, temp);
+      this.$store.dispatch("treasure/changeData", {
+        data: temp,
+        type: "change"
+      });
+      this.$router.push("./tinymce");
+      // this.dialogStatus = "change";
+      // this.dialogFormVisible = true;
+      // Object.assign(this.temp, temp);
     },
     handleCreate() {
-      this.dialogStatus = "create";
-      this.dialogFormVisible = true;
+      this.$router.push("./tinymce");
+      // this.dialogStatus = "create";
+      // this.dialogFormVisible = true;
     },
 
     handleUpdate(temp) {

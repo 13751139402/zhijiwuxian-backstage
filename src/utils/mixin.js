@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2019-12-05 11:46:13
- * @LastEditTime: 2019-12-05 18:14:19
+ * @LastEditTime: 2019-12-06 10:12:18
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admit-template\src\mixin\list.js
@@ -36,6 +36,8 @@ let list = {
         },
     },
     methods: {
+
+        // ----------- 业务层
         /**
          * @description: 获取列表数据
          * @param {type} 

@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2019-10-26 15:09:04
- * @LastEditTime: 2019-12-05 16:27:54
+ * @LastEditTime: 2019-12-10 17:19:30
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admit-template\src\views\welfare\add-welfare\index.vue
@@ -254,7 +254,6 @@ export default {
   mounted() {
     if (this.type === "change") {
       this.$route.meta.title = "修改福利";
-      console.log(this.$store.state.welfare.data);
       this.ruleForm = Object.assign(
         this.ruleForm,
         this.$store.state.welfare.data

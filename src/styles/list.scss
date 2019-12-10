@@ -13,10 +13,6 @@ h1 {
     width: 100%;
     max-height: 5rem;
   }
-  .el-button--mini {
-    padding: 7px 10px;
-    width: 60px;
-  }
   .filter-container >>> .el-input__inner {
     height: 36px;
     line-height: 36px;
@@ -62,9 +58,6 @@ h1 {
     margin-left: 0 !important;
     box-sizing: border-box;
     padding: 0 50px;
-  }
-  .el-button--mini {
-    margin: 2px;
   }
   .el-button + .el-button {
     margin-left: 0;
