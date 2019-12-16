@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2019-10-18 13:58:44
- * @LastEditTime: 2019-12-10 18:03:52
+ * @LastEditTime: 2019-12-16 11:32:50
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /c:\Users\14374\Documents\GitHub\vue-admit-template\src\store\modules\settings.js
@@ -10,6 +10,49 @@
 const state = {
   data: false,
   type: 'create',
+  typeMap: [
+    {
+      key: 1,
+      value: "商城规则"
+    },
+    {
+      key: 2,
+      value: "签到规则"
+    },
+    {
+      key: 3,
+      value: "邀请好友"
+    },
+    {
+      key: 4,
+      value: '群发规则'
+    },
+    {
+      key: 5,
+      value: "关注公众号规则"
+    },
+
+    {
+      key: 6,
+      value: "热推商品"
+    },
+    {
+      key: 7,
+      value: "获取说明"
+    },
+    {
+      key: 8,
+      value: "币值说明"
+    },
+    {
+      key: 9,
+      value: "解锁说明"
+    },
+    {
+      key: 10,
+      value: "玩法说明"
+    },
+  ],
   page: {
     page: 1,
     page_size: 20

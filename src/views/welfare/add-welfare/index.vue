@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2019-10-26 15:09:04
- * @LastEditTime: 2019-12-10 17:19:30
+ * @LastEditTime: 2019-12-13 09:49:28
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admit-template\src\views\welfare\add-welfare\index.vue
@@ -270,7 +270,7 @@ export default {
 </script>
 
 <style scoped>
-h1{
+h1 {
   margin: 20px;
 }
 .app-main {

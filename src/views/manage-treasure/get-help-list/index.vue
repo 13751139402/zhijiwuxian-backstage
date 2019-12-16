@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2019-10-25 19:14:30
- * @LastEditTime: 2019-12-10 17:38:34
+ * @LastEditTime: 2019-12-16 11:26:59
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admit-template\src\views\manage-user\administrator-list\index.vue
@@ -33,19 +33,19 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="文章标题" prop="title" align="center">
+      <el-table-column label="文档标题" prop="title" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.title }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="任务状态" prop="status" align="center">
+      <el-table-column label="文档状态" prop="type" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.status }}</span>
+          <span>{{ typeMap[scope.row.type] }}</span>
         </template>
       </el-table-column>
 
-      <el-table-column label="任务内容" prop="texts" min-width="300px" align="center">
+      <el-table-column label="文档内容" prop="texts" min-width="300px" align="center">
         <template slot-scope="scope">
           <span class="texts">{{ scope.row.texts }}</span>
         </template>
@@ -98,7 +98,7 @@
                 <el-option label="2" value="2" />
               </el-select>
             </el-form-item>
-            <el-form-item label="活动形式" prop="texts">
+            <el-form-item label="文档形式" prop="texts">
               <el-input v-model="temp.texts" type="textarea" rows="20" />
             </el-form-item>
           </section>
@@ -123,13 +123,23 @@ export default {
   components: {
     Pagination
   },
+  computed: {
+    typeMap() {
+      let array = this.$store.state.treasure.typeMap;
+      let typeMap = array.reduce((target, item) => {
+        target[item.key] = item.value;
+        return target;
+      }, {});
+      return typeMap;
+    }
+  },
   data() {
     return {
       list: [],
       formFile: false,
       total: 0,
       tableKey: 0,
-      listLoading: false,
+      listLoading: true,
       dialogStatus: "",
       buttonLoading: false,
       dialogFormVisible: false,
@@ -144,13 +154,13 @@ export default {
       },
       ruleForm: {
         title: [
-          { required: true, message: "请填写文章标题", trigger: "blur" }
+          { required: true, message: "请填写文档标题", trigger: "blur" }
           // { min: 3, max: 5, message: "长度在 3 到 5 个字符", trigger: "blur" }
         ],
         type: [
-          { required: true, message: "请选择文章类型", trigger: "change" }
+          { required: true, message: "请选择文档类型", trigger: "change" }
         ],
-        texts: [{ required: true, message: "请填写文章内容", trigger: "blur" }]
+        texts: [{ required: true, message: "请填写文档内容", trigger: "blur" }]
       },
       textMap: {
         change: "修改",
@@ -229,7 +239,7 @@ export default {
     },
 
     handleUpdate(temp) {
-      this.$confirm("此操作将永久删除该文章, 是否继续?", "提示", {
+      this.$confirm("此操作将永久删除该文档, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"

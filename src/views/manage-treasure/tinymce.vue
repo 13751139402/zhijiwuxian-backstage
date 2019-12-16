@@ -1,50 +1,60 @@
 <!--
  * @Author: your name
  * @Date: 2019-12-09 10:48:09
- * @LastEditTime: 2019-12-10 18:08:10
+ * @LastEditTime: 2019-12-16 11:37:45
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admit-template\src\views\manage-treasure\tinymce.vue
  -->
 <template>
-  <div class="components-container">
-    <h1>{{ this.type==="create"?"添加文档":"修改文档" }}</h1>
-    <el-form ref="ruleForm" :model="form" label-width="80px" :rules="ruleForm">
-      <el-row :gutter="20">
-        <el-col :span="12">
-          <el-form-item label="文章标题" style="margin-left: 80px;" prop="title">
-            <el-input v-model="form.title" style="width:50%"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="任务状态">
-            <el-select v-model="form.type" placeholder="请选择类型">
-              <el-option label="1" :value="1"></el-option>
-              <el-option label="2" :value="2"></el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-      </el-row>
+  <section>
+    <div class="warn">
+      <p>提示:图片请单独放置一行</p>
+    </div>
+    <div class="components-container">
+      <h1>{{ this.docType==="create"?"添加文档":"修改文档" }}</h1>
+      <el-form ref="ruleForm" :model="form" label-width="80px" :rules="ruleForm">
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="文档标题" style="margin-left: 80px;" prop="title">
+              <el-input v-model="form.title" style="width:50%"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="文档类型" prop="type">
+              <el-select v-model="form.type" placeholder="请选择类型">
+                <el-option
+                  :label="item.value"
+                  :value="item.key"
+                  v-for="item in typeMap"
+                  :key="item.key"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
 
-      <el-form-item prop="texts">
-        <tinymce v-model="form.texts" :height="'60vh'" />
-      </el-form-item>
+        <el-form-item prop="texts">
+          <tinymce v-model="form.texts" :height="'55vh'" />
+        </el-form-item>
 
-      <el-form-item class="submit-item">
-        <el-button type="primary" @click="onCreate" v-if="this.type==='create'">创建</el-button>
-        <el-button type="primary" @click="onChange">修改</el-button>
-        <router-link to="get-help-list">
-          <el-button>返回</el-button>
-        </router-link>
-      </el-form-item>
-    </el-form>
-  </div>
+        <el-form-item class="submit-item">
+          <el-button type="primary" @click="onCreate" v-if="this.docType==='create'">创建</el-button>
+          <el-button type="primary" @click="onChange" v-else>修改</el-button>
+          <router-link to="get-help-list">
+            <el-button>返回</el-button>
+          </router-link>
+        </el-form-item>
+      </el-form>
+    </div>
+  </section>
 </template>
 
 <script>
 import { mapState } from "vuex";
 import Tinymce from "@/components/Tinymce";
 import { addHelpText, editHelpText } from "@/api/treasure";
+import { stat } from "fs";
 
 export default {
   name: "TinymceDemo",
@@ -53,19 +63,21 @@ export default {
     return {
       form: {
         title: "",
-        type: 1,
+        type: undefined,
         texts: "",
         id: ""
       },
       ruleForm: {
-        title: [{ required: true, message: "请输入名称", trigger: "blur" }]
+        title: [{ required: true, message: "请输入名称", trigger: "blur" }],
+        type: [{ required: true, message: "请选择文档类型", trigger: "blur" }]
       }
     };
   },
   computed: {
     ...mapState("treasure", {
-      type: state => state.type,
-      data: state => state.data
+      docType: state => state.type,
+      data: state => state.data,
+      typeMap: state => state.typeMap
     }),
     server() {
       return this.$store.getters.server;
@@ -73,23 +85,22 @@ export default {
   },
   methods: {
     handleSubmitData(value) {
-      let uuid = "06ab9d23dfe04880f7edc5c63731153f";
-      // let imgFilter = new RegExp(`/<img.*src="${this.server}([^"]*).*\/>/g`);
-      value = value
-        .replace(/<img.*src="([^"]*).*\/>/g, (item, $1) => {
-          return uuid + $1;
-        })
-        .replace(/<(\S*?)[^>]*>.*?|<.*? \/>/g, "")
-        .replace(/\n|↵/g, "/n");
-      value = value.split("/n").reduce((target, item) => {
-        if (item.indexOf(uuid) !== -1) {
-          target.push({ img: item.replace(uuid, "") });
-        } else {
-          target.push({ text: item });
-        }
-        return target;
-      }, []);
-      return JSON.stringify(value);
+      console.log("修改前" + value);
+      let texts = value
+        .replace(/&nbsp;/g, " ")
+        .split("</p>")
+        .reduce((target, item) => {
+          let text = item.replace(/<(\/?p)*>/g, "");
+          let img = /(?<=src=")(.+?)(?=")/.exec(item);
+          if (img) {
+            target.push({ img: img[0] });
+          } else {
+            target.push({ text });
+          }
+          return target;
+        }, []);
+      console.log("修改后" + JSON.stringify(texts));
+      return JSON.stringify(texts);
     },
     onCreate() {
       this.$refs["ruleForm"].validate(valid => {
@@ -145,19 +156,11 @@ export default {
             .catch(() => {});
         }
       });
-    },
-    initData() {
-      if (this.type === "change") {
-        this.$route.meta.title = "修改文档";
-      } else {
-        this.$route.meta.title = "添加文档";
-      }
-      this.form = Object.assign(this.form, this.data);
     }
   },
 
   mounted() {
-    if (this.type === "change") {
+    if (this.docType === "change") {
       this.$route.meta.title = "修改文档";
     } else {
       this.$route.meta.title = "添加文档";
@@ -171,6 +174,15 @@ export default {
 </script>
 
 <style scoped>
+p {
+  margin: 0;
+}
+.warn {
+  background: #d0d0d0;
+  padding: 10px;
+  font-size: 18px;
+  font-weight: bold;
+}
 .form {
   margin-bottom: 12px;
 }
