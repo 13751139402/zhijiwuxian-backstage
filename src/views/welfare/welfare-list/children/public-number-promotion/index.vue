@@ -1,8 +1,8 @@
 <!--
  * @Author: your name
  * @Date: 2019-10-25 19:14:30
- * @LastEditTime: 2019-12-05 16:51:17
- * @LastEditors: Please set LastEditors
+ * @LastEditTime : 2019-12-18 10:40:56
+ * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admit-template\src\views\manage-user\administrator-list\index.vue
  -->
@@ -133,7 +133,7 @@
               <el-select v-model="showData.type" placeholder="请选择福利类型" disabled>
                 <el-option
                   :label="item"
-                  :value="index"
+                  :value="Number(index)"
                   v-for="(item,index) in typeList"
                   :key="index"
                 />
@@ -210,7 +210,7 @@ export default {
       secondId: state => state.second_id,
       showData: state => state.second_showData,
       typeList: state => state.typeList,
-      describeMap: state => `${state.second_showData.reward}金币`
+      describeMap: state => `${state.second_showData.reward}趣币`
     })
   },
   mixins: [list],

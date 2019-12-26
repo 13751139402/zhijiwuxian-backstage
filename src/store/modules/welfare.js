@@ -1,8 +1,8 @@
 /*
  * @Author: your name
  * @Date: 2019-10-18 13:58:44
- * @LastEditTime: 2019-12-05 15:32:19
- * @LastEditors: Please set LastEditors
+ * @LastEditTime : 2019-12-18 10:36:28
+ * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /c:\Users\14374\Documents\GitHub\vue-admit-template\src\store\modules\settings.js
  */
@@ -79,6 +79,7 @@ const actions = {
   getWelfareType({ commit, state }, data) {
     if (state.typeList.length == 0) {
       getWelfareType().then(({ result }) => {
+        Reflect.deleteProperty(result, 'user_welfare');
         commit('CHANGE_TYPELIST', result);
       });
     }

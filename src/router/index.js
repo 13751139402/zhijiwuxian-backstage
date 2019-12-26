@@ -2,8 +2,8 @@
  * @Description: ROUTER
  * @Author: your name
  * @Date: 2019-10-18 13:58:44
- * @LastEditTime: 2019-12-10 17:48:18
- * @LastEditors: Please set LastEditors
+ * @LastEditTime : 2019-12-26 16:19:20
+ * @LastEditors  : Please set LastEditors
  */
 import Vue from 'vue'
 import Router from 'vue-router'
@@ -156,7 +156,12 @@ export const constantRoutes = [
       name: 'TinymceDemo',
       component: () => import('@/views/manage-treasure/tinymce'),
       meta: { title: '添加文档', noCache: true }
-    }]
+    }, {
+      path: 'apply-list',
+      name: 'apply-list',
+      component: () => import('@/views/manage-treasure/apply-list'),
+      meta: { title: '提现列表' }
+    },]
   },
   {
     path: '/dig-treasure',
@@ -174,30 +179,6 @@ export const constantRoutes = [
       meta: { title: '宝箱物品列表' }
     }
     ]
-  },
-
-  {
-    path: '/statistics-deal',
-    component: Layout,
-    meta: { title: '交易统计', icon: 'password' },
-    children: [{
-      path: 'apply-list',
-      name: 'apply-list',
-      component: () => import('@/views/statistics-deal/apply-list'),
-      meta: { title: '申请列表' }
-    },
-    {
-      path: 'withdraw-account',
-      name: 'withdraw-account',
-      component: () => import('@/views/statistics-deal/withdraw-account'),
-      meta: { title: '提现账户' }
-    },
-    {
-      path: 'withdraw-record',
-      name: 'withdraw-record',
-      component: () => import('@/views/statistics-deal/withdraw-record'),
-      meta: { title: '提现记录' }
-    }]
   },
 
   {

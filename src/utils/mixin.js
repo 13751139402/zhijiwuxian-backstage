@@ -1,8 +1,8 @@
 /*
  * @Author: your name
  * @Date: 2019-12-05 11:46:13
- * @LastEditTime: 2019-12-06 10:12:18
- * @LastEditors: Please set LastEditors
+ * @LastEditTime : 2019-12-26 17:18:43
+ * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admit-template\src\mixin\list.js
  */
@@ -19,7 +19,8 @@ let list = {
             listQuery: {
                 // 分页参数
                 page: 1, // 页码
-                page_size: 20, // 页码大小
+                page_size: 20, // 页码大小'
+                status:1
             },
             dialogStatus: "create", // 弹出窗状态
             dialogFormVisible: false, // 弹出框是否显示

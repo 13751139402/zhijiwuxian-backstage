@@ -1,8 +1,8 @@
 <!--
  * @Author: your name
  * @Date: 2019-10-26 15:09:04
- * @LastEditTime: 2019-12-13 09:49:28
- * @LastEditors: Please set LastEditors
+ * @LastEditTime : 2019-12-18 10:41:09
+ * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admit-template\src\views\welfare\add-welfare\index.vue
  -->
@@ -21,7 +21,12 @@
       </el-form-item>
       <el-form-item label="福利类型" prop="type">
         <el-select v-model="ruleForm.type" placeholder="请选择福利类型">
-          <el-option :label="item" :value="index" v-for="(item,index) in typeList" :key="index" />
+          <el-option
+            :label="item"
+            :value="Number(index)"
+            v-for="(item,index) in typeList"
+            :key="index"
+          />
         </el-select>
       </el-form-item>
       <el-form-item label="福利描述" prop="describe">

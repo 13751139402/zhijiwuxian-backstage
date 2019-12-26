@@ -1,8 +1,8 @@
 /*
  * @Author: your name
  * @Date: 2019-10-28 17:42:54
- * @LastEditTime: 2019-12-10 10:30:04
- * @LastEditors: Please set LastEditors
+ * @LastEditTime : 2019-12-26 16:54:17
+ * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admit-template\src\api\treasure.js
  */
@@ -56,6 +56,33 @@ export function editHelpText(data) {
 export function updateHelpImg(data) {
   return request({
     url: '/updateHelpImg',
+    method: 'post',
+    data
+  })
+}
+
+
+/**
+ * @description: 提现列表
+ * @param {type}
+ * @return:
+ */
+export function getUserTradeList(params) {
+  return request({
+    url: '/getUserTradeList',
+    method: 'get',
+    params
+  })
+}
+
+/**
+ * @description: 完成用户提现
+ * @param {type}
+ * @return:
+ */
+export function editUserTrade(data) {
+  return request({
+    url: '/editUserTrade',
     method: 'post',
     data
   })

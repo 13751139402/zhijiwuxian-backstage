@@ -1,8 +1,8 @@
 /*
  * @Author: your name
  * @Date: 2019-10-18 13:58:44
- * @LastEditTime: 2019-12-16 11:32:50
- * @LastEditors: Please set LastEditors
+ * @LastEditTime : 2019-12-19 11:11:12
+ * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /c:\Users\14374\Documents\GitHub\vue-admit-template\src\store\modules\settings.js
  */
@@ -70,7 +70,11 @@ const mutations = {
     let texts = array.reduce((target, item) => {
       let rows;
       if (item.img) {
-        rows = `<img src="${item.img}"></img>`
+        if (item.width) {
+          rows = `<img src="${item.img}" width="${item.width}" height="${item.height}"></img>`
+        } else {
+          rows = `<img src="${item.img}"></img>`
+        }
       } else {
         rows = item.text;
       }

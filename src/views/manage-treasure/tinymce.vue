@@ -1,8 +1,8 @@
 <!--
  * @Author: your name
  * @Date: 2019-12-09 10:48:09
- * @LastEditTime: 2019-12-16 11:37:45
- * @LastEditors: Please set LastEditors
+ * @LastEditTime : 2019-12-20 16:49:41
+ * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admit-template\src\views\manage-treasure\tinymce.vue
  -->
@@ -85,21 +85,28 @@ export default {
   },
   methods: {
     handleSubmitData(value) {
-      console.log("修改前" + value);
+      console.log("修改");
       let texts = value
         .replace(/&nbsp;/g, " ")
         .split("</p>")
+        .slice(0,-1)
         .reduce((target, item) => {
           let text = item.replace(/<(\/?p)*>/g, "");
           let img = /(?<=src=")(.+?)(?=")/.exec(item);
           if (img) {
-            target.push({ img: img[0] });
+            let imgNorm = /(?<=g src=")(.+?)(?=").*(?<=width=")(.+?)(?=").*(?<=height=")(.+?)(?=")/.exec(
+              item
+            );
+            if (imgNorm) {
+              target.push({ img: imgNorm[1], width: imgNorm[2], height: imgNorm[3] });
+            } else {
+              target.push({ img: img[0] });
+            }
           } else {
             target.push({ text });
           }
           return target;
         }, []);
-      console.log("修改后" + JSON.stringify(texts));
       return JSON.stringify(texts);
     },
     onCreate() {

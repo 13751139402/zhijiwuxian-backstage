@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2019-10-25 19:14:30
- * @LastEditTime: 2019-12-05 15:07:44
+ * @LastEditTime: 2019-12-17 14:32:45
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admit-template\src\views\manage-user\administrator-list\index.vue
