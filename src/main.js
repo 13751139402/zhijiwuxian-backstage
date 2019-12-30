@@ -2,8 +2,8 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-10-18 13:58:44
- * @LastEditTime: 2019-10-24 09:53:30
- * @LastEditors: Please set LastEditors
+ * @LastEditTime : 2019-12-30 10:07:07
+ * @LastEditors  : Please set LastEditors
  */
 import Vue from 'vue'
 
@@ -21,7 +21,7 @@ import router from './router'
 
 import '@/icons' // icon
 import './plugins/element.js'
-// import '@/permission' // permission control
+import '@/permission' // permission control
 
 /**
 *  如果您不想使用模拟服务器

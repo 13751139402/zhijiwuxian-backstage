@@ -2,8 +2,8 @@
  * @Description: 登录页面
  * @Author: your name
  * @Date: 2019-10-18 13:58:44
- * @LastEditTime: 2019-10-24 10:25:02
- * @LastEditors: Please set LastEditors
+ * @LastEditTime : 2019-12-27 17:17:05
+ * @LastEditors  : Please set LastEditors
  -->
 <template>
   <div class="login-container">
@@ -68,10 +68,10 @@
         @click.native.prevent="handleLogin"
       >登录</el-button>
 
-      <div class="tips">
+      <!-- <div class="tips">
         <span style="margin-right:20px;">username: 1728309</span>
         <span>password: 123456</span>
-      </div>
+      </div> -->
     </el-form>
   </div>
 </template>
@@ -101,8 +101,8 @@ export default {
     }
     return {
       loginForm: {
-        username: '1728309',
-        password: '123456'
+        username: '',
+        password: ''
       },
       loginRules: {
         username: [

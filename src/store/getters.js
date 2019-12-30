@@ -1,8 +1,8 @@
 /*
  * @Author: your name
  * @Date: 2019-10-18 13:58:44
- * @LastEditTime: 2019-10-28 10:24:23
- * @LastEditors: Please set LastEditors
+ * @LastEditTime : 2019-12-30 10:48:32
+ * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /c:\Users\14374\Documents\GitHub\vue-admit-template\src\store\getters.js
  */
@@ -15,7 +15,7 @@ const getters = {
   visitedViews: state => state.tagsView.visitedViews,
   cachedViews: state => state.tagsView.cachedViews,
   permission_routes: state => state.permission.routes,
-  roles: state => state.user.roles // 权限角色
+  token: state => state.user.token // 权限角色
 
 }
 export default getters

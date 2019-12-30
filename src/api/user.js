@@ -2,8 +2,8 @@
  * @Description: user API
  * @Author: your name
  * @Date: 2019-10-18 13:58:44
- * @LastEditTime: 2019-10-23 19:19:07
- * @LastEditors: Please set LastEditors
+ * @LastEditTime : 2019-12-27 17:24:24
+ * @LastEditors  : Please set LastEditors
  */
 import request from '@/utils/request' // request是封装过的axios
 
