@@ -2,7 +2,7 @@
  * @Description: ROUTER
  * @Author: your name
  * @Date: 2019-10-18 13:58:44
- * @LastEditTime : 2019-12-26 16:19:20
+ * @LastEditTime : 2019-12-30 17:10:26
  * @LastEditors  : Please set LastEditors
  */
 import Vue from 'vue'
@@ -226,7 +226,14 @@ export const constantRoutes = [
       name: 'Feedback',
       component: () => import('@/views/Feedback/index'),
       meta: { title: '反馈列表' }
-    },]
+    },
+    {
+      path: 'versions',
+      name: 'versions',
+      component: () => import('@/views/Feedback/versions'),
+      meta: { title: '版本列表' }
+    }
+    ]
   },
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }

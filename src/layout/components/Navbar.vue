@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-10-18 13:58:44
- * @LastEditTime : 2019-12-30 11:20:42
+ * @LastEditTime : 2019-12-31 16:31:19
  * @LastEditors  : Please set LastEditors
  -->
 <template>
@@ -14,7 +14,7 @@
     <div class="right-menu">
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
-          <img :src="'?imageView2/1/w/80/h/80'" class="user-avatar">
+          <img :src="'https://upload.jianshu.io/users/upload_avatars/20529647/f23e941d-4852-4b80-8bb5-e6f0b86732d6?imageMogr2/auto-orient/strip|imageView2/1/w/240/h/240'" class="user-avatar">
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">

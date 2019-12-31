@@ -1,8 +1,8 @@
 /*
  * @Author: 创建axios实例，添加token验证
  * @Date: 2019-10-18 13:58:44
- * @LastEditTime: 2019-11-06 17:36:05
- * @LastEditors: Please set LastEditors
+ * @LastEditTime : 2019-12-30 11:38:25
+ * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /c:\Users\14374\Documents\GitHub\vue-admit-template\src\utils\request.js
  */
@@ -42,7 +42,7 @@ service.interceptors.request.use(
       // 让每个请求携带toekn
       // ['X-Token']是一个自定义key
       // 请根据实际情况修改
-      config.headers['X-Token'] = getToken()
+      // config.headers['X-Token'] = getToken()
     }
     return config
   },

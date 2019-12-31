@@ -1,13 +1,14 @@
 /*
  * @Author: your name
  * @Date: 2019-12-05 11:46:13
- * @LastEditTime : 2019-12-26 17:18:43
+ * @LastEditTime : 2019-12-31 17:11:35
  * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admit-template\src\mixin\list.js
  */
 
 import Pagination from "@/components/Pagination";
+export { switchFormData } from "./handleData";
 let list = {
     data: function () {
         return {
@@ -20,7 +21,7 @@ let list = {
                 // 分页参数
                 page: 1, // 页码
                 page_size: 20, // 页码大小'
-                status:1
+                status: 1
             },
             dialogStatus: "create", // 弹出窗状态
             dialogFormVisible: false, // 弹出框是否显示
@@ -77,7 +78,9 @@ let list = {
                                 this.buttonLoading = false;
                             }
                         });
-                    });
+                    }).catch((err) => {
+                        this.buttonLoading = false;
+                    })
                 }
             });
         },
@@ -89,7 +92,7 @@ let list = {
                         this.selectData();
                         this.$notify({
                             title: "成功",
-                            message: "添加成功",
+                            message: "修改成功",
                             type: "success",
                             duration: 1000,
                             onClose: () => {
@@ -98,7 +101,9 @@ let list = {
                                 this.buttonLoading = false;
                             }
                         });
-                    });
+                    }).catch((err) => {
+                        this.buttonLoading = false;
+                    })
                 }
             });
         },
@@ -136,6 +141,7 @@ let list = {
          */
         resetTemp() {
             this.temp = this.$options.data().temp;
+            this.imageFile = false;
         },
         /**
          * @description: 弹窗选择图片,保存图片file文件

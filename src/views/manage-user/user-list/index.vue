@@ -1,8 +1,8 @@
 <!--
  * @Author: your name
  * @Date: 2019-10-19 17:14:45
- * @LastEditTime: 2019-11-11 11:10:00
- * @LastEditors: Please set LastEditors
+ * @LastEditTime : 2019-12-31 17:23:29
+ * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admit-template\src\views\manage-user\user-list\index.vue
  -->
@@ -16,79 +16,16 @@
  -->
 <template>
   <div id="user-list" class="app-container">
-    <!--<div class="filter-container">
-      <el-input
-        v-model="listQuery.title"
-        placeholder="标题"
-        style="width: 200px;"
-        class="filter-item"
-        @keyup.enter.native="handleFilter"
-      />
-      <el-select
-        v-model="listQuery.importance"
-        placeholder="级别"
-        clearable
-        style="width: 90px"
-        class="filter-item"
-      >
-        <el-option v-for="item in importanceOptions" :key="item" :label="item" :value="item" />
-      </el-select>
-      <el-select
-        v-model="listQuery.type"
-        placeholder="类型"
-        clearable
-        class="filter-item"
-        style="width: 130px"
-      >
-        <el-option
-          v-for="item in calendarTypeOptions"
-          :key="item.key"
-          :label="item.display_name+'('+item.key+')'"
-          :value="item.key"
-        />
-      </el-select>
-      <el-select
-        v-model="listQuery.sort"
-        style="width: 140px"
-        class="filter-item"
-        @change="handleFilter"
-      >
-        <el-option
-          v-for="item in sortOptions"
-          :key="item.key"
-          :label="item.label"
-          :value="item.key"
-        />
-      </el-select>
-      <el-button
-        v-waves
-        class="filter-item"
-        type="primary"
-        icon="el-icon-search"
-        @click="handleFilter"
-      >搜索</el-button>
+    <div class="filter-container" style="display:block">
+      <el-input type="number" placeholder="请输入添加数量" v-model="number" style="width:300px"></el-input>
       <el-button
         class="filter-item"
         style="margin-left: 10px;"
         type="primary"
         icon="el-icon-edit"
-        @click="handleCreate"
-      >添加</el-button>
-      <el-button
-        v-waves
-        :loading="downloadLoading"
-        class="filter-item"
-        type="primary"
-        icon="el-icon-download"
-        @click="handleDownload"
-      >导出</el-button>
-      <el-checkbox
-        v-model="showReviewer"
-        class="filter-item"
-        style="margin-left:15px;"
-        @change="tableKey=tableKey+1"
-      >审核人</el-checkbox>
-    </div>-->
+        @click="handleAutoRegisterUser"
+      >批量添加</el-button>
+    </div>
 
     <el-table
       :key="tableKey"
@@ -314,7 +251,8 @@ import {
   fetchPv,
   createArticle,
   updateArticle,
-  industry
+  industry,
+  autoRegisterUser
 } from "@/api/manage-user";
 import waves from "@/directive/waves"; // waves directive
 import address from "@/assets/address";
@@ -322,7 +260,7 @@ import { parseTime } from "@/utils";
 import "@/utils/dateFormat.js";
 import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
 import { resizeImage } from "@/utils/handleImage";
-
+import { switchFormData } from "@/utils/handleData";
 const { area, city, province } = address;
 const calendarTypeOptions = [
   { key: "CN", display_name: "China" },
@@ -362,12 +300,14 @@ export default {
       callback();
     };
     return {
+      number: undefined,
       server: this.$store.getters.server,
       tableKey: 0,
       list: null,
       formFile: false,
       total: 0,
       listLoading: true,
+      imageFile: false,
       address: {
         area: [],
         city: [],
@@ -452,6 +392,44 @@ export default {
     this.getProvinceData();
   },
   methods: {
+    handleAutoRegisterUser() {
+      if (!this.number) {
+        this.$message({
+          type: "error",
+          message: `添加数量错误`
+        });
+        return;
+      }
+      this.$confirm(
+        `此操作将该自动生成${this.number}用户记录, 是否继续?`,
+        "提示",
+        {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        }
+      )
+        .then(() => {
+          autoRegisterUser({ number: this.number }).then(() => {
+            this.$notify({
+              title: "成功",
+              message: "添加成功",
+              type: "success",
+              duration: 1000,
+              onClose: () => {
+                this.getList();
+                this.number = 0;
+              }
+            });
+          });
+        })
+        .catch(err => {
+          this.$message({
+            type: "info",
+            message: `已取消删除 ${err}`
+          });
+        });
+    },
     changeCityData() {},
     getProvinceData() {
       this.address.province = province;
@@ -522,6 +500,7 @@ export default {
     },
     handleUpdate(row) {
       this.temp = Object.assign({}, row); // copy obj
+      this.temp.id = row.id;
       this.temp.birth = new Date(this.temp.birth);
       this.dialogStatus = "change";
       this.dialogFormVisible = true;
@@ -529,32 +508,19 @@ export default {
     updateData() {
       this.$refs["dataForm"].validate(valid => {
         if (valid) {
-          const {
-            tags,
-            nickname,
-            birth,
-            gender,
-            icon,
-            industry,
-            occupation,
-            account,
-            address_tag
-          } = this.temp;
-          const tempData = {
-            account,
-            tags,
-            nickname,
-            birth,
-            gender,
-            industry,
-            occupation
-            // icon
-          };
+          let tempData = JSON.parse(JSON.stringify(this.temp));
           if (tempData.birth) {
-            tempData.birth = tempData.birth.Format("yyyy-MM-dd");
+            tempData.birth = this.temp.birth.Format("yyyy-MM-dd");
           }
+          console.log("文档男女点");
+          if (this.imageFile) {
+            tempData = Object.assign(tempData, { icon: this.imageFile });
+          } else {
+            Reflect.deleteProperty(tempData, "icon");
+          }
+          tempData = switchFormData(tempData);
           updateArticle(tempData).then(() => {
-            // this.getList();
+            this.getList();
             for (const v of this.list) {
               if (v.account === this.temp.account) {
                 const index = this.list.indexOf(v);
@@ -639,35 +605,17 @@ export default {
       reader.readAsDataURL(blob);
     },
 
-    async beforeAvatarUpload({ file }) {
-      const imageData = await resizeImage(file);
-      this.temp.icon = imageData.base64;
-      // 图片上传有两种数据格式
-      // 1.base64上传，但是需要后端进行转化
-      // 2.blob对象（类文件对象）可以直接转化为二进制对象
-      // 表单上传的content-type 两种格式
-      // 1.multipart/form-data 表单里有文件的上传,form的input会以二进制的方式转过去 窗体数据被编码为一条消息，页上的每个控件对应消息中的一个部分。
-      // 2.application/x-www-form-urlencoded 窗体数据被编码为名称/值对。这是标准（默认）的编码格式
-      const formFile = new FormData(); // 创建一个新的FormData对象 (窗体数据)
+    beforeAvatarUpload({ file }) {
+      // API 读取 本地文件
+      var reader = new FileReader();
+      // 将文件读取为base64的格式，也就是可以当成图片的src
+      reader.readAsDataURL(file);
 
-      // 在窗体数据中添加一个“部分”
-      // 这里添加了一个blob对象，该对象会传输时会转化为二进制，传入服务器进行保存
-      // (键,值,图片名称)
-      formFile.append("icon", imageData.blob, file.name);
-      const { account } = this.temp;
-      formFile.append("account", account); // 添加一个键值对,账号account,用于判断是需要修改哪个账号的头像
-      updateArticle(formFile).then(() => {
-        this.getList();
-        this.$notify({
-          title: "成功",
-          message: "头像更改成功",
-          type: "success",
-          duration: 2000,
-          onClose: () => {
-            this.getList();
-          }
-        });
-      });
+      // 读取文件成功后执行的方法函数
+      reader.onload = e => {
+        this.temp.icon = e.target.result;
+      };
+      this.imageFile = file;
     }
   }
 };

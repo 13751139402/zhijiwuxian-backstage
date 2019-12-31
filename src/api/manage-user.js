@@ -1,8 +1,8 @@
 /*
  * @Author: your name
  * @Date: 2019-10-21 14:54:15
- * @LastEditTime: 2019-10-30 19:01:33
- * @LastEditors: Please set LastEditors
+ * @LastEditTime : 2019-12-31 17:13:07
+ * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admit-template\src\api\article.js
  */
@@ -82,6 +82,18 @@ export function adminUpdate(data) {
   })
 }
 
+/**
+ * @description: 批量添加用户
+ * @param {type}
+ * @return:
+ */
+export function autoRegisterUser(params) {
+  return request({
+    url: '/autoRegisterUser',
+    method: 'get',
+    params
+  })
+}
 /**
  * @description: 添加管理员
  * @param {type}
