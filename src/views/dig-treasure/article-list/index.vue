@@ -1,43 +1,20 @@
 <!--
  * @Author: your name
  * @Date: 2019-10-25 19:14:30
- * @LastEditTime: 2019-11-27 11:43:54
- * @LastEditors: Please set LastEditors
+ * @LastEditTime : 2020-01-06 11:34:06
+ * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admit-template\src\views\manage-user\administrator-list\index.vue
  -->
 <template>
   <div id="administrator-list" class="app-containeFr">
     <div class="filter-container">
-      <!-- <el-select
-        v-model="listQuery.type"
-        placeholder="请输入物品类型"
-        clearable
-        style="width: 150px"
-        class="filter-item"
-      >
-        <el-option label="立即生效" value="1" />
-        <el-option label="延时生效" value="2" />
-        <el-option label="道具" value="3" />
-      </el-select>
-
-      <el-select
-        v-model="listQuery.conf_type"
-        placeholder="请输入爆率类型"
-        clearable
-        style="width: 150px"
-        class="filter-item"
-      >
-        <el-option label="金币" value="1" />
-        <el-option label="道具" value="2" />
-      </el-select>
-
-      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="getList">搜索</el-button>-->
       <el-button
         class="filter-item"
         style="margin-left: 10px;"
         type="primary"
         icon="el-icon-edit"
+        v-if="rank"
         @click="handleCreate"
       >添加</el-button>
     </div>
@@ -122,6 +99,7 @@
         align="center"
         class-name="small-padding fixed-width"
         min-width="120px"
+        v-if="rank"
       >
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="handleChange(scope.row)">修改</el-button>
@@ -365,6 +343,9 @@ export default {
   computed: {
     server() {
       return this.$store.getters.server;
+    },
+    rank() {
+      return this.$store.state.user.rank <= 3;
     }
   },
   mounted() {

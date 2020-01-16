@@ -2,7 +2,7 @@
  * @Description: ROUTER
  * @Author: your name
  * @Date: 2019-10-18 13:58:44
- * @LastEditTime : 2019-12-30 17:10:26
+ * @LastEditTime : 2020-01-09 14:39:52
  * @LastEditors  : Please set LastEditors
  */
 import Vue from 'vue'
@@ -64,77 +64,74 @@ export const constantRoutes = [
       }
     ]
   },
+]
+
+export const asyncRoutes = [
   {
     path: '/', // 默认页面 如果没有登录会直接跳转login
     component: Layout,
     redirect: '/home',
+    mete: { roles: [9] },
     children: [{
       path: 'home',
       name: 'home',
       component: () => import('@/views/dashboard/index'),
       meta: {
-        title: '首页', icon: 'dashboard', affix: true
+        title: '首页', icon: 'dashboard', affix: true, roles: [9]
       }
     }]
   },
-
   {
     path: '/manage-user',
     component: Layout,
-    meta: { title: '用户管理', icon: 'user' },
+    meta: { title: '用户管理', icon: 'user', roles: [9] },
     children: [{
       path: 'user-list',
       name: 'user-list',
       component: () => import('@/views/manage-user/user-list'),
-      meta: { title: '用户列表', noCache: true }
+      meta: { title: '用户列表', noCache: true, roles: [9] }
     },
     {
       path: 'administrator-list',
       name: 'administrator-list',
       component: () => import('@/views/manage-user/administrator-list'),
-      meta: { title: '管理员列表', noCache: true }
+      meta: { title: '管理员列表', noCache: true, roles: [1] }
     }, {
       path: 'user-data',
       name: 'user-data',
       component: () => import('@/views/manage-user/user-data'),
-      meta: { title: '个人信息', noCache: true }
+      meta: { title: '个人信息', noCache: true, roles: [9] }
     }
-
-      // {
-      //   path: 'batch-signup-user',
-      //   name: 'batch-signup-user',
-      //   component: () => import('@/views/manage-user/batch-signup-user'),
-      //   meta: { title: '批量注册用户' }
-      // }
     ]
   },
-
   {
     path: '/welfare',
     component: Layout,
-    meta: { title: '福利管理', icon: 'user' },
+    meta: { title: '福利管理', icon: 'form', roles: [9] },
     children: [{
       path: 'add-welfare',
       name: 'add-welfare',
+      roles: [1],
       component: () => import('@/views/welfare/add-welfare'),
-      meta: { title: '添加福利', noCache: true }
+      meta: { title: '添加福利', noCache: true, roles: [1] }
     }, {
       path: 'welfare-list',
       name: 'welfare-list',
+      roles: [9],
       component: () => import('@/views/welfare/welfare-list'),
-      meta: { title: '福利列表' },
+      meta: { title: '福利列表', roles: [9] },
     }, {
       path: 'DirSir-promotion',
-      // name: 'DirSir-promotion',
       hidden: true,
+      roles: [9],
       component: () => import('@/views/welfare/welfare-list/children/DirSir-promotion'),
-      meta: { title: '电商推广', navbar: false }
+      meta: { title: '电商推广', navbar: false, roles: [9] }
     }, {
       path: 'public-number-promotion',
-      // name: 'public-number-promotion',
       hidden: true,
+      roles: [9],
       component: () => import('@/views/welfare/welfare-list/children/public-number-promotion'),
-      meta: { title: '公众号推广', navbar: false }
+      meta: { title: '公众号推广', navbar: false, roles: [9] }
     }
     ]
 
@@ -145,93 +142,79 @@ export const constantRoutes = [
     component: Layout,
     name: 'manage-treasure',
     alwaysShow: true,
-    meta: { title: '财富管理', icon: 'user' },
+    meta: { title: '财富管理', icon: 'example', roles: [9] },
     children: [{
       path: 'get-help-list',
       name: 'get-help-list',
       component: () => import('@/views/manage-treasure/get-help-list'),
-      meta: { title: '文档列表' }
+      meta: { title: '文档列表', roles: [9] }
     }, {
       path: 'tinymce',
       name: 'TinymceDemo',
+      roles: [1],
       component: () => import('@/views/manage-treasure/tinymce'),
-      meta: { title: '添加文档', noCache: true }
+      meta: { title: '添加文档', noCache: true, roles: [1] }
     }, {
       path: 'apply-list',
       name: 'apply-list',
       component: () => import('@/views/manage-treasure/apply-list'),
-      meta: { title: '提现列表' }
+      meta: { title: '提现列表', roles: [9] }
     },]
   },
   {
     path: '/dig-treasure',
     component: Layout,
-    meta: { title: '挖宝功能', icon: 'nested' },
+    meta: { title: '挖宝功能', icon: 'nested', roles: [9] },
     children: [{
       path: 'prob-list',
       name: 'prob-list',
       component: () => import('@/views/dig-treasure/prob-list'),
-      meta: { title: '挖宝道具列表' }
+      meta: { title: '挖宝道具列表', roles: [9] }
     }, {
       path: 'article-list',
       name: 'article-list',
       component: () => import('@/views/dig-treasure/article-list'),
-      meta: { title: '宝箱物品列表' }
+      meta: { title: '宝箱物品列表', roles: [9] }
     }
     ]
-  },
-
-  {
-    path: '/advertis',
-    component: Layout,
-    redirect: '/advertis/advertis-docking',
-    meta: { title: '广告对接', icon: 'eye-open' },
-    children: [{
-      path: 'advertis-docking',
-      name: 'advertis-docking',
-      component: () => import('@/views/advertis/advertis-docking'),
-      meta: { title: '广告对接' }
-    },
-    {
-      path: 'advertis-list',
-      name: 'advertis-list',
-      component: () => import('@/views/advertis/advertis-list'),
-      meta: { title: '广告列表' }
-    },
-    {
-      path: 'play-stats',
-      name: 'play-stats',
-      component: () => import('@/views/advertis/play-stats'),
-      meta: { title: '播放统计' }
-    }]
   },
   {
     path: '/statistics-data',
     component: Layout,
     redirect: '/statistics-data',
+    meta: { title: '数据统计', icon: 'table', roles: [9, 8] },
     children: [{
-      path: 'statistics-data',
-      name: 'statistics-data',
-      component: () => import('@/views/statistics-data'),
-      meta: { title: '数据统计', icon: 'table' }
+      path: 'user-census',
+      name: 'user-census',
+      component: () => import('@/views/statistics-data/user-census'),
+      meta: { title: '用户存活统计', roles: [9] }
+    }, {
+      path: 'user-adPlay',
+      name: 'user-adPlay',
+      component: () => import('@/views/statistics-data/user-adPlay'),
+      meta: { title: '用户广告播放次数统计', roles: [9] }
+    }, {
+      path: 'Channel-UserDataToSpread',
+      name: 'Channel-UserDataToSpread',
+      component: () => import('@/views/statistics-data/Channel-UserDataToSpread'),
+      meta: { title: '渠道邀请信息统计', roles: [1] }
     }]
   },
-
   {
     path: '/Feedback',
     component: Layout,
-    meta: { title: '交易统计', icon: 'password' },
+    meta: { title: '其他', icon: 'password', roles: [9] },
     children: [{
       path: 'Feedback',
       name: 'Feedback',
       component: () => import('@/views/Feedback/index'),
-      meta: { title: '反馈列表' }
+      meta: { title: '反馈列表', roles: [9] }
     },
     {
       path: 'versions',
       name: 'versions',
       component: () => import('@/views/Feedback/versions'),
-      meta: { title: '版本列表' }
+      meta: { title: '版本列表', roles: [9] }
     }
     ]
   },
@@ -252,5 +235,21 @@ export function resetRouter() {
   const newRouter = createRouter()
   router.matcher = newRouter.matcher // reset router
 }
+
+export const extension = [
+  {
+    path: '/',
+    component: Layout,
+    redirect: '/Channel-UserData',
+    meta: { title: '数据统计', icon: 'table' },
+    children: [{
+      path: 'Channel-UserData',
+      name: 'Channel-UserData',
+      component: () => import('@/views/statistics-data/Channel-UserData'),
+      meta: { title: '渠道用户信息统计' }
+    }]
+  },
+  { path: '*', redirect: '/404', hidden: true }
+]
 
 export default router

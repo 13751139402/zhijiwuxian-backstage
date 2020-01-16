@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2019-10-19 17:14:45
- * @LastEditTime : 2019-12-31 17:23:29
+ * @LastEditTime : 2020-01-03 10:58:17
  * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admit-template\src\views\manage-user\user-list\index.vue
@@ -274,7 +274,7 @@ const calendarTypeKeyValue = calendarTypeOptions.reduce((acc, cur) => {
   return acc;
 }, {});
 export default {
-  name: "ComplexTable",
+  name: "user-data",
   components: {
     Pagination
   },

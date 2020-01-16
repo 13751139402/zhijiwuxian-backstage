@@ -1,8 +1,8 @@
 <!--
  * @Author: your name
  * @Date: 2019-10-25 19:14:30
- * @LastEditTime: 2019-12-03 11:42:26
- * @LastEditors: Please set LastEditors
+ * @LastEditTime : 2020-01-06 11:32:29
+ * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admit-template\src\views\manage-user\administrator-list\index.vue
  -->
@@ -15,6 +15,7 @@
         type="primary"
         icon="el-icon-edit"
         @click="handleCreate"
+        v-if="rank"
       >添加</el-button>
     </div>
     <el-table
@@ -86,6 +87,7 @@
         align="center"
         class-name="small-padding fixed-width"
         min-width="120px"
+        v-if="rank"
       >
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="handleChange(scope.row)">修改</el-button>
@@ -294,6 +296,9 @@ export default {
   computed: {
     server() {
       return this.$store.getters.server;
+    },
+    rank() {
+      return this.$store.state.user.rank <= 3;
     }
   },
   mounted() {

@@ -4,11 +4,12 @@
  * @Author: 戴训伟
  * @Date: 2019-09-28 10:33:37
  * @LastEditors  : Please set LastEditors
- * @LastEditTime : 2019-12-30 11:20:32
+ * @LastEditTime : 2020-01-07 11:09:12
  */
 import { login, logout } from '@/api/user'
-import { getToken, setToken, removeToken } from '@/utils/auth'
+import { setToken, removeToken } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
+import store from '@/store'
 
 const initState = {
   token: false,
@@ -30,16 +31,13 @@ const state = {
 
 const mutations = {
   SET_LOGIN: (state, data) => {
-    if (!data) {
-      Object.assign(state, initState);
-      state.token = false;
-    } else {
-      Object.assign(state, data);
-      state.token = true
-      setToken(JSON.stringify(data));
-    }
-
+    Object.assign(state, data);
+    state.token = true
+    setToken(JSON.stringify(data));
   },
+  init_LOGIN: (state) => {
+    Object.assign(state, initState);
+  }
 }
 
 const actions = {
@@ -48,7 +46,10 @@ const actions = {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
       login({ username: username.trim(), password: password }).then(({ result }) => {
-        commit('SET_LOGIN', result)
+        // result.rank = 9;
+        setToken(JSON.stringify(result));
+        // console.log(result);
+
         resolve()
       }).catch(error => {
         reject(error.message)
@@ -56,27 +57,18 @@ const actions = {
     })
   },
 
-  // // user logout
-  // logout({ commit,},id) {
-  //   return new Promise((resolve, reject) => {
-  //     console.log(id);
-      
-  //     logout(id).then(() => {
-  //       commit('SET_TOKEN', false)
-  //       removeToken()
-  //       resetRouter()
-  //       resolve()
-  //     }).catch(error => {
-  //       reject(error)
-  //     })
-  //   })
-  // },
+  // user logout
+  logout({ commit, }, id) {
+    removeToken()
+    commit('init_LOGIN');
+    store.dispatch("tagsView/delAllViews");
+    resetRouter()
+  },
 
   // 重置用户信息
   resetToken({ commit }) {
     return new Promise(resolve => {
-      commit('SET_TOKEN', false)
-      removeToken() // 移除cookie 的 token
+      removeToken(); // 移除cookie 的 token
       resolve()
     })
   },

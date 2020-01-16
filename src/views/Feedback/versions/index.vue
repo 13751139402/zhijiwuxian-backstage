@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2019-12-30 17:06:47
- * @LastEditTime : 2019-12-31 14:02:06
+ * @LastEditTime : 2020-01-06 11:35:10
  * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \zhijiwuxian\src\views\Feedback\versions\index.vue
@@ -16,6 +16,7 @@
           type="primary"
           icon="el-icon-edit"
           @click="handleCreate"
+          v-if="rank"
         >添加</el-button>
       </section>
     </article>
@@ -73,6 +74,7 @@
         align="center"
         class-name="small-padding fixed-width"
         min-width="120px"
+        v-if="rank"
       >
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="handleEdit(scope.row)">修改</el-button>
@@ -210,7 +212,7 @@ export default {
             required: true,
             message: "版本号不能为空",
             trigger: "blur"
-          },
+          }
           // {
           //   validator: isVersion
           // }
@@ -223,6 +225,11 @@ export default {
       },
       statusMap: statusMap
     };
+  },
+  computed: {
+    rank() {
+      return this.$store.state.user.rank <= 3;
+    }
   },
   mixins: [list],
   methods: {

@@ -2,8 +2,8 @@
  * @Description: 侧边栏 index
  * @Author: your name
  * @Date: 2019-10-18 13:58:44
- * @LastEditTime: 2019-11-04 16:58:14
- * @LastEditors: Please set LastEditors
+ * @LastEditTime : 2020-01-03 09:06:08
+ * @LastEditors  : Please set LastEditors
  -->
 <template>
   <div :class="{'has-logo':showLogo}">
@@ -26,7 +26,7 @@
         mode="vertical"
       >
         <sidebar-item
-          v-for="route in routes"
+          v-for="route in permission_routes"
           :key="route.path"
           :item="route"
           :base-path="route.path"
@@ -44,10 +44,7 @@ import variables from '@/styles/variables.scss'
 export default {
   components: { SidebarItem },
   computed: {
-    ...mapGetters(['sidebar']), // TODO: 这里映射的时getter
-    routes() {
-      return this.$router.options.routes
-    },
+    ...mapGetters(['sidebar','permission_routes']), // TODO: 这里映射的时getter
     activeMenu() {
       // 当路由跳转时 将路由"映射"到选中的侧边栏
 

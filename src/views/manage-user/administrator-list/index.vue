@@ -1,8 +1,8 @@
 <!--
  * @Author: your name
  * @Date: 2019-10-25 19:14:30
- * @LastEditTime: 2019-11-11 11:12:14
- * @LastEditors: Please set LastEditors
+ * @LastEditTime : 2020-01-07 14:54:40
+ * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admit-template\src\views\manage-user\administrator-list\index.vue
  -->
@@ -145,7 +145,7 @@
 </template>
 
 <script>
-import { getAdminList, adminUpdate, addAdmin } from '@/api/manage-user'
+import { getAdminList, adminUpdate, addAdmin } from "@/api/manage-user";
 export default {
   data() {
     return {
@@ -158,146 +158,145 @@ export default {
         account: 1728309
       },
       textMap: {
-        edit: '修改',
-        create: '添加'
+        edit: "修改",
+        create: "添加"
       },
       dialogFormVisible: false, // 显示弹窗
       dialogStatus: false, // 弹窗样式
       createVisible: false,
       rules: {
-        name: [{ required: true, message: '请输入名称', trigger: 'blur' }],
-        rank: [{ required: true, message: '请输入等级', trigger: 'blur' }]
+        name: [{ required: true, message: "请输入名称", trigger: "blur" }],
+        rank: [{ required: true, message: "请输入等级", trigger: "blur" }]
       },
       createRules: {
-        name: [{ required: true, message: '请输入名称', trigger: 'blur' }],
-        pwd: [{ required: true, message: '请输入密码', trigger: 'blur' }],
-        rank: [{ required: true, message: '请输入级别', trigger: 'blur' }]
+        name: [{ required: true, message: "请输入名称", trigger: "blur" }],
+        pwd: [{ required: true, message: "请输入密码", trigger: "blur" }],
+        rank: [{ required: true, message: "请输入级别", trigger: "blur" }]
       },
       temp: {
-        id: '',
-        account: '',
-        name: '',
-        pwd: '',
-        rank: ''
+        id: undefined,
+        account: undefined,
+        name: undefined,
+        pwd: undefined,
+        rank: undefined
       },
       createTemp: {
-        name: '',
-        pwd: '',
+        name: "",
+        pwd: "",
         rank: 9
       }
-    }
+    };
   },
   mounted() {
-    this.getList()
+    this.getList();
   },
   methods: {
     getList() {
-      this.listLoading = true
+      this.listLoading = true;
       getAdminList(this.listQuery).then(({ result }) => {
-        this.list = result
-        this.listLoading = false
-      })
+        this.list = result;
+        this.listLoading = false;
+      });
     },
     handleEdit(row) {
-      this.temp.pwd = ''
-      this.temp = Object.assign({}, this.temp, row) // copy obj
-      this.dialogStatus = 'edit'
-      this.dialogFormVisible = true
+      this.temp.pwd = "";
+      this.temp = Object.assign({}, this.temp, row); // copy obj
+      this.dialogStatus = "edit";
+      this.dialogFormVisible = true;
       this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
+        this.$refs["dataForm"].clearValidate();
+      });
     },
     handleCreate() {
-      this.resetTemp()
-      this.dialogStatus = 'create'
-      this.createVisible = true
+      this.resetTemp();
+      this.dialogStatus = "create";
+      this.createVisible = true;
       this.$nextTick(() => {
-        this.$refs['createForm'].clearValidate()
-      })
+        this.$refs["createForm"].clearValidate();
+      });
     },
     handleUpdate(temp) {
-      this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
+      this.$confirm("此操作将永久删除该用户, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
       })
         .then(() => {
-          temp.del = 1
-          temp.account = 1728309
+          temp.del = 1;
           adminUpdate(temp).then(() => {
-            this.getList()
+            this.getList();
             this.$notify({
-              title: '成功',
-              message: '删除成功',
-              type: 'success',
+              title: "成功",
+              message: "删除成功",
+              type: "success",
               duration: 1000,
               onClose: () => {
-                this.dialogFormVisible = false
+                this.dialogFormVisible = false;
               }
-            })
-          })
+            });
+          });
         })
         .catch(() => {
           this.$message({
-            type: 'info',
-            message: '已取消删除'
-          })
-        })
+            type: "info",
+            message: "已取消删除"
+          });
+        });
     },
     createData() {
-      this.$refs['createForm'].validate(valid => {
+      this.$refs["createForm"].validate(valid => {
         if (valid) {
-          const createTemp = Object.assign({}, this.createTemp)
-          console.log(createTemp)
-          createTemp.account = 1728309
+          const createTemp = Object.assign({}, this.createTemp);
+          console.log(createTemp);
+          createTemp.account = 1728309;
           addAdmin(createTemp).then(() => {
-            this.getList()
+            this.getList();
             this.$notify({
-              title: '成功',
-              message: '添加数据成功',
-              type: 'success',
+              title: "成功",
+              message: "添加数据成功",
+              type: "success",
               duration: 1000,
               onClose: () => {
-                this.createVisible = false
+                this.createVisible = false;
               }
-            })
-          })
+            });
+          });
         }
-      })
+      });
     },
     resetTemp() {
       this.createTemp = {
-        name: '',
-        pwd: '',
+        name: "",
+        pwd: "",
         rank: 9
-      }
+      };
     },
     updateData() {
-      this.$refs['dataForm'].validate(valid => {
+      this.$refs["dataForm"].validate(valid => {
         if (valid) {
           if (!this.temp.pwd) {
-            delete this.temp.pwd
+            delete this.temp.pwd;
           }
-          const account = this.temp.account
-          const temp = Object.assign({}, this.temp)
-          temp.account = 1728309
+          const account = this.temp.account;
+          const temp = Object.assign({}, this.temp);
+          temp.account = 1728309;
           adminUpdate(temp).then(() => {
-            this.getList()
+            this.getList();
             this.$notify({
-              title: '成功',
-              message: '修改数据成功',
-              type: 'success',
+              title: "成功",
+              message: "修改数据成功",
+              type: "success",
               duration: 1000,
               onClose: () => {
-                this.dialogFormVisible = false
+                this.dialogFormVisible = false;
               }
-            })
-          })
+            });
+          });
         }
-      })
+      });
     }
   }
-}
+};
 </script>
 
 <style scoped>

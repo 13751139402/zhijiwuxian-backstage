@@ -13,18 +13,16 @@ body {
   font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
 }
 
-label {
-  font-weight: 700;
-}
-
 html {
   height: 100%;
   box-sizing: border-box;
 }
-.components-container{
+
+.components-container {
   margin: 30px 50px;
   position: relative;
 }
+
 #app {
   height: 100%;
 }
@@ -78,6 +76,3 @@ div:focus {
   }
 }
 
-label {
-  font-weight: 700;
-}

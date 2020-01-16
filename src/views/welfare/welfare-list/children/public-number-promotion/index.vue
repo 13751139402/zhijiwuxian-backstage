@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2019-10-25 19:14:30
- * @LastEditTime : 2019-12-18 10:40:56
+ * @LastEditTime : 2020-01-06 11:28:48
  * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admit-template\src\views\manage-user\administrator-list\index.vue
@@ -22,6 +22,7 @@
           <el-option label="异常" :value="2"></el-option>
         </el-select>
         <el-button
+          v-if="rank"
           class="filter-item"
           style="margin-left: 10px;"
           type="primary"
@@ -154,6 +155,7 @@
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取消</el-button>
         <el-button
+          v-if="rank"
           type="primary"
           :loading="buttonLoading"
           @click="dialogStatus==='create'?createData():updataData()"
@@ -211,7 +213,10 @@ export default {
       showData: state => state.second_showData,
       typeList: state => state.typeList,
       describeMap: state => `${state.second_showData.reward}趣币`
-    })
+    }),
+    rank() {
+      return this.$store.state.user.rank <= 3;
+    }
   },
   mixins: [list],
   methods: {

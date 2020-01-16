@@ -1,8 +1,8 @@
 <!--
  * @Author: your name
  * @Date: 2019-12-05 17:51:15
- * @LastEditTime: 2019-12-06 09:40:16
- * @LastEditors: Please set LastEditors
+ * @LastEditTime : 2020-01-03 14:18:52
+ * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admit-template\src\views\Feedback\index.vue
  -->
@@ -43,7 +43,7 @@
       highlight-current-row
       style="width: 100%;"
     >
-      <el-table-column label="id" prop="id" align="center">
+      <el-table-column label="id" prop="id" align="center" width="100px">
         <template slot-scope="scope">
           <span>{{ scope.row.id }}</span>
         </template>
@@ -73,22 +73,17 @@
       </el-table-column>
       <el-table-column label="系统" prop="system" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.system }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="版本" prop="version" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.version }}</span>
+          <span>{{ scope.row.system+scope.row.version }}</span>
         </template>
       </el-table-column>
       <el-table-column label="图片" prop="img" align="center">
-        <template slot-scope="scope">
+        <template slot-scope="scope" v-if="scope.row.img">
           <img
             :src="server+scope.row.img[0]"
             class="user-avatar"
-            v-if="scope.row.img"
             @click="showCarousel(scope.row.img)"
           />
+          <p>{{`${scope.row.img.length}页`}}</p>
         </template>
       </el-table-column>
 
@@ -100,7 +95,7 @@
 
       <el-table-column label="状态" prop="status" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.status }}</span>
+          <span>{{ scope.row.status===1?"待处理":"已处理" }}</span>
         </template>
       </el-table-column>
 
@@ -190,6 +185,7 @@
         arrow="always"
       >
         <el-carousel-item v-for="(item,index) in imagesList" :key="index">
+          <p style="text-align: center;margin-top: 0;">{{`第${index+1}页`}}</p>
           <figure class="carousel-figure">
             <img :src="server+item" class="carousel-img" />
           </figure>

@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2019-10-25 19:14:30
- * @LastEditTime : 2019-12-26 17:22:51
+ * @LastEditTime : 2020-01-06 11:31:44
  * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admit-template\src\views\manage-user\administrator-list\index.vue
@@ -82,6 +82,7 @@
         align="center"
         class-name="small-padding fixed-width"
         min-width="120px"
+        v-if="rank"
       >
         <template slot-scope="scope">
           <template v-if="scope.row.status===1">
@@ -126,6 +127,11 @@ export default {
         name: [{ required: true, message: "请输入名称", trigger: "blur" }]
       }
     };
+  },
+  computed: {
+    rank() {
+      return this.$store.state.user.rank <= 3;
+    }
   },
   mixins: [list],
   methods: {

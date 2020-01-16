@@ -6,7 +6,7 @@
  * @Author: 戴训伟
  * @Date: 2019-09-28 10:33:37
  * @LastEditors  : Please set LastEditors
- * @LastEditTime : 2019-12-30 11:22:29
+ * @LastEditTime : 2020-01-07 11:15:27
  */
 import router from './router' // 获取router实例
 import store from './store' // 获取store
@@ -26,18 +26,30 @@ router.beforeEach(async (to, from, next) => { // 路由跳转前触发
   // set page title
   document.title = getPageTitle(to.meta.title)
   // 确定用户是否已登录
-  const hasToken = getToken() // Token会在用户登录的时候下发，如果没有token则跳转登录页面，有则直接进入主页
+  const hasToken = getToken(); // Token会在用户登录的时候下发，如果没有token则跳转登录页面，有则直接进入主页
   // 登录页面只负责下传token,roles和可访问路由是在跳转页面时permission的router.beforeEach处理的
-  if (hasToken) { // 如果已经登录
-    if (!store.getters.token) {
+
+
+  if (hasToken) { // cookie中保存值
+    if (!store.getters.token) { // store中未保存值,将cookie中的值保存至store
       const userData = JSON.parse(hasToken);
-      console.log(userData);
-      
-      if (!userData.id) {
-        store.dispatch('user/resetToken');
+      if (!userData.id) { // 如果cookie中的值是错的,跳转登录页面重新登录
+        store.dispatch('user/logout');
         next(`/login?redirect=${to.path}`)
+      } else if (to.path === '/login') { // 去用户页面不需要权限验证 则重定向到"home"
+        next({ path: '/' }) // 重定向至主页
       }
-      store.commit('user/SET_LOGIN', userData);
+      store.commit('user/SET_LOGIN', userData); // 将cookie中的值保存至store
+      let rank = userData.rank;
+      // 根据角色生成可访问路由映射
+      const accessRoutes = await store.dispatch('permission/generateRoutes', [rank])
+      // 动态添加可访问路由
+
+      router.addRoutes(accessRoutes)
+      if (rank === 8) {
+        console.log(router);
+      }
+      next({ path: '/', replace: true }) // 路由跳转如果不加replace,则跳转后,async的路由还没有生效
     }
     next();
     NProgress.done() // 结束进度条

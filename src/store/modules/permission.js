@@ -3,10 +3,10 @@
  * @version:
  * @Author: 戴训伟
  * @Date: 2019-09-28 10:33:37
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2019-10-22 17:12:13
+ * @LastEditors  : Please set LastEditors
+ * @LastEditTime : 2020-01-07 11:27:26
  */
-import { asyncRoutes, constantRoutes } from '@/router' // 导入同步路由和异步路由两个对象
+import { asyncRoutes, constantRoutes, extension } from '@/router' // 导入同步路由和异步路由两个对象
 
 /**
  * 使用元。角色确定当前用户是否具有权限
@@ -59,11 +59,16 @@ const actions = {
     return new Promise(resolve => {
       let accessedRoutes
       // includes 数组中是否包含
-      if (roles.includes('admin')) { // 如果是管理员，则异步数据不需要过滤，直接赋予
+      if (roles[0] <= 3) { // 如果是管理员，则异步数据不需要过滤，直接赋予
         accessedRoutes = asyncRoutes || []
       } else { // 不为管理员则过滤数据
-        accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
+        if (roles[0] === 8) {
+          accessedRoutes = extension
+        } else {
+          accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
+        }
       }
+      // accessedRoutes = filterAsyncRoutes(asyncRoutes, [9])
       commit('SET_ROUTES', accessedRoutes)
       resolve(accessedRoutes)
     })

@@ -1,8 +1,8 @@
 <!--
  * @Author: your name
  * @Date: 2019-10-26 15:00:10
- * @LastEditTime: 2019-11-11 11:04:44
- * @LastEditors: Please set LastEditors
+ * @LastEditTime : 2020-01-03 13:58:59
+ * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admit-template\src\views\manage-user\user-data\index.vue
  -->
@@ -35,47 +35,57 @@
 </template>
 
 <script>
-import { adminUpdate } from '@/api/manage-user'
+import { adminUpdate } from "@/api/manage-user";
 export default {
   data() {
     const validatePassword = (rule, value, callback) => {
-      if (value.length < 6) {
-        callback(new Error('密码不能少于6位'))
-      } else {
-        callback()
+      if (value === undefined || value === "") {
+        return callback();
       }
-    }
+      if (value.length < 6) {
+        callback(new Error("密码不能少于6位"));
+      } else {
+        callback();
+      }
+    };
     return {
       temp: {
-        name: '',
-        pwd: '',
+        name: undefined,
+        pwd: undefined,
         account: this.$store.state.user.account,
         id: this.$store.state.user.id
       },
       rules: {
-        name: [{ required: true, message: '请输入名称', trigger: 'blur' }],
-        pwd: [{ required: true, trigger: 'blur', validator: validatePassword }]
+        pwd: [{ trigger: "blur", validator: validatePassword }]
       }
-    }
+    };
   },
   methods: {
     submit() {
-      this.$refs['createForm'].validate(valid => {
+      this.$refs["createForm"].validate(valid => {
         if (valid) {
-          adminUpdate(this.temp).then(() => {
-            this.dialogFormVisible = false
+          let params = { id: this.temp.id };
+          if (this.temp.name) {
+            params.name = this.temp.name;
+          }
+          if (this.temp.pwd) {
+            params.pwd = this.temp.pwd;
+          }
+          adminUpdate(params).then(() => {
+            Object.assign(this.temp, { name: undefined, pwd: undefined });
+            this.dialogFormVisible = false;
             this.$notify({
-              title: '成功',
-              message: '修改成功',
-              type: 'success',
+              title: "成功",
+              message: "修改成功",
+              type: "success",
               duration: 2000
-            })
-          })
+            });
+          });
         }
-      })
+      });
     }
   }
-}
+};
 </script>
 
 <style>
