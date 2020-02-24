@@ -2,7 +2,7 @@
  * @Description: ROUTER
  * @Author: your name
  * @Date: 2019-10-18 13:58:44
- * @LastEditTime : 2020-01-09 14:39:52
+ * @LastEditTime : 2020-01-17 17:16:26
  * @LastEditors  : Please set LastEditors
  */
 import Vue from 'vue'
@@ -248,6 +248,18 @@ export const extension = [
       component: () => import('@/views/statistics-data/Channel-UserData'),
       meta: { title: '渠道用户信息统计' }
     }]
+  },
+  {
+    path: '/manage-user',
+    component: Layout,
+    meta: { title: '用户管理', icon: 'user', },
+    children: [{
+      path: 'user-data',
+      name: 'user-data',
+      component: () => import('@/views/manage-user/user-data'),
+      meta: { title: '个人信息', noCache: true, }
+    }
+    ]
   },
   { path: '*', redirect: '/404', hidden: true }
 ]

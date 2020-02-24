@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2020-01-07 11:47:57
- * @LastEditTime : 2020-01-16 10:35:08
+ * @LastEditTime : 2020-01-17 17:09:38
  * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \zhijiwuxian\src\views\statistics-data\Channel-UserData\index.vue
@@ -9,19 +9,51 @@
 <template>
   <div id="administrator-list" class="app-containeFr">
     <article class="filter-container" style="font-size: 20px;display: block;">
-      <section>
-        <p>
-          总下载用户 :
+      <section class="form-column">
+        <div class="form-item">
+          <label>下载单价:</label>
+          <span>{{spread_price.down_price}}</span>
+        </div>
+        <div class="form-item">
+          <label>激活单价:</label>
+          <span>{{spread_price.activate_price}}</span>
+        </div>
+        <div class="form-item">
+          <label>注册单价:</label>
+          <span>{{spread_price.register_price}}</span>
+        </div>
+      </section>
+      <section class="form-column">
+        <div class="form-item">
+          <label>总下载用户:</label>
           <span>{{total_user}}</span>
-        </p>
-        <p>
-          总激活用户 :
+        </div>
+        <div class="form-item">
+          <label>总激活用户:</label>
           <span>{{activate_user}}</span>
-        </p>
-        <p>
-          总注册用户 :
+        </div>
+        <div class="form-item">
+          <label>总注册用户:</label>
           <span>{{register_user}}</span>
-        </p>
+        </div>
+      </section>
+      <section class="form-column">
+        <div class="form-item">
+          <label>总下载收益:</label>
+          <span>{{totalObject.down_user_price}}</span>
+        </div>
+        <div class="form-item">
+          <label>总激活收益:</label>
+          <span>{{totalObject.activate_user_price}}</span>
+        </div>
+        <div class="form-item">
+          <label>总注册收益:</label>
+          <span>{{totalObject.register_user_price}}</span>
+        </div>
+        <div class="form-item">
+          <label>总收益:</label>
+          <span>{{total_price}}</span>
+        </div>
       </section>
       <p style="margin-top:2px">
         下载链接:
@@ -94,6 +126,17 @@ export default {
       total_user: 0,
       activate_user: 0,
       register_user: 0,
+      spread_price: {
+        down_price: 0, // 下载单价
+        activate_price: 0, // 激活单价
+        register_price: 0 // 注册单价
+      },
+      totalObject: {
+        down_user_price: 0, // 总下载收益
+        activate_user_price: 0, // 总激活收益
+        register_user_price: 0 // 总注册收益
+      },
+      total_price: 0, // 总下载收益
       down_url: "",
       temp: {
         name: undefined
@@ -159,10 +202,28 @@ export default {
         getChanUserInfo({ chan: this.chan }).then(({ result }) => {
           this.down_url = this.server + result.down_url;
           getChannelUserData({ chan: result.chan }).then(({ result }) => {
-            let { total_user, activate_user, register_user } = result;
+            let {
+              total_user,
+              activate_user,
+              register_user,
+              spread_price,
+              total_price,
+              down_user_price, // 总下载收益
+              register_user_price, // 总注册收益
+              activate_user_price // 总激活收益
+            } = result;
+
             this.total_user = total_user;
             this.activate_user = activate_user;
             this.register_user = register_user;
+
+            Object.assign(this.totalObject, {
+              down_user_price,
+              register_user_price,
+              activate_user_price
+            });
+            this.spread_price = spread_price; // 收益报价
+            this.total_price = total_price; // 总收益
             resolve(result.list);
           });
         });
@@ -174,10 +235,23 @@ export default {
 
 <style scoped>
 .user-avatar {
-  width: auto;
+  width: 80px;
 }
 .filter-container span {
   color: red;
+}
+.form-column {
+  display: flex;
+}
+.form-item {
+  min-width: 150px;
+  margin: 1px 20px;
+}
+.form-item label {
+  width: 115px;
+  text-align: right;
+  display: inline-block;
+  white-space: nowrap;
 }
 p {
   display: inline-block;
