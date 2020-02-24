@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2020-01-07 11:47:57
- * @LastEditTime : 2020-01-15 18:25:38
+ * @LastEditTime : 2020-01-17 17:50:11
  * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \zhijiwuxian\src\views\statistics-data\Channel-UserData\index.vue
@@ -21,19 +21,71 @@
           ></el-option>
         </el-select>
       </section>
-      <section v-if="currentSpread!=='all'">
-        <label class="item_label">
-          总下载用户 :
-          <span>{{total_user}}</span>
-        </label>
-        <label class="item_label">
-          总激活用户 :
-          <span>{{activate_user}}</span>
-        </label>
-        <label class="item_label">
-          总注册用户 :
-          <span>{{register_user}}</span>
-        </label>
+      <section class="form">
+        <template v-if="currentSpread!=='all'">
+          <section class="form-column">
+            <div class="form-item">
+              <label>下载单价:</label>
+              <span>{{spread_price.down_price}}</span>
+            </div>
+            <div class="form-item">
+              <label>激活单价:</label>
+              <span>{{spread_price.activate_price}}</span>
+            </div>
+            <div class="form-item">
+              <label>注册单价:</label>
+              <span>{{spread_price.register_price}}</span>
+            </div>
+          </section>
+          <section class="form-column">
+            <div class="form-item">
+              <label>总下载用户:</label>
+              <span>{{total_user}}</span>
+            </div>
+            <div class="form-item">
+              <label>总激活用户:</label>
+              <span>{{activate_user}}</span>
+            </div>
+            <div class="form-item">
+              <label>总注册用户:</label>
+              <span>{{register_user}}</span>
+            </div>
+          </section>
+          <section class="form-column">
+            <div class="form-item">
+              <label>总下载收益:</label>
+              <span>{{totalObject.down_user_price}}</span>
+            </div>
+            <div class="form-item">
+              <label>总激活收益:</label>
+              <span>{{totalObject.activate_user_price}}</span>
+            </div>
+            <div class="form-item">
+              <label>总注册收益:</label>
+              <span>{{totalObject.register_user_price}}</span>
+            </div>
+            <div class="form-item">
+              <label>总收益:</label>
+              <span>{{total_price}}</span>
+            </div>
+          </section>
+        </template>
+        <template v-else>
+          <section class="form-column">
+            <div class="form-item">
+              <label>下载单价:</label>
+              <span>{{spread_price.down_price}}</span>
+            </div>
+            <div class="form-item">
+              <label>激活单价:</label>
+              <span>{{spread_price.activate_price}}</span>
+            </div>
+            <div class="form-item">
+              <label>注册单价:</label>
+              <span>{{spread_price.register_price}}</span>
+            </div>
+          </section>
+        </template>
       </section>
     </article>
     <el-table
@@ -51,7 +103,7 @@
           <span>{{ scope.row.spread }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="总用户数" prop="total_user" align="center">
+      <el-table-column label="总下载用户数" prop="total_user" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.total_user }}</span>
         </template>
@@ -64,6 +116,26 @@
       <el-table-column label="激活用户数" prop="activate_user" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.activate_user }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="总下载收益" prop="down_user_price" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.down_user_price }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="总注册收益" prop="register_user_price" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.register_user_price }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="总激活收益" prop="activate_user_price" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.activate_user_price }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="总收益" prop="total_price" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.total_price }}</span>
         </template>
       </el-table-column>
     </el-table>
@@ -129,7 +201,18 @@ export default {
       spreadList: [],
       total_user: 0,
       activate_user: 0,
-      register_user: 0
+      register_user: 0,
+      spread_price: {
+        down_price: 0, // 下载单价
+        activate_price: 0, // 激活单价
+        register_price: 0 // 注册单价
+      },
+      totalObject: {
+        down_user_price: 0, // 总下载收益
+        activate_user_price: 0, // 总激活收益
+        register_user_price: 0 // 总注册收益
+      },
+      total_price: 0 // 总下载收益
     };
   },
   mixins: [list],
@@ -145,6 +228,7 @@ export default {
     select() {
       return new Promise((resolve, reject) => {
         getChannelUserDataToSpread(this.listQuery).then(result => {
+          this.spread_price = result.result[0].spread_price; // 收益报价
           resolve(result);
         });
       });
@@ -153,10 +237,26 @@ export default {
       this.listLoading = true;
       getChannelUserData({ chan })
         .then(({ result }) => {
-          let { total_user, activate_user, register_user } = result;
+          let {
+            total_user,
+            activate_user,
+            register_user,
+            spread_price,
+            total_price,
+            down_user_price, // 总下载收益
+            register_user_price, // 总注册收益
+            activate_user_price // 总激活收益
+          } = result;
           this.total_user = total_user;
           this.activate_user = activate_user;
           this.register_user = register_user;
+          Object.assign(this.totalObject, {
+            down_user_price,
+            register_user_price,
+            activate_user_price
+          });
+          this.spread_price = spread_price; // 收益报价
+          this.total_price = total_price; // 总收益
           return result.list;
         })
         .then(result => {
@@ -177,6 +277,9 @@ export default {
 </script>
 
 <style scoped>
+.user-avatar {
+  width: 80px;
+}
 .item_label {
   text-align: right;
   vertical-align: middle;
@@ -189,7 +292,24 @@ export default {
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
 }
-.item_label > span {
+.form {
+  font-size: 20px;
+}
+.form-column span {
   color: red;
+}
+.form-column {
+  display: flex;
+  font-size: 20px;
+}
+.form-item {
+  min-width: 150px;
+  margin: 1px 20px;
+}
+.form-item label {
+  width: 115px;
+  text-align: right;
+  display: inline-block;
+  white-space: nowrap;
 }
 </style>

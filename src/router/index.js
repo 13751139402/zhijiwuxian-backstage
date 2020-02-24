@@ -2,8 +2,8 @@
  * @Description: ROUTER
  * @Author: your name
  * @Date: 2019-10-18 13:58:44
- * @LastEditTime : 2020-02-13 13:35:11
- * @LastEditors  : Please set LastEditors
+ * @LastEditTime: 2020-02-24 20:28:30
+ * @LastEditors: Please set LastEditors
  */
 import Vue from "vue";
 import Router from "vue-router";
