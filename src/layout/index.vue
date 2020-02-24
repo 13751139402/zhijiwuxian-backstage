@@ -2,7 +2,7 @@
  * @Description: 布局主页
  * @Author: 戴训伟
  * @Date: 2019-10-18 13:58:44
- * @LastEditTime : 2020-01-03 11:04:50
+ * @LastEditTime : 2020-02-13 12:53:12
  * @LastEditors  : Please set LastEditors
  -->
 <template>
@@ -69,10 +69,6 @@ export default {
     handleClickOutside() {
       this.$store.dispatch('app/closeSideBar', { withoutAnimation: false }) // 展开或关闭侧边栏时（是否没有动画）
     }
-  },
-  mounted(){
-    console.log("wdadsss");
-    
   }
 }
 </script>

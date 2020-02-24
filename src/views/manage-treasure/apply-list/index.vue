@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2019-10-25 19:14:30
- * @LastEditTime : 2020-01-06 11:31:44
+ * @LastEditTime : 2020-02-13 13:20:28
  * @LastEditors  : Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admit-template\src\views\manage-user\administrator-list\index.vue
@@ -11,12 +11,7 @@
     <article class="filter-container">
       <section>
         <el-select v-model="listQuery.status" placeholder="请选择任务状态" @change="selectData">
-          <el-option
-            :label="value"
-            :value="Number(key)"
-            v-for="(value,key) in statusMap"
-            :key="key"
-          ></el-option>
+          <el-option v-for="(value,key) of statusMap" :key="key" :label="value" :value="(key)" />
         </el-select>
       </section>
     </article>
@@ -73,16 +68,16 @@
       </el-table-column>
       <el-table-column label="状态" prop="nickname" align="center">
         <template slot-scope="scope">
-          <span>{{ statusMap[scope.row.status]}}</span>
+          <span>{{ statusMap[scope.row.status] }}</span>
         </template>
       </el-table-column>
 
       <el-table-column
+        v-if="rank"
         label="操作"
         align="center"
         class-name="small-padding fixed-width"
         min-width="120px"
-        v-if="rank"
       >
         <template slot-scope="scope">
           <template v-if="scope.row.status===1">
@@ -102,71 +97,70 @@
     />
   </div>
 </template>
-
- <script>
-import { getUserTradeList, editUserTrade } from "@/api/treasure";
-import { list } from "@/utils/mixin";
+<script>
+import { getUserTradeList, editUserTrade } from '@/api/treasure'
+import { list } from '@/utils/mixin'
 const statusMap = {
-  1: "申请中",
-  2: "已申请",
-  3: "申请失败"
-};
+  1: '申请中',
+  2: '已申请',
+  3: '申请失败'
+}
 export default {
-  name: "apply-list",
+  name: 'ApplyList',
+  mixins: [list],
   data() {
     return {
       textMap: {
-        create: "查看",
-        change: "修改"
+        create: '查看',
+        change: '修改'
       },
       statusMap: statusMap,
       temp: {
         name: undefined
       },
       ruleForm: {
-        name: [{ required: true, message: "请输入名称", trigger: "blur" }]
+        name: [{ required: true, message: '请输入名称', trigger: 'blur' }]
       }
-    };
+    }
   },
   computed: {
     rank() {
-      return this.$store.state.user.rank <= 3;
+      return this.$store.state.user.rank <= 3
     }
   },
-  mixins: [list],
   methods: {
     select() {
       return new Promise((resolve, reject) => {
         getUserTradeList(this.listQuery).then(result => {
-          resolve(result);
-        });
-      });
+          resolve(result)
+        })
+      })
     },
     apply(id, status = 3) {
       editUserTrade({ id, status }).then(result => {
         if (result.code === 1) {
           this.$notify({
-            title: "成功",
-            message: "操作成功",
-            type: "success",
+            title: '成功',
+            message: '操作成功',
+            type: 'success',
             duration: 1000,
             onClose: () => {
-              this.selectData();
+              this.selectData()
             }
-          });
+          })
         } else {
           this.$notify({
-            title: "失败",
-            message: "操作失败",
-            type: "error",
+            title: '失败',
+            message: '操作失败',
+            type: 'error',
             duration: 1000,
             onClose: () => {
-              this.selectData();
+              this.selectData()
             }
-          });
+          })
         }
-      });
+      })
     }
   }
-};
+}
 </script>
