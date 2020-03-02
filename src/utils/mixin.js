@@ -77,6 +77,7 @@ let list = {
                 onClose: () => {
                   this.dialogFormVisible = false;
                   this.buttonLoading = false;
+                  this.resetTemp();
                 }
               });
             })
@@ -87,7 +88,6 @@ let list = {
       });
     },
     updataData() {
-      console.log("updataData");
       this.$refs["dataForm"].validate(valid => {
         if (valid) {
           this.buttonLoading = true;
@@ -168,6 +168,7 @@ let list = {
      */
     handleCreate() {
       this.dialogStatus = "create";
+      this.resetTemp();
       this.dialogFormVisible = true;
       this.$nextTick(() => {
         this.$refs["dataForm"].clearValidate();

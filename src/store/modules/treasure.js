@@ -52,6 +52,10 @@ const state = {
       key: 10,
       value: "玩法说明"
     },
+    {
+      key: 11,
+      value: "答题闯关"
+    },
   ],
   page: {
     page: 1,
