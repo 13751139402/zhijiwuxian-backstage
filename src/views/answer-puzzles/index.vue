@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2019-10-25 19:14:30
- * @LastEditTime: 2020-02-28 14:41:49
+ * @LastEditTime: 2020-03-11 17:35:42
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admit-template\src\views\manage-user\administrator-list\index.vue
@@ -37,16 +37,28 @@
           >奖励列表</el-button>
         </el-form-item>
         <el-form-item label="题目等级">
-          <el-select v-model="listQuery.grade" placeholder="请选择题目等级" @change="selectData">
+          <el-select v-model="listQuery.grade" placeholder="请选择题目等级" @change="selectDataInitPage">
             <el-option v-for="(value,key) of statusMap" :key="key" :label="value" :value="key" />
           </el-select>
         </el-form-item>
 
         <el-form-item label="题目分类">
-          <el-select v-model="listQuery.cate" placeholder="请选择" @change="selectData">
+          <el-select v-model="listQuery.cate" placeholder="请选择" @change="selectDataInitPage">
             <el-option label="全部" value="-1"></el-option>
             <el-option v-for="{id,name} of categoryList" :key="id" :label="name" :value="id"></el-option>
           </el-select>
+        </el-form-item>
+
+        <el-form-item label="ID查询">
+          <el-input v-model="listQuery.id" placeholder="ID查询"></el-input>
+        </el-form-item>
+
+        <el-form-item label="题目查询">
+          <el-input v-model="listQuery.q_name" placeholder="题目查询"></el-input>
+        </el-form-item>
+
+        <el-form-item>
+          <el-button type="primary" @click="selectDataInitPage">查询</el-button>
         </el-form-item>
       </el-form>
     </article>
@@ -273,7 +285,8 @@ const statusMap = {
   2: 2,
   3: 3,
   4: 4,
-  5: 5
+  5: 5,
+  6: 6
 };
 export default {
   name: "ApplyList",
@@ -293,7 +306,9 @@ export default {
         page: 1, // 页码
         page_size: 20, // 页码大小'
         grade: "0",
-        cate: "-1"
+        cate: "-1",
+        id: "", // ID查询
+        q_name: "" // 题目查询
       },
       statusMap: statusMap,
       temp: {
@@ -313,10 +328,10 @@ export default {
         ],
         grade: [{ required: true, message: "请选择等级", trigger: "change" }],
         cate: [{ required: true, message: "请选择分类", trigger: "change" }],
-        answer0: [{ required: true, message: "请输入选项1", trigger: "blur" }],
-        answer1: [{ required: true, message: "请输入选项2", trigger: "blur" }],
-        answer2: [{ required: true, message: "请输入选项3", trigger: "blur" }],
-        answer3: [{ required: true, message: "请输入选项4", trigger: "blur" }],
+        // answer0: [{ required: true, message: "请输入选项1", trigger: "blur" }],
+        // answer1: [{ required: true, message: "请输入选项2", trigger: "blur" }],
+        // answer2: [{ required: true, message: "请输入选项3", trigger: "blur" }],
+        // answer3: [{ required: true, message: "请输入选项4", trigger: "blur" }],
         correct: [
           { required: true, message: "请选择正确答案", trigger: "change" }
         ]
@@ -327,7 +342,7 @@ export default {
       categoryObject: {},
       categoryListVisible: false,
       // ----- 奖励列表
-      rewardVisible: true,
+      rewardVisible: false,
       rewardType: {},
       rewardList: [],
       addReward: {
@@ -361,12 +376,16 @@ export default {
         temp.answer_list.forEach(({ answer }, index) => {
           temp[`answer${index}`] = answer;
         });
-        temp.correct = correct;
+        temp.correct = correct < 0 ? "" : correct;
       }
       Object.assign(this.temp, temp);
       this.$nextTick(() => {
         this.$refs["dataForm"].clearValidate();
       });
+    },
+    selectDataInitPage() {
+      this.listQuery.page = 1;
+      this.selectData();
     },
     apply(id, status = 3) {
       editUserTrade({ id, status }).then(result => {
@@ -417,20 +436,32 @@ export default {
     editQuestionBankAndAnswer() {
       return new Promise(resolve => {
         let requestList = [];
-        console.log(Object.assign({}, this.temp, { type: 1 }));
         requestList.push(
           editQuestionBankAndAnswer(Object.assign({}, this.temp, { type: 1 }))
         );
         let { correct, answer_list } = this.temp;
-        answer_list.forEach(({ id }, index) => {
-          requestList.push(
-            editQuestionBankAndAnswer({
-              type: 2,
-              id,
-              answer: this.temp[`answer${index}`],
-              correct: correct === index ? 1 : 0
-            })
-          );
+        answer_list.forEach(({ id, correct:oldCorrect, answer:oldAnswer }, index) => {
+          let answer = this.temp[`answer${index}`];
+          // 原本不为答案，但是改为答案
+          if (oldCorrect === 0 && index === correct) {
+            requestList.push(
+              editQuestionBankAndAnswer({
+                type: 2,
+                id,
+                answer,
+                correct: 1
+              })
+            );
+          } else if (oldAnswer !== answer) {
+            requestList.push(
+              editQuestionBankAndAnswer({
+                type: 2,
+                id,
+                answer,
+                correct: index === correct?1:0
+              })
+            );
+          }
         });
         Promise.all(requestList).then(() => {
           resolve();
@@ -627,7 +658,11 @@ export default {
             duration: 1000,
             message: "添加成功",
             onClose: () => {
-              Object.assign(this.addReward, { type: "", grade: undefined, value: undefined });
+              Object.assign(this.addReward, {
+                type: "",
+                grade: undefined,
+                value: undefined
+              });
               this.getRewardList();
             }
           });

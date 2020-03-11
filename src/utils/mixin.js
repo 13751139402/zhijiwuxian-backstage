@@ -1,8 +1,8 @@
 /*
  * @Author: your name
  * @Date: 2019-12-05 11:46:13
- * @LastEditTime : 2020-02-14 13:19:31
- * @LastEditors  : Please set LastEditors
+ * @LastEditTime: 2020-03-09 10:57:20
+ * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admit-template\src\mixin\list.js
  */

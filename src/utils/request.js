@@ -1,8 +1,8 @@
 /*
  * @Author: 创建axios实例，添加token验证
  * @Date: 2019-10-18 13:58:44
- * @LastEditTime : 2020-01-03 17:00:53
- * @LastEditors  : Please set LastEditors
+ * @LastEditTime: 2020-03-05 14:01:28
+ * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /c:\Users\14374\Documents\GitHub\vue-admit-template\src\utils\request.js
  */
@@ -72,7 +72,7 @@ service.interceptors.response.use(
 
     if (res.code !== 1) {
       Message({
-        message: res.message || 'Error',
+        message: res.msg || 'Error',
         type: 'error',
         duration: 5 * 1000
       })
