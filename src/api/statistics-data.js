@@ -1,8 +1,8 @@
 /*
  * @Author: your name
  * @Date: 2020-01-03 17:47:46
- * @LastEditTime : 2020-01-09 14:42:47
- * @LastEditors  : Please set LastEditors
+ * @LastEditTime: 2020-03-14 12:01:52
+ * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \zhijiwuxian\src\api\statistics-data.js
  */
@@ -42,6 +42,29 @@ export function getChanUserInfo(data) {
 export function getChannelUserDataToSpread(params) {
     return request({
         url: '/getChannelUserDataToSpread',
+        method: 'get',
+        params
+    })
+}
+
+
+/**
+ * @description: 获取广告推广渠道名称
+ */
+export function getChannelNameToSpread(params) {
+    return request({
+        url: '/getChannelNameToSpread',
+        method: 'get',
+        params
+    })
+}
+
+/**
+ * @description: 获取渠道组合名称
+ */
+export function getChannelAndNum(params) {
+    return request({
+        url: '/getChannelAndNum',
         method: 'get',
         params
     })

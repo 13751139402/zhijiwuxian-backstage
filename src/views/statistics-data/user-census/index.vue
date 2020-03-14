@@ -1,13 +1,35 @@
 <!--
  * @Author: your name
  * @Date: 2020-01-03 17:28:22
- * @LastEditTime : 2020-01-09 10:51:50
- * @LastEditors  : Please set LastEditors
+ * @LastEditTime: 2020-03-14 14:13:33
+ * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \zhijiwuxian\src\views\statistics-data\user-census\index.vue
  -->
 <template>
   <div class="app-containeFr">
+    <el-form :inline="true" :model="searchForm" class="demo-form-inline">
+      <el-form-item label="广告推广渠道名称">
+        <el-select v-model="chooseSearchForm.channel" placeholder="广告推广渠道名称" @change="getData">
+          <el-option
+            v-for="(value, name) in searchForm.ChannelNameToSpread"
+            :key="name"
+            :label="value"
+            :value="name"
+          ></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="渠道组合名称">
+        <el-cascader
+          :options="searchForm.ChannelAndNum"
+          :props="{ checkStrictly: true ,clearable:false }"
+          :checkStrictly="true"
+          v-model="chooseSearchForm.channel_num"
+          clearable
+        ></el-cascader>
+      </el-form-item>
+    </el-form>
+
     <el-form ref="form" :model="form" label-width="180px" style="margin:100px">
       <div>
         <div class="circle">
@@ -23,7 +45,7 @@
           <p class="h5">昨日留存</p>
         </div>
         <div class="circle">
-          <p>{{form.yesterday_user_survival_play}}</p>
+          <p>{{form.yesterday_user_survival_play||"0"}}</p>
           <p class="h5">昨日播放量</p>
         </div>
         <div class="circle">
@@ -44,7 +66,6 @@
     </el-form>
   </div>
 </template>
-
 <script>
 import { getUserCensus } from "@/api/statistics-data";
 export default {
@@ -58,13 +79,38 @@ export default {
         survival_play: undefined,
         three_days_user_survival: undefined,
         seven_days_user_survival: undefined
+      },
+      searchForm: {
+        ChannelNameToSpread: this.$store.state.statistics.ChannelNameToSpread,
+        ChannelAndNum: this.$store.state.statistics.ChannelAndNum
+      },
+      chooseSearchForm: {
+        channel: "0",
+        channel_num: []
       }
     };
   },
+  methods: {
+    getData() {
+      const loading = this.$loading({
+        lock: true,
+        text: "Loading",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)"
+      });
+      console.log(this.chooseSearchForm);
+      getUserCensus(this.chooseSearchForm)
+        .then(({ result }) => {
+          Object.assign(this.form, result);
+          loading.close();
+        })
+        .catch(() => {
+          loading.close();
+        });
+    }
+  },
   mounted() {
-    getUserCensus().then(({ result }) => {
-      Object.assign(this.form, result);
-    });
+    this.getData();
   }
 };
 </script>
