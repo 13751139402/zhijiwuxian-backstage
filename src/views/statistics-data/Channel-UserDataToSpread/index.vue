@@ -1,28 +1,33 @@
 <!--
  * @Author: your name
  * @Date: 2020-01-07 11:47:57
- * @LastEditTime : 2020-01-17 17:50:11
- * @LastEditors  : Please set LastEditors
+ * @LastEditTime: 2020-03-16 17:49:53
+ * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \zhijiwuxian\src\views\statistics-data\Channel-UserData\index.vue
  -->
 <template>
   <div id="administrator-list" class="app-containeFr">
     <article class="filter-container">
-      <section>
-        <label class="item_label">选择推广员</label>
-        <el-select v-model="currentSpread" placeholder="请选择" @change="chooseSpread">
-          <el-option label="所有" value="all"></el-option>
-          <el-option
-            :label="item.spread"
-            :value="item.spread"
-            v-for="(item) in spreadList"
-            :key="item.spread"
-          ></el-option>
-        </el-select>
-      </section>
+      <el-form :inline="true" :model="selectParamas" class="demo-form-inline">
+        <el-form-item label="选择推广类型">
+          <el-select v-model="selectParamas.type" placeholder="请选择" @change="handleSelectType">
+            <el-option label="线下推广" :value="1"></el-option>
+            <el-option label="广告投放" :value="2"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="渠道细分统计" v-show="Showchannel">
+          <el-cascader
+            @change="chooseSpread"
+            :options="ChannelAndNum"
+            :props="{ checkStrictly: true}"
+            :checkStrictly="true"
+            v-model="selectParamas.channelList"
+          ></el-cascader>
+        </el-form-item>
+      </el-form>
       <section class="form">
-        <template v-if="currentSpread!=='all'">
+        <template v-if="!listType">
           <section class="form-column">
             <div class="form-item">
               <label>下载单价:</label>
@@ -70,7 +75,7 @@
             </div>
           </section>
         </template>
-        <template v-else>
+        <template v-else-if="listType&&selectParamas.type!==2">
           <section class="form-column">
             <div class="form-item">
               <label>下载单价:</label>
@@ -89,7 +94,7 @@
       </section>
     </article>
     <el-table
-      v-if="currentSpread==='all'"
+      v-if="listType"
       v-loading="listLoading"
       :data="list"
       height="calc(100vh - 235px)"
@@ -118,26 +123,28 @@
           <span>{{ scope.row.activate_user }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="总下载收益" prop="down_user_price" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.down_user_price }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="总注册收益" prop="register_user_price" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.register_user_price }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="总激活收益" prop="activate_user_price" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.activate_user_price }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="总收益" prop="total_price" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.total_price }}</span>
-        </template>
-      </el-table-column>
+      <template v-if="selectParamas.type===1">
+        <el-table-column label="总下载收益" prop="down_user_price" align="center">
+          <template slot-scope="scope">
+            <span>{{ scope.row.down_user_price }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="总注册收益" prop="register_user_price" align="center">
+          <template slot-scope="scope">
+            <span>{{ scope.row.register_user_price }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="总激活收益" prop="activate_user_price" align="center">
+          <template slot-scope="scope">
+            <span>{{ scope.row.activate_user_price }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="总收益" prop="total_price" align="center">
+          <template slot-scope="scope">
+            <span>{{ scope.row.total_price }}</span>
+          </template>
+        </el-table-column>
+      </template>
     </el-table>
     <el-table
       v-loading="listLoading"
@@ -197,7 +204,12 @@ export default {
   name: "Channel-UserDataToSpread",
   data() {
     return {
-      currentSpread: "all",
+      selectParamas: {
+        currentSpread: "all",
+        channelList: [0],
+        type: 2
+      },
+      Showchannel: false,
       spreadList: [],
       total_user: 0,
       activate_user: 0,
@@ -212,22 +224,42 @@ export default {
         activate_user_price: 0, // 总激活收益
         register_user_price: 0 // 总注册收益
       },
-      total_price: 0 // 总下载收益
+      total_price: 0, // 总下载收益
+      listType: true
     };
+  },
+  computed: {
+    ChannelAndNum() {
+      let list = this.$store.state.statistics.ChannelAndNum[2].children;
+      list = JSON.parse(JSON.stringify(list));
+      list.unshift({
+        label: "全部",
+        value: 0
+      });
+      return list;
+    }
   },
   mixins: [list],
   methods: {
+    handleSelectType() {
+      this.Showchannel = this.selectParamas.type === 1 ? true : false;
+      this.listType = true;
+      this.selectParamas.channelList = [0];
+      this.selectData();
+    },
     selectData() {
       this.listLoading = true;
       this.select().then(({ result }) => {
-        this.list = this.spreadList = result;
-        this.total = 0;
+        this.list = result;
+        this.total = result.length;
         this.listLoading = false;
       });
     },
     select() {
       return new Promise((resolve, reject) => {
-        getChannelUserDataToSpread(this.listQuery).then(result => {
+        let { channelList, type } = this.selectParamas;
+        let chan = channelList[channelList.length - 1];
+        getChannelUserDataToSpread({ chan, type }).then(result => {
           this.spread_price = result.result[0].spread_price; // 收益报价
           resolve(result);
         });
@@ -235,7 +267,7 @@ export default {
     },
     selectSpread(chan) {
       this.listLoading = true;
-      getChannelUserData({ chan })
+      getChannelUserData({ chan, type: 1 })
         .then(({ result }) => {
           let {
             total_user,
@@ -266,10 +298,13 @@ export default {
         });
     },
     chooseSpread(value) {
-      if (value === "all") {
+      if (this.selectParamas.channelList.length === 1) {
+        this.listType = true;
         this.selectData();
       } else {
-        this.selectSpread(value);
+        this.listType = false;
+        let chan = this.selectParamas.channelList[1];
+        this.selectSpread(chan);
       }
     }
   }

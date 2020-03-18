@@ -1,8 +1,8 @@
 <!--
  * @Author: your name
  * @Date: 2019-10-25 19:14:30
- * @LastEditTime : 2020-01-07 14:54:40
- * @LastEditors  : Please set LastEditors
+ * @LastEditTime: 2020-03-16 11:53:50
+ * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admit-template\src\views\manage-user\administrator-list\index.vue
  -->
@@ -247,7 +247,6 @@ export default {
       this.$refs["createForm"].validate(valid => {
         if (valid) {
           const createTemp = Object.assign({}, this.createTemp);
-          console.log(createTemp);
           createTemp.account = 1728309;
           addAdmin(createTemp).then(() => {
             this.getList();

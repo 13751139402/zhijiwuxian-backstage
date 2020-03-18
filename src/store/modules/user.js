@@ -3,8 +3,8 @@
  * @version: learning
  * @Author: 戴训伟
  * @Date: 2019-09-28 10:33:37
- * @LastEditors  : Please set LastEditors
- * @LastEditTime : 2020-01-07 11:09:12
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2020-03-16 13:39:37
  */
 import { login, logout } from '@/api/user'
 import { setToken, removeToken } from '@/utils/auth'
@@ -48,7 +48,6 @@ const actions = {
       login({ username: username.trim(), password: password }).then(({ result }) => {
         // result.rank = 9;
         setToken(JSON.stringify(result));
-        // console.log(result);
 
         resolve()
       }).catch(error => {

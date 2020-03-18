@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-01-03 17:47:46
- * @LastEditTime: 2020-03-14 12:01:52
+ * @LastEditTime: 2020-03-18 14:39:54
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \zhijiwuxian\src\api\statistics-data.js
@@ -67,5 +67,17 @@ export function getChannelAndNum(params) {
         url: '/getChannelAndNum',
         method: 'get',
         params
+    })
+}
+
+
+/**
+ * @description: 获取渠道组合名称
+ */
+export function timelyDataCensus(data) {
+    return request({
+        url: '/timelyDataCensus',
+        method: 'post',
+        data
     })
 }

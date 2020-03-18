@@ -1,8 +1,8 @@
 <!--
  * @Author: your name
  * @Date: 2019-10-19 17:14:45
- * @LastEditTime : 2020-01-03 10:58:17
- * @LastEditors  : Please set LastEditors
+ * @LastEditTime: 2020-03-16 13:39:29
+ * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admit-template\src\views\manage-user\user-list\index.vue
  -->
@@ -512,7 +512,6 @@ export default {
           if (tempData.birth) {
             tempData.birth = this.temp.birth.Format("yyyy-MM-dd");
           }
-          console.log("文档男女点");
           if (this.imageFile) {
             tempData = Object.assign(tempData, { icon: this.imageFile });
           } else {

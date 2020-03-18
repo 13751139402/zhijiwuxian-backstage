@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-14 10:44:31
- * @LastEditTime: 2020-03-14 12:02:54
+ * @LastEditTime: 2020-03-14 17:14:44
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \zhijiwuxian\src\store\modules\statistics.js
@@ -15,7 +15,6 @@ getChannelNameToSpread().then(({result})=>{
 })
 getChannelAndNum().then(({result})=>{
     state.ChannelAndNum=result;
-    console.log(state.ChannelAndNum);
 })
 const state={
     ChannelNameToSpread:{},
