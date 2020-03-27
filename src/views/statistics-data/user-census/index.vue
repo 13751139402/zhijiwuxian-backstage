@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2020-01-03 17:28:22
- * @LastEditTime: 2020-03-18 14:45:24
+ * @LastEditTime: 2020-03-21 18:07:48
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \zhijiwuxian\src\views\statistics-data\user-census\index.vue
@@ -9,7 +9,7 @@
 <template>
   <div class="app-containeFr">
     <el-form :inline="true" :model="searchForm" class="demo-form-inline">
-      <el-form-item label="推广渠道粗略统计">
+      <el-form-item label="推广渠道统计">
         <el-select v-model="chooseSearchForm.channel" placeholder="推广渠道名称" @change="handleAgetData">
           <el-option
             v-for="(value, name) in searchForm.ChannelNameToSpread"
@@ -19,7 +19,7 @@
           ></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="渠道细分统计">
+      <!-- <el-form-item label="渠道细分统计">
         <el-cascader
           @change="handleBgetData"
           :options="searchForm.ChannelAndNum"
@@ -27,71 +27,87 @@
           :checkStrictly="true"
           v-model="chooseSearchForm.channel_num"
         ></el-cascader>
-      </el-form-item>
+      </el-form-item> -->
     </el-form>
 
-    <el-form ref="form" :model="form" label-width="180px">
-      <div>
-        <div class="circle">
-          <p>{{form.today_user}}</p>
-          <p class="h5">当日新增</p>
+    <el-collapse v-model="activeNames">
+      <el-collapse-item name="1">
+        <template slot="title">
+          <div class="collsaps_title">当日数据</div>
+        </template>
+        <div class="collapse_text">
+          <span>当日新增:</span>
+          <span>{{form.today_user}}</span>
         </div>
-        <div class="circle">
-          <p>{{form.today_survival}}</p>
-          <p class="h5">当日活跃--播放</p>
+        <p class="collapse_text">
+          <span>当日活跃-播放:</span>
+          <span>{{form.today_survival}}</span>
+        </p>
+        <p class="collapse_text">
+          <span>当日总播放量:</span>
+          <span>{{form.today_user_play}}</span>
+        </p>
+        <p class="collapse_text">
+          <span>人均播放量:</span>
+          <span>{{form.today_user_survival_play}}</span>
+        </p>
+      </el-collapse-item>
+      <el-collapse-item name="2">
+        <template slot="title">
+          <div class="collsaps_title">昨日数据</div>
+        </template>
+        <div class="collapse_text">
+          <span>昨日新增:</span>
+          <span>{{form.yesterday_user}}</span>
         </div>
-        <div class="circle">
-          <p>{{form.today_user_play}}</p>
-          <p class="h5">当日总播放量</p>
+        <div class="collapse_text">
+          <span>昨日存活-播放:</span>
+          <span>{{form.yesterday_survival}}</span>
         </div>
-        <div class="circle">
-          <p>{{form.today_user_survival_play}}</p>
-          <p class="h5">人均播放量</p>
+        <div class="collapse_text">
+          <span>昨日留存-登录:</span>
+          <span>{{form.yesterday_user_survival}}</span>
         </div>
-      </div>
-      <div>
-        <div class="circle">
-          <p>{{form.yesterday_user}}</p>
-          <p class="h5">昨日新增</p>
+        <div class="collapse_text">
+          <span>昨日总播放量:</span>
+          <span>{{form.yesterday_user_survival_play}}</span>
         </div>
-        <div class="circle" style="background:#a84156">
-          <p>{{form.yesterday_survival}}</p>
-          <p class="h5">昨日存活--播放</p>
+        <div class="collapse_text">
+          <span>昨日人均播放:</span>
+          <span>{{form.survival_play}}</span>
         </div>
-        <div class="circle" style="background:#5c7df4">
-          <p>{{form.yesterday_user_survival}}</p>
-          <p class="h5">昨日留存--登录</p>
+      </el-collapse-item>
+      <el-collapse-item title="留存数据" name="3">
+        <template slot="title">
+          <div class="collsaps_title">留存数据</div>
+        </template>
+        <div class="collapse_text">
+          <span>三天留存:</span>
+          <span>{{form.three_days_user_survival}}</span>
         </div>
-        <div class="circle" style="background:#5c7df4">
-          <p>{{form.yesterday_user_survival_play}}</p>
-          <p class="h5">昨日总播放量</p>
+        <div class="collapse_text">
+          <span>七天留存:</span>
+          <span>{{form.seven_days_user_survival}}</span>
         </div>
-        <div class="circle" style="background:#5c7df4">
-          <p>{{form.survival_play}}</p>
-          <p class="h5">昨日人均播放</p>
+      </el-collapse-item>
+      <el-collapse-item title="其他数据" name="4">
+        <template slot="title">
+          <div class="collsaps_title">其他数据</div>
+        </template>
+        <div class="collapse_text" v-for="(value,name) of AddData" :key="name">
+          <span>{{name}}:</span>
+          <span>{{value}}</span>
         </div>
-      </div>
-      <div>
-        <div class="circle" style="background:#5c7df4">
-          <p>{{form.three_days_user_survival}}</p>
-          <p class="h5">三天留存</p>
-        </div>
-        <div class="circle" style="background:#5c7df4">
-          <p>{{form.seven_days_user_survival}}</p>
-          <p class="h5">7天留存</p>
-        </div>
-      </div>
-      <div>
-        <p v-for="(value,name) of AddData" :key="name">{{`${name}:${value}`}}</p>
-      </div>
-    </el-form>
+      </el-collapse-item>
+    </el-collapse>
   </div>
 </template>
 <script>
-import { getUserCensus,timelyDataCensus } from "@/api/statistics-data";
+import { getUserCensus, timelyDataCensus } from "@/api/statistics-data";
 export default {
   data() {
     return {
+      activeNames: ["1", "2", "3"],
       form: {
         today_user: undefined, // 当日新增
         today_survival: undefined,
@@ -106,14 +122,14 @@ export default {
         seven_days_user_survival: undefined
       },
       searchForm: {
-        ChannelNameToSpread: this.$store.state.statistics.ChannelNameToSpread,
+        ChannelNameToSpread: {'0':"全部","1":"趣头条","2":"今日头条","3":"其他"},
         ChannelAndNum: this.$store.state.statistics.ChannelAndNum
       },
       chooseSearchForm: {
         channel: "0",
         channel_num: [0]
       },
-      AddData:{}
+      AddData: {}
     };
   },
   methods: {
@@ -154,15 +170,49 @@ export default {
     }
   },
   mounted() {
-    timelyDataCensus().then(({result})=>{
-      this.AddData=result;
-    })
+    timelyDataCensus().then(({ result }) => {
+      this.AddData = result;
+    });
     this.getData();
   }
 };
 </script>
 
 <style scoped>
+.app-containeFr >>> .el-collapse-item__content {
+  padding-bottom: 10px;
+}
+.app-containeFr >>> .el-collapse-item__header {
+  line-height: 40px;
+  height: 40px;
+}
+.collapse_text {
+  font-size: 16px;
+  font-weight: 700;
+  font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB,
+    Microsoft YaHei, Arial, sans-serif;
+  display: flex;
+  align-items: center;
+}
+.collapse_text *:nth-child(1) {
+  color: rgba(0, 0, 0, 0.45);
+  width: 114px;
+  margin-right: 10px;
+  text-align: end;
+}
+.collapse_text *:nth-child(2) {
+  font-size: 20px;
+  color: #666;
+}
+.collsaps_title {
+  border-radius: 5px;
+  padding-left: 10px;
+  font-weight: bold;
+  font-size: 18px;
+  color: #303133;
+  box-sizing: content-box;
+  flex: 1;
+}
 p {
   margin: 0;
   padding: 0;

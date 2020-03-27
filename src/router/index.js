@@ -2,7 +2,7 @@
  * @Description: ROUTER
  * @Author: your name
  * @Date: 2019-10-18 13:58:44
- * @LastEditTime: 2020-02-24 20:28:30
+ * @LastEditTime: 2020-03-27 14:20:56
  * @LastEditors: Please set LastEditors
  */
 import Vue from "vue";
@@ -76,7 +76,7 @@ export const asyncRoutes = [
       {
         path: "home",
         name: "home",
-        component: () => import("@/views/dashboard/index"),
+        component: () => import("@/views/statistics-data/user-census"),
         meta: {
           title: "首页",
           icon: "dashboard",
@@ -235,6 +235,44 @@ export const asyncRoutes = [
         component: () =>
           import("@/views/statistics-data/Channel-UserDataToSpread"),
         meta: { title: "渠道邀请信息统计", roles: [1] }
+      }
+    ]
+  }, {
+    path: "/debris",
+    component: Layout,
+    meta: { title: "碎片模块", icon: "password", roles: [9] },
+    children: [
+      {
+        path: "debris",
+        name: "debris",
+        component: () => import("@/views/debris/debris"),
+        meta: { title: "碎片列表", roles: [9] }
+      },
+      {
+        path: "card",
+        name: "card",
+        component: () => import("@/views/debris/card"),
+        meta: { title: "卡片列表", roles: [9] }
+      },
+      {
+        path: "goods",
+        name: "goods",
+        component: () => import("@/views/debris/goods"),
+        meta: { title: "物品列表", roles: [9] }
+      }
+      ,
+      {
+        path: "banner",
+        name: "banner",
+        component: () => import("@/views/debris/banner"),
+        meta: { title: "banner展示", roles: [9] }
+      }
+      ,
+      {
+        path: "box",
+        name: "box",
+        component: () => import("@/views/debris/box"),
+        meta: { title: "宝箱配置", roles: [9] }
       }
     ]
   },

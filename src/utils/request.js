@@ -1,7 +1,7 @@
 /*
  * @Author: 创建axios实例，添加token验证
  * @Date: 2019-10-18 13:58:44
- * @LastEditTime: 2020-03-05 14:01:28
+ * @LastEditTime: 2020-03-27 15:46:10
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /c:\Users\14374\Documents\GitHub\vue-admit-template\src\utils\request.js
@@ -16,7 +16,7 @@ const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API, // url = 基本url +请求url
   changeOrigin: true, // 允许跨域
   withCredentials: false, // 当跨域请求时发送cookie,当允许发送cookie时,access-contron-allow-origin不能为*,安全
-  timeout: 5000 // 请求超时
+  timeout: 20000 // 请求超时
 })
 
 // 请求 拦截器
@@ -26,6 +26,17 @@ service.interceptors.request.use(
     // 在发送请求之前做些什么
 
     // 如果账号存在则添加，因为大部分请求都需要添加操作人账号
+    if (config.url.includes("debris")) {
+      var data = config.data || config.params;
+      if (!data) {
+        config.data = data = {};
+      }
+      if (data instanceof FormData) {
+        data.append('apply', 1);
+      } else {
+        data.apply = 1;
+      }
+    }
     if (account) {
       var data = config.data || config.params;
       if (!data) {
@@ -38,12 +49,6 @@ service.interceptors.request.use(
       }
     }
     config.credentials = true
-    if (store.getters.token) {
-      // 让每个请求携带toekn
-      // ['X-Token']是一个自定义key
-      // 请根据实际情况修改
-      // config.headers['X-Token'] = getToken()
-    }
     return config
   },
   error => {

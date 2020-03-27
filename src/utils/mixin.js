@@ -1,16 +1,24 @@
 /*
  * @Author: your name
  * @Date: 2019-12-05 11:46:13
- * @LastEditTime: 2020-03-09 10:57:20
+ * @LastEditTime: 2020-03-26 10:27:20
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \vue-admit-template\src\mixin\list.js
  */
 
 import Pagination from "@/components/Pagination";
-export { switchFormData } from "./handleData";
+import { switchFormData } from "./handleData";
+export const switchImageFormData = (data, image) => {
+  return switchFormData(
+    Object.assign({}, data, {
+      image: image
+    })
+  );
+}
+
 let list = {
-  data: function() {
+  data: function () {
     return {
       // -- 列表
       list: [], // 列表数据
@@ -22,6 +30,10 @@ let list = {
         page: 1, // 页码
         page_size: 20, // 页码大小'
         status: 1
+      },
+      textMap: {
+        create: "添加",
+        change: "修改"
       },
       dialogStatus: "create", // 弹出窗状态
       dialogFormVisible: false, // 弹出框是否显示
@@ -36,6 +48,9 @@ let list = {
     server() {
       // image图片地址
       return this.$store.getters.server;
+    },
+    rank() {
+      return this.$store.state.user.rank <= 3;
     }
   },
   methods: {
@@ -193,4 +208,4 @@ let list = {
   }
 };
 
-export { list };
+export { list, switchFormData };
