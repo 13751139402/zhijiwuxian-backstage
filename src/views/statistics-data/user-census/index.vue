@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2020-01-03 17:28:22
- * @LastEditTime: 2020-03-21 18:07:48
+ * @LastEditTime: 2020-04-10 11:25:57
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \zhijiwuxian\src\views\statistics-data\user-census\index.vue
@@ -10,7 +10,7 @@
   <div class="app-containeFr">
     <el-form :inline="true" :model="searchForm" class="demo-form-inline">
       <el-form-item label="推广渠道统计">
-        <el-select v-model="chooseSearchForm.channel" placeholder="推广渠道名称" @change="handleAgetData">
+        <el-select v-model="chooseSearchForm.channel" placeholder="推广渠道名称" @change="getData">
           <el-option
             v-for="(value, name) in searchForm.ChannelNameToSpread"
             :key="name"
@@ -19,128 +19,106 @@
           ></el-option>
         </el-select>
       </el-form-item>
-      <!-- <el-form-item label="渠道细分统计">
-        <el-cascader
-          @change="handleBgetData"
-          :options="searchForm.ChannelAndNum"
-          :props="{ checkStrictly: true }"
-          :checkStrictly="true"
-          v-model="chooseSearchForm.channel_num"
-        ></el-cascader>
-      </el-form-item> -->
+      <el-form-item>
+        <el-date-picker
+          v-model="chooseSearchForm.date"
+          type="daterange"
+          align="right"
+          unlink-panels
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          :picker-options="pickerOptions"
+          value-format="yyyy-MM-dd HH:mm:ss"
+          @change="getData"
+        ></el-date-picker>
+      </el-form-item>
     </el-form>
 
     <el-collapse v-model="activeNames">
       <el-collapse-item name="1">
         <template slot="title">
-          <div class="collsaps_title">当日数据</div>
+          <div class="collsaps_title">数据</div>
         </template>
         <div class="collapse_text">
-          <span>当日新增:</span>
-          <span>{{form.today_user}}</span>
+          <span>新增用户:</span>
+          <span>{{form.new_user}}</span>
         </div>
         <p class="collapse_text">
-          <span>当日活跃-播放:</span>
-          <span>{{form.today_survival}}</span>
+          <span>活跃用户:</span>
+          <span>{{form.active_user}}</span>
         </p>
         <p class="collapse_text">
-          <span>当日总播放量:</span>
-          <span>{{form.today_user_play}}</span>
+          <span>留存用户:</span>
+          <span>{{form.survival_user}}</span>
         </p>
         <p class="collapse_text">
-          <span>人均播放量:</span>
-          <span>{{form.today_user_survival_play}}</span>
+          <span>总播放量:</span>
+          <span>{{form.user_play}}</span>
         </p>
-      </el-collapse-item>
-      <el-collapse-item name="2">
-        <template slot="title">
-          <div class="collsaps_title">昨日数据</div>
-        </template>
-        <div class="collapse_text">
-          <span>昨日新增:</span>
-          <span>{{form.yesterday_user}}</span>
-        </div>
-        <div class="collapse_text">
-          <span>昨日存活-播放:</span>
-          <span>{{form.yesterday_survival}}</span>
-        </div>
-        <div class="collapse_text">
-          <span>昨日留存-登录:</span>
-          <span>{{form.yesterday_user_survival}}</span>
-        </div>
-        <div class="collapse_text">
-          <span>昨日总播放量:</span>
-          <span>{{form.yesterday_user_survival_play}}</span>
-        </div>
-        <div class="collapse_text">
-          <span>昨日人均播放:</span>
-          <span>{{form.survival_play}}</span>
-        </div>
-      </el-collapse-item>
-      <el-collapse-item title="留存数据" name="3">
-        <template slot="title">
-          <div class="collsaps_title">留存数据</div>
-        </template>
-        <div class="collapse_text">
-          <span>三天留存:</span>
-          <span>{{form.three_days_user_survival}}</span>
-        </div>
-        <div class="collapse_text">
-          <span>七天留存:</span>
-          <span>{{form.seven_days_user_survival}}</span>
-        </div>
-      </el-collapse-item>
-      <el-collapse-item title="其他数据" name="4">
-        <template slot="title">
-          <div class="collsaps_title">其他数据</div>
-        </template>
-        <div class="collapse_text" v-for="(value,name) of AddData" :key="name">
-          <span>{{name}}:</span>
-          <span>{{value}}</span>
-        </div>
+        <p class="collapse_text">
+          <span>人均播放:</span>
+          <span>{{form.user_average_play}}</span>
+        </p>
       </el-collapse-item>
     </el-collapse>
   </div>
 </template>
 <script>
-import { getUserCensus, timelyDataCensus } from "@/api/statistics-data";
+import { dataCensus, getSpread } from "@/api/statistics-data";
 export default {
   data() {
     return {
-      activeNames: ["1", "2", "3"],
+      pickerOptions: {
+        shortcuts: [
+          {
+            text: "最近一周",
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit("pick", [start, end]);
+            }
+          },
+          {
+            text: "最近一个月",
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+              picker.$emit("pick", [start, end]);
+            }
+          },
+          {
+            text: "最近三个月",
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+              picker.$emit("pick", [start, end]);
+            }
+          }
+        ]
+      },
+      activeNames: ["1"],
       form: {
-        today_user: undefined, // 当日新增
-        today_survival: undefined,
-        today_user_play: undefined,
-        today_user_survival_play: undefined,
-        yesterday_user: undefined,
-        yesterday_survival: undefined,
-        yesterday_user_survival: undefined,
-        yesterday_user_survival_play: undefined,
-        survival_play: undefined,
-        three_days_user_survival: undefined,
-        seven_days_user_survival: undefined
+        new_user: undefined, // 当日新增
+        active_user: undefined,
+        survival_user: undefined,
+        user_play: undefined,
+        user_average_play: undefined,
+        test: undefined
       },
       searchForm: {
-        ChannelNameToSpread: {'0':"全部","1":"趣头条","2":"今日头条","3":"其他"},
-        ChannelAndNum: this.$store.state.statistics.ChannelAndNum
+        ChannelNameToSpread: {}
       },
       chooseSearchForm: {
-        channel: "0",
-        channel_num: [0]
-      },
-      AddData: {}
+        channel: "spread0",
+        date: undefined
+      }
     };
   },
   methods: {
-    handleAgetData() {
-      this.chooseSearchForm.channel_num = [0];
-      this.getData();
-    },
-    handleBgetData() {
-      this.chooseSearchForm.channel = "0";
-      this.getData();
-    },
     getData() {
       const loading = this.$loading({
         lock: true,
@@ -148,18 +126,13 @@ export default {
         spinner: "el-icon-loading",
         background: "rgba(0, 0, 0, 0.7)"
       });
-
-      var {
-        channel_num: [channel_type, channel, channel_num]
-      } = this.chooseSearchForm;
-      if (!channel_type) {
-        channel = this.chooseSearchForm.channel;
+      let { channel, date } = this.chooseSearchForm;
+      let start_time, end_time;
+      if (date) {
+        start_time = date[0];
+        end_time = date[1];
       }
-      getUserCensus({
-        channel,
-        channel_type,
-        channel_num
-      })
+      dataCensus({ channel, start_time, end_time })
         .then(({ result }) => {
           Object.assign(this.form, result);
           loading.close();
@@ -169,9 +142,9 @@ export default {
         });
     }
   },
-  mounted() {
-    timelyDataCensus().then(({ result }) => {
-      this.AddData = result;
+  created() {
+    getSpread().then(({ result }) => {
+      this.searchForm.ChannelNameToSpread = result;
     });
     this.getData();
   }

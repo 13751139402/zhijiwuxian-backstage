@@ -1,0 +1,28 @@
+src
+├── api                   # http接口 
+├── router                # 路由
+├── sotre                 # Vuex
+    ├── index             # 自动将modules的模块Vuex发布
+    ├── modules           # 模块化
+        ├── app           # 全局数据
+        ├── tagsView      # 导航条
+        ├── permission    # 权限许可
+        ├── settings      # 标签功能
+        ├── ------ 自定义
+        ├── statistics    # 数据统计
+        ├── treasure      # 财富管理
+        ├── user          # 用户管理
+        ├── welfare       # 福利管理
+├── views                 # 页面
+    ├── redirect          # -- 功能页面 重定向
+    ├── dashboard         # index页面
+    ├── ------ 自定义
+    ├── answer-puzzles    # 答题闯关
+    ├── debris            # 碎片模块
+    ├── dig-treasure      # 挖宝模块
+    ├── Feedback          # 反馈模块 -- 其他
+    ├── login             # 登录模块
+    ├── manage-treasure   # 财富管理
+    ├── manage-user       # 用户管理
+    ├── statistics-data   # 数据统计
+    ├── welfare           # 福利管理

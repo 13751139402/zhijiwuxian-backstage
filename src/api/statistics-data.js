@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-01-03 17:47:46
- * @LastEditTime: 2020-03-18 14:39:54
+ * @LastEditTime: 2020-04-10 10:13:51
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \zhijiwuxian\src\api\statistics-data.js
@@ -79,5 +79,27 @@ export function timelyDataCensus(data) {
         url: '/timelyDataCensus',
         method: 'post',
         data
+    })
+}
+// -----------------------------------  新统计
+/**
+ * @description: 信息统计
+ */
+export function getSpread(params) {
+    return request({
+        url: '/getSpread',
+        method: 'get',
+        params
+    })
+}
+
+/**
+ * @description: 获取指定日期数据统计
+ */
+export function dataCensus(params) {
+    return request({
+        url: '/dataCensus',
+        method: 'get',
+        params
     })
 }

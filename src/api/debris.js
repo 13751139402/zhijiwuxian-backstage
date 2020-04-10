@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-25 17:26:22
- * @LastEditTime: 2020-03-27 14:11:53
+ * @LastEditTime: 2020-03-31 18:20:37
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \zhijiwuxian\src\api\debirs.js
@@ -170,6 +170,39 @@ export function updateArticlesBox(data) {
 export function delArticlesBox(data) {
     return request({
         url: "/debris/delArticlesBox",
+        method: "post",
+        data
+    });
+}
+
+// --------------------  彩票  ------------------->
+export function updateArticlesLottery(data) {
+    return request({
+        url: "/debris/updateArticlesLottery",
+        method: "post",
+        data
+    });
+}
+
+export function addArticlesLottery(data) {
+    return request({
+        url: "/debris/addArticlesLottery",
+        method: "post",
+        data
+    });
+}
+
+export function getArticlesLottery(params) {
+    return request({
+        url: "/debris/getArticlesLottery",
+        method: "get",
+        params
+    });
+}
+
+export function delArticlesLottery(data) {
+    return request({
+        url: "/debris/delArticlesLottery",
         method: "post",
         data
     });

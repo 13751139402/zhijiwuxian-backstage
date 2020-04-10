@@ -2,7 +2,7 @@
  * @Description: ROUTER
  * @Author: your name
  * @Date: 2019-10-18 13:58:44
- * @LastEditTime: 2020-03-27 14:20:56
+ * @LastEditTime: 2020-04-08 11:31:26
  * @LastEditors: Please set LastEditors
  */
 import Vue from "vue";
@@ -66,6 +66,11 @@ export const constantRoutes = [
   }
 ];
 
+/**
+ * @description: 需要权限才能访问的导航条
+ * @param {type} 
+ * @return: 
+ */
 export const asyncRoutes = [
   {
     path: "/", // 默认页面 如果没有登录会直接跳转login
@@ -87,13 +92,17 @@ export const asyncRoutes = [
     ]
   },
   {
-    path: "/manage-user",
-    component: Layout,
+    path: "/manage-user", // 页面路径
+    // 组件一直为layout
+    component: Layout, 
+    // title:导航条名称,icon:导航条图标,roles:权限设置
     meta: { title: "用户管理", icon: "user", roles: [9] },
+    // 子导航条 二级导航条
     children: [
       {
-        path: "user-list",
-        name: "user-list",
+        path: "user-list", // 路径
+        name: "user-list", // 导航条名称
+        // 对应的组件内容
         component: () => import("@/views/manage-user/user-list"),
         meta: { title: "用户列表", noCache: true, roles: [9] }
       },
@@ -273,6 +282,13 @@ export const asyncRoutes = [
         name: "box",
         component: () => import("@/views/debris/box"),
         meta: { title: "宝箱配置", roles: [9] }
+      }
+      ,
+      {
+        path: "lottery",
+        name: "lottery",
+        component: () => import("@/views/debris/lottery"),
+        meta: { title: "抽奖物品", roles: [9] }
       }
     ]
   },

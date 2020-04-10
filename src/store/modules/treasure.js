@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2019-10-18 13:58:44
- * @LastEditTime: 2020-03-27 15:49:58
+ * @LastEditTime: 2020-04-01 17:11:51
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /c:\Users\14374\Documents\GitHub\vue-admit-template\src\store\modules\settings.js
@@ -55,6 +55,10 @@ const state = {
     {
       key: 11,
       value: "答题闯关"
+    },
+    {
+      key: 12,
+      value: "奖励规则"
     },
   ],
   page: {
